@@ -1,0 +1,219 @@
+// Prisma schema for Supabase (PostgreSQL)
+// Run: npx prisma generate
+// Migrate: npx prisma db push (or use Supabase migrations with scripts/setup-database.sql)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model AdminUser {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email        String    @unique @db.VarChar(255)
+  passwordHash String   @map("password_hash") @db.VarChar(255)
+  name         String   @db.VarChar(255)
+  role         String   @default("admin") @db.VarChar(50)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+}
+
+model SiteSetting {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  key       String   @unique @db.VarChar(255)
+  valueEn   String?  @map("value_en") @db.Text
+  valueAr   String?  @map("value_ar") @db.Text
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("site_settings")
+}
+
+model Hotel {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nameEn          String   @map("name_en") @db.VarChar(255)
+  nameAr          String   @map("name_ar") @db.VarChar(255)
+  descriptionEn   String?  @map("description_en") @db.Text
+  descriptionAr   String?  @map("description_ar") @db.Text
+  locationEn      String?  @map("location_en") @db.VarChar(255)
+  locationAr      String?  @map("location_ar") @db.VarChar(255)
+  city            String   @db.VarChar(100)
+  distanceToHaram String?  @map("distance_to_haram") @db.VarChar(100)
+  starRating      Int      @default(5) @map("star_rating") @db.Integer
+  pricePerNight   Decimal? @map("price_per_night") @db.Decimal(10, 2)
+  currency        String   @default("SAR") @db.VarChar(10)
+  imageUrl        String?  @map("image_url") @db.Text
+  gallery         String[] @db.Text
+  amenities       String[] @db.Text
+  isFeatured      Boolean  @default(false) @map("is_featured") @db.Boolean
+  isActive        Boolean  @default(true) @map("is_active") @db.Boolean
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("hotels")
+}
+
+model TourPackage {
+  id                 String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  titleEn            String    @map("title_en") @db.VarChar(255)
+  titleAr            String    @map("title_ar") @db.VarChar(255)
+  slug               String    @unique @db.VarChar(255)
+  descriptionEn      String?   @map("description_en") @db.Text
+  descriptionAr     String?   @map("description_ar") @db.Text
+  shortDescriptionEn String?   @map("short_description_en") @db.Text
+  shortDescriptionAr String?   @map("short_description_ar") @db.Text
+  packageType        String    @map("package_type") @db.VarChar(50)
+  durationDays       Int       @map("duration_days") @db.Integer
+  price              Decimal   @map("price") @db.Decimal(10, 2)
+  currency           String    @default("SAR") @db.VarChar(10)
+  inclusionsEn       String[]  @map("inclusions_en") @db.Text
+  inclusionsAr       String[]  @map("inclusions_ar") @db.Text
+  exclusionsEn       String[]  @map("exclusions_en") @db.Text
+  exclusionsAr       String[]  @map("exclusions_ar") @db.Text
+  itinerary          Json?     @db.JsonB
+  imageUrl           String?   @map("image_url") @db.Text
+  gallery            String[]  @db.Text
+  maxGuests          Int?      @map("max_guests") @db.Integer
+  departureDates     DateTime[] @map("departure_dates") @db.Timestamptz(6)
+  isFeatured         Boolean   @default(false) @map("is_featured") @db.Boolean
+  isActive           Boolean   @default(true) @map("is_active") @db.Boolean
+  createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt          DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("tour_packages")
+}
+
+model Event {
+  id                 String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  titleEn            String    @map("title_en") @db.VarChar(255)
+  titleAr            String    @map("title_ar") @db.VarChar(255)
+  slug               String    @unique @db.VarChar(255)
+  descriptionEn      String?   @map("description_en") @db.Text
+  descriptionAr     String?   @map("description_ar") @db.Text
+  shortDescriptionEn String?   @map("short_description_en") @db.Text
+  shortDescriptionAr String?   @map("short_description_ar") @db.Text
+  eventDate          DateTime  @map("event_date") @db.Timestamptz(6)
+  endDate            DateTime? @map("end_date") @db.Timestamptz(6)
+  locationEn         String?   @map("location_en") @db.VarChar(255)
+  locationAr         String?   @map("location_ar") @db.VarChar(255)
+  imageUrl           String?   @map("image_url") @db.Text
+  gallery            String[]  @db.Text
+  price              Decimal?  @db.Decimal(10, 2)
+  currency           String    @default("SAR") @db.VarChar(10)
+  maxAttendees       Int?      @map("max_attendees") @db.Integer
+  isFeatured         Boolean   @default(false) @map("is_featured") @db.Boolean
+  isActive           Boolean   @default(true) @map("is_active") @db.Boolean
+  createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt          DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("events")
+}
+
+model Transportation {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nameEn        String    @map("name_en") @db.VarChar(255)
+  nameAr        String    @map("name_ar") @db.VarChar(255)
+  descriptionEn String?   @map("description_en") @db.Text
+  descriptionAr String?   @map("description_ar") @db.Text
+  vehicleType   String    @map("vehicle_type") @db.VarChar(100)
+  capacity      Int       @db.Integer
+  pricePerTrip  Decimal?  @map("price_per_trip") @db.Decimal(10, 2)
+  pricePerDay   Decimal?  @map("price_per_day") @db.Decimal(10, 2)
+  currency      String    @default("SAR") @db.VarChar(10)
+  imageUrl      String?   @map("image_url") @db.Text
+  featuresEn    String[]  @map("features_en") @db.Text
+  featuresAr    String[]  @map("features_ar") @db.Text
+  isFeatured     Boolean   @default(false) @map("is_featured") @db.Boolean
+  isActive      Boolean   @default(true) @map("is_active") @db.Boolean
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("transportation")
+}
+
+model BlogPost {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  titleEn      String    @map("title_en") @db.VarChar(255)
+  titleAr      String    @map("title_ar") @db.VarChar(255)
+  slug         String    @unique @db.VarChar(255)
+  contentEn    String?   @map("content_en") @db.Text
+  contentAr    String?   @map("content_ar") @db.Text
+  excerptEn    String?   @map("excerpt_en") @db.Text
+  excerptAr    String?   @map("excerpt_ar") @db.Text
+  imageUrl     String?   @map("image_url") @db.Text
+  authorId     String?   @map("author_id") @db.Uuid
+  category     String?   @db.VarChar(100)
+  tags         String[]  @db.Text
+  isPublished  Boolean   @default(false) @map("is_published") @db.Boolean
+  publishedAt  DateTime? @map("published_at") @db.Timestamptz(6)
+  views        Int       @default(0) @db.Integer
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("blog_posts")
+}
+
+model ContactInquiry {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String   @db.VarChar(255)
+  email     String   @db.VarChar(255)
+  phone     String?  @db.VarChar(50)
+  subject   String?  @db.VarChar(255)
+  message   String   @db.Text
+  inquiryType String? @map("inquiry_type") @db.VarChar(50)
+  status    String   @default("new") @db.VarChar(50)
+  isRead    Boolean  @default(false) @map("is_read") @db.Boolean
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("contact_inquiries")
+}
+
+model Booking {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  bookingType    String    @map("booking_type") @db.VarChar(50)
+  referenceId    String    @map("reference_id") @db.Uuid
+  customerName   String    @map("customer_name") @db.VarChar(255)
+  customerEmail  String    @map("customer_email") @db.VarChar(255)
+  customerPhone  String?   @map("customer_phone") @db.VarChar(50)
+  numGuests      Int       @default(1) @map("num_guests") @db.Integer
+  specialRequests String?  @map("special_requests") @db.Text
+  totalPrice     Decimal?  @map("total_price") @db.Decimal(10, 2)
+  currency       String    @default("SAR") @db.VarChar(10)
+  status         String    @default("pending") @db.VarChar(50)
+  bookingDate    DateTime? @map("booking_date") @db.Timestamptz(6)
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("bookings")
+}
+
+model Testimonial {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nameEn      String   @map("name_en") @db.VarChar(255)
+  nameAr      String?  @map("name_ar") @db.VarChar(255)
+  contentEn   String   @map("content_en") @db.Text
+  contentAr   String?  @map("content_ar") @db.Text
+  rating      Int      @default(5) @db.Integer
+  imageUrl    String?  @map("image_url") @db.Text
+  location    String?  @db.VarChar(255)
+  isFeatured  Boolean  @default(false) @map("is_featured") @db.Boolean
+  isActive    Boolean  @default(true) @map("is_active") @db.Boolean
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@map("testimonials")
+}
+
+model Session {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  token     String   @unique @db.VarChar(255)
+  expiresAt DateTime @map("expires_at") @db.Timestamptz(6)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@map("sessions")
+}

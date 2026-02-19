@@ -1,0 +1,201 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Identity: #6c0b16 (dark red-brown / maroon) */
+    --background: 0 0% 99%;
+    --foreground: 0 0% 9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 9%;
+
+    /* Primary: #6c0b16 – brand identity */
+    --primary: 354 82% 23%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 9%;
+
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+
+    --accent: 354 82% 23%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 354 82% 23%;
+
+    --radius: 0.5rem;
+
+    /* Dark charcoal for featured cards/sections */
+    --charcoal: 0 0% 12%;
+
+    --chart-1: 354 82% 30%;
+    --chart-2: 354 70% 40%;
+    --chart-3: 0 0% 25%;
+    --chart-4: 354 60% 35%;
+    --chart-5: 0 0% 35%;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 0 0% 9%;
+    --sidebar-primary: 354 82% 23%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 96%;
+    --sidebar-accent-foreground: 0 0% 9%;
+    --sidebar-border: 0 0% 90%;
+    --sidebar-ring: 354 82% 23%;
+  }
+
+  .dark {
+    --background: 0 0% 7%;
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 354 75% 35%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 18%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 60%;
+
+    --accent: 354 75% 35%;
+    --accent-foreground: 0 0% 100%;
+
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 354 75% 35%;
+
+    --sidebar-background: 0 0% 10%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 354 75% 35%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 0 0% 18%;
+    --sidebar-ring: 354 75% 35%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in-out-smooth: cubic-bezier(0.65, 0, 0.35, 1);
+    --duration-fast: 200ms;
+    --duration-normal: 350ms;
+    --duration-slow: 500ms;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      --ease-out-expo: linear;
+      --ease-in-out-smooth: linear;
+      --duration-fast: 0.01ms;
+      --duration-normal: 0.01ms;
+      --duration-slow: 0.01ms;
+    }
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  [dir="rtl"] {
+    font-family: var(--font-arabic), var(--font-sans), system-ui, sans-serif;
+  }
+
+  [dir="ltr"] {
+    font-family: var(--font-sans), system-ui, sans-serif;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.4s var(--ease-out-expo, ease-out) forwards;
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.5s var(--ease-out-expo, ease-out) forwards;
+  }
+
+  .animation-delay-100 { animation-delay: 75ms; }
+  .animation-delay-200 { animation-delay: 150ms; }
+  .animation-delay-300 { animation-delay: 225ms; }
+
+  /* Focus ring for inputs — smooth and visible */
+  .focus-ring-smooth:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    transition: outline-offset var(--duration-fast) var(--ease-in-out-smooth);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-muted-foreground/20 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-muted-foreground/30;
+}
