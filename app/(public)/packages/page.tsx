@@ -1,4 +1,4 @@
-import { getTourPackages } from '@/lib/db'
+import { getTourPackages, getPackageCategories, getLocations } from '@/lib/db'
 import { PackagesPageClient } from './page-client'
 
 export const metadata = {
@@ -7,6 +7,16 @@ export const metadata = {
 }
 
 export default async function PackagesPage() {
-  const packages = await getTourPackages()
-  return <PackagesPageClient packages={packages} />
+  const [packages, categories, locations] = await Promise.all([
+    getTourPackages(),
+    getPackageCategories(),
+    getLocations(),
+  ])
+  return (
+    <PackagesPageClient
+      packages={packages}
+      categories={categories}
+      locations={locations}
+    />
+  )
 }

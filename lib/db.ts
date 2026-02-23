@@ -23,17 +23,42 @@ export interface Hotel {
   updated_at: Date
 }
 
+export interface PackageCategory {
+  id: string
+  name_en: string
+  name_ar: string
+  sort_order: number
+  image_url: string | null
+}
+
+export interface Location {
+  id: string
+  name_en: string
+  name_ar: string
+  image_url: string | null
+}
+
 export interface TourPackage {
   id: string
+  category_id: string | null
+  location_id: string | null
   name_en: string
   name_ar: string
   description_en: string | null
   description_ar: string | null
+  short_description_en: string | null
+  short_description_ar: string | null
+  location_en: string | null
+  location_ar: string | null
+  location_image_url: string | null
   package_type: string | null
   duration_days: number | null
   price: number | null
   currency: string
   includes: string[]
+  inclusions_ar: string[]
+  exclusions_en: string[]
+  exclusions_ar: string[]
   itinerary: { day: number; title_en: string; title_ar: string }[]
   images: string[]
   featured: boolean
@@ -181,21 +206,32 @@ function mapHotel(row: Awaited<ReturnType<typeof prisma.hotel.findFirst>>): Hote
   }
 }
 
-function mapTourPackage(row: Awaited<ReturnType<typeof prisma.tourPackage.findFirst>>): TourPackage | null {
+function mapTourPackage(row: Awaited<ReturnType<typeof prisma.tourPackage.findFirst>> & { location?: { nameEn: string; nameAr: string; imageUrl: string | null } | null }): TourPackage | null {
   if (!row) return null
   const itinerary = Array.isArray(row.itinerary) ? (row.itinerary as { day: number; title_en: string; title_ar: string }[]) : []
   const images = row.gallery?.length ? row.gallery : row.imageUrl ? [row.imageUrl] : []
+  const loc = row.location
   return {
     id: row.id,
+    category_id: row.categoryId ?? null,
+    location_id: row.locationId ?? null,
     name_en: row.titleEn,
     name_ar: row.titleAr,
     description_en: row.descriptionEn,
     description_ar: row.descriptionAr,
+    short_description_en: row.shortDescriptionEn ?? null,
+    short_description_ar: row.shortDescriptionAr ?? null,
+    location_en: loc?.nameEn ?? null,
+    location_ar: loc?.nameAr ?? null,
+    location_image_url: loc?.imageUrl ?? null,
     package_type: row.packageType,
     duration_days: row.durationDays,
     price: toNum(row.price),
     currency: row.currency,
     includes: row.inclusionsEn ?? [],
+    inclusions_ar: row.inclusionsAr ?? [],
+    exclusions_en: row.exclusionsEn ?? [],
+    exclusions_ar: row.exclusionsAr ?? [],
     itinerary,
     images,
     featured: row.isFeatured,
@@ -299,14 +335,58 @@ export async function getTourPackages(featured?: boolean): Promise<TourPackage[]
     const list = await prisma.tourPackage.findMany({
       where: { isActive: true, ...(featured ? { isFeatured: true } : {}) },
       orderBy: { createdAt: 'desc' },
+      include: { location: true },
     })
     return list.map((row) => mapTourPackage(row)!).filter(Boolean)
   }, [])
 }
 
 export async function getTourPackageById(id: string): Promise<TourPackage | undefined> {
-  const row = await prisma.tourPackage.findUnique({ where: { id } }).catch(() => null)
-  return mapTourPackage(row) ?? undefined
+  const row = await prisma.tourPackage.findUnique({
+    where: { id },
+    include: { location: true },
+  }).catch(() => null)
+  return (row ? mapTourPackage(row) : null) ?? undefined
+}
+
+export async function getPackageCategories(): Promise<PackageCategory[]> {
+  return safeDb(async () => {
+    const list = await prisma.packageCategory.findMany({
+      orderBy: [{ sortOrder: 'asc' }, { createdAt: 'asc' }],
+      include: {
+        tourPackages: {
+          where: { isActive: true },
+          take: 1,
+          orderBy: { createdAt: 'desc' },
+          select: { imageUrl: true, gallery: true },
+        },
+      },
+    })
+    return list.map((row) => ({
+      id: row.id,
+      name_en: row.nameEn,
+      name_ar: row.nameAr,
+      sort_order: row.sortOrder,
+      image_url:
+        row.tourPackages?.[0]?.gallery?.[0] ??
+        row.tourPackages?.[0]?.imageUrl ??
+        null,
+    }))
+  }, [])
+}
+
+export async function getLocations(): Promise<Location[]> {
+  return safeDb(async () => {
+    const list = await prisma.location.findMany({
+      orderBy: { createdAt: 'asc' },
+    })
+    return list.map((row) => ({
+      id: row.id,
+      name_en: row.nameEn,
+      name_ar: row.nameAr,
+      image_url: row.imageUrl ?? null,
+    }))
+  }, [])
 }
 
 export async function getEvents(): Promise<Event[]> {
