@@ -4,16 +4,13 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import {
   LayoutDashboard,
-  Settings,
   Hotel,
   Package,
-  FolderTree,
   Calendar,
   Bus,
+  Stamp,
   FileText,
   MessageSquare,
-  Inbox,
-  BookOpen,
   LogOut,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -28,19 +25,24 @@ import type { AdminUserSession } from '@/lib/auth'
 
 const nav = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/admin/settings', label: 'Site Settings', icon: Settings },
   { href: '/admin/hotels', label: 'Hotels', icon: Hotel },
   { href: '/admin/packages', label: 'Packages', icon: Package },
-  { href: '/admin/categories', label: 'Package Categories', icon: FolderTree },
   { href: '/admin/events', label: 'Events', icon: Calendar },
   { href: '/admin/transportation', label: 'Transportation', icon: Bus },
+  { href: '/admin/visas', label: 'Visas', icon: Stamp },
   { href: '/admin/blog', label: 'Blog', icon: FileText },
   { href: '/admin/testimonials', label: 'Testimonials', icon: MessageSquare },
-  { href: '/admin/inquiries', label: 'Inquiries', icon: Inbox },
-  { href: '/admin/bookings', label: 'Bookings', icon: BookOpen },
 ]
 
-export function AdminSidebar({ user }: { user: AdminUserSession }) {
+export function AdminSidebar({
+  user,
+  className,
+  onNavigate,
+}: {
+  user: AdminUserSession
+  className?: string
+  onNavigate?: () => void
+}) {
   const pathname = usePathname()
   const router = useRouter()
 
@@ -51,18 +53,26 @@ export function AdminSidebar({ user }: { user: AdminUserSession }) {
   }
 
   return (
-    <aside className="flex w-56 flex-col border-r border-border bg-card">
-      <div className="flex h-14 items-center gap-2 border-b border-border px-4">
+    <aside
+      className={cn(
+        'flex w-56 flex-col border-r border-border bg-card overflow-y-auto',
+        className,
+      )}
+    >
+      <div className="flex h-14 shrink-0 items-center gap-2 border-b border-border px-4">
         <span className="font-semibold text-foreground">Admin</span>
       </div>
-      <nav className="flex-1 space-y-0.5 p-2">
+      <nav className="flex-1 space-y-0.5 p-2 min-h-0">
         {nav.map((item) => {
           const Icon = item.icon
-          const active = pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href))
+          const active =
+            pathname === item.href ||
+            (item.href !== '/admin' && pathname.startsWith(item.href))
           return (
             <Link
               key={item.href}
               href={item.href}
+              onClick={onNavigate}
               className={cn(
                 'flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors',
                 active
@@ -76,14 +86,16 @@ export function AdminSidebar({ user }: { user: AdminUserSession }) {
           )
         })}
       </nav>
-      <div className="border-t border-border p-2">
+      <div className="shrink-0 border-t border-border p-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
               className="w-full justify-start gap-2 text-muted-foreground"
             >
-              <span className="truncate text-left text-sm">{user.name || user.email}</span>
+              <span className="truncate text-left text-sm">
+                {user.name || user.email}
+              </span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">

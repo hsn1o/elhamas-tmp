@@ -22,11 +22,14 @@ function WhatsAppIcon({ className }: { className?: string }) {
 
 const navLinks = [
   { href: "/", key: "nav.home" },
-  { href: "/#destinations", key: "nav.services" },
-  { href: "/#packages", key: "nav.packages" },
-  { href: "/#blog", key: "nav.blog" },
-  { href: "/#about", key: "nav.about" },
-  { href: "/#contact", key: "nav.contact" },
+  { href: "/services", key: "nav.services" },
+  { href: "/packages", key: "nav.packages" },
+  { href: "/hotels", key: "nav.hotels" },
+  { href: "/transportation", key: "nav.transportation" },
+  { href: "/visas", key: "nav.visas" },
+  { href: "/blog", key: "nav.blog" },
+  { href: "/about", key: "nav.about" },
+  { href: "/contact", key: "nav.contact" },
 ]
 
 export function Header() {

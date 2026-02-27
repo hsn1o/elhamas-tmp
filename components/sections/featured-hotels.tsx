@@ -48,8 +48,10 @@ export function FeaturedHotelsSection({ hotels }: FeaturedHotelsProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {hotels.map((hotel, index) => {
             const name = getLocalizedContent(hotel, 'name', locale)
-            const location = getLocalizedContent(hotel, 'location', locale)
-            const amenities = hotel.amenities || []
+            const location = locale === 'ar' ? hotel.city_ar || hotel.city : hotel.city
+            const amenitiesEn = hotel.amenities || []
+            const amenitiesAr = hotel.amenities_ar || []
+            const amenities = amenitiesEn.map((_, i) => (locale === 'ar' && amenitiesAr[i] ? amenitiesAr[i] : amenitiesEn[i])).filter(Boolean)
             
             return (
               <div
@@ -73,10 +75,10 @@ export function FeaturedHotelsSection({ hotels }: FeaturedHotelsProps) {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                   
-                  {/* City Badge */}
+                  {/* Location Badge */}
                   <div className="absolute top-4 left-4">
                     <Badge variant="secondary" className="bg-white/90 text-foreground">
-                      {hotel.city}
+                      {location}
                     </Badge>
                   </div>
                   

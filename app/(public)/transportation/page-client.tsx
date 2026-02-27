@@ -1,20 +1,81 @@
 'use client'
 
+import { useMemo, useState } from 'react'
 import Link from 'next/link'
-import { Users, Check, Car } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+import { MapPin, Car } from 'lucide-react'
 import { PageHeader } from '@/components/page-header'
+import { SearchSortBar } from '@/components/search-sort-bar'
 import { useI18n, getLocalizedContent } from '@/lib/i18n'
 import type { Transportation } from '@/lib/db'
 import { cn } from '@/lib/utils'
 
+const TRANSPORT_SORT_DEFAULT = 'priceAsc'
+
 interface TransportationPageClientProps {
-  transportation: Transportation[]
+  items: Transportation[]
 }
 
-export function TransportationPageClient({ transportation }: TransportationPageClientProps) {
-  const { t, locale, isRTL } = useI18n()
+function getPriceForSort(item: Transportation): number {
+  const p = item.price_per_trip ?? item.price_per_day
+  return p != null ? Number(p) : 0
+}
+
+export function TransportationPageClient({ items }: TransportationPageClientProps) {
+  const { t, locale } = useI18n()
+  const [searchQuery, setSearchQuery] = useState('')
+  const [sortBy, setSortBy] = useState(TRANSPORT_SORT_DEFAULT)
+
+  const displayedItems = useMemo(() => {
+    let list = items
+    const q = searchQuery.trim().toLowerCase()
+    if (q) {
+      list = list.filter((item) => {
+        const nameEn = item.name_en ?? ''
+        const nameAr = item.name_ar ?? ''
+        const descEn = item.description_en ?? ''
+        const descAr = item.description_ar ?? ''
+        const vehicleEn = item.vehicle_type ?? ''
+        const vehicleAr = item.vehicle_type_ar ?? ''
+        const locEn = item.location_en ?? ''
+        const locAr = item.location_ar ?? ''
+        const capacity = (item.capacity ?? '').toString()
+        const priceTrip = (item.price_per_trip ?? '').toString()
+        const priceDay = (item.price_per_day ?? '').toString()
+        const features = [...(item.features ?? []), ...(item.features_ar ?? [])].join(' ')
+        const searchable = [nameEn, nameAr, descEn, descAr, vehicleEn, vehicleAr, locEn, locAr, capacity, priceTrip, priceDay, features]
+          .join(' ')
+          .toLowerCase()
+        return searchable.includes(q)
+      })
+    }
+    const sorted = [...list]
+    if (sortBy === 'priceAsc')
+      sorted.sort((a, b) => getPriceForSort(a) - getPriceForSort(b))
+    else if (sortBy === 'priceDesc')
+      sorted.sort((a, b) => getPriceForSort(b) - getPriceForSort(a))
+    else if (sortBy === 'nameAsc')
+      sorted.sort((a, b) =>
+        (locale === 'ar' ? a.name_ar : a.name_en).localeCompare(locale === 'ar' ? b.name_ar : b.name_en)
+      )
+    else if (sortBy === 'nameDesc')
+      sorted.sort((a, b) =>
+        (locale === 'ar' ? b.name_ar : b.name_en).localeCompare(locale === 'ar' ? a.name_ar : a.name_en)
+      )
+    else if (sortBy === 'capacityAsc')
+      sorted.sort((a, b) => (a.capacity ?? 0) - (b.capacity ?? 0))
+    else if (sortBy === 'capacityDesc')
+      sorted.sort((a, b) => (b.capacity ?? 0) - (a.capacity ?? 0))
+    return sorted
+  }, [items, searchQuery, sortBy, locale])
+
+  const displayPrice = (item: Transportation) => {
+    const p = item.price_per_trip ?? item.price_per_day
+    if (p == null) return null
+    return `${item.currency} ${Number(p).toLocaleString()}`
+  }
+
+  const location = (item: Transportation) =>
+    locale === 'ar' ? (item.location_ar || item.location_en) : (item.location_en || item.location_ar)
 
   return (
     <>
@@ -23,112 +84,109 @@ export function TransportationPageClient({ transportation }: TransportationPageC
         subtitle={t('transport.subtitle')}
       />
 
-      <section className="py-16">
+      <section className="py-12">
         <div className="container mx-auto px-4">
-          {/* Transportation Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {transportation.map((vehicle, index) => {
-              const name = getLocalizedContent(vehicle, 'name', locale)
-              const description = getLocalizedContent(vehicle, 'description', locale)
-              const features = vehicle.features || []
-              
+          <SearchSortBar
+            searchValue={searchQuery}
+            onSearchChange={setSearchQuery}
+            searchPlaceholder={t('transport.searchPlaceholder')}
+            sortValue={sortBy}
+            onSortChange={setSortBy}
+            sortLabel={t('list.sortBy')}
+            sortOptions={[
+              { value: 'priceAsc', label: t('list.sort.priceAsc') },
+              { value: 'priceDesc', label: t('list.sort.priceDesc') },
+              { value: 'nameAsc', label: t('list.sort.nameAsc') },
+              { value: 'nameDesc', label: t('list.sort.nameDesc') },
+              { value: 'capacityAsc', label: t('list.sort.capacityAsc') },
+              { value: 'capacityDesc', label: t('list.sort.capacityDesc') },
+            ]}
+            isRTL={locale === 'ar'}
+            className="mb-6"
+          />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {displayedItems.map((item, index) => {
+              const name = getLocalizedContent(
+                item as unknown as Record<string, unknown>,
+                'name',
+                locale,
+              )
+              const priceStr = displayPrice(item)
+              const loc = location(item)
+
               return (
-                <div
-                  key={vehicle.id}
+                <article
+                  key={item.id}
                   className={cn(
-                    "group relative rounded-2xl bg-card border border-border/50 overflow-hidden",
-                    "hover:border-primary/30 hover:shadow-2xl transition-all duration-500",
-                    "animate-fade-in-up"
+                    'group flex flex-col h-full rounded-2xl bg-card border border-border overflow-hidden',
+                    'hover:border-primary/30 hover:shadow-xl transition-all duration-300',
+                    'animate-fade-in-up',
                   )}
-                  style={{ animationDelay: `${index * 50}ms` }}
+                  style={{ animationDelay: `${Math.min(index * 50, 300)}ms` }}
                 >
-                  {/* Image */}
-                  <div className="relative h-48 overflow-hidden">
-                    <div 
-                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                      style={{
-                        backgroundImage: vehicle.images?.[0] 
-                          ? `url(${vehicle.images[0]})` 
-                          : 'url(/images/transport-default.jpg)',
-                      }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                    
-                    {/* Vehicle Type Badge */}
-                    <div className="absolute top-4 left-4">
-                      <Badge variant="secondary" className="bg-white/90 text-foreground">
-                        <Car className="w-3 h-3 mr-1" />
-                        {vehicle.vehicle_type}
-                      </Badge>
+                  <Link href={`/transportation/${item.id}`} className="flex flex-col h-full">
+                    <div className="relative w-full aspect-[16/10] shrink-0 overflow-hidden bg-muted">
+                      <div
+                        className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+                        style={{
+                          backgroundImage: item.images?.[0]
+                            ? `url(${item.images[0]})`
+                            : 'linear-gradient(135deg, #751f27 0%, #4a1c20 100%)',
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                     </div>
-                    
-                    {/* Capacity */}
-                    <div className="absolute bottom-4 left-4 flex items-center gap-2 text-white">
-                      <Users className="w-4 h-4" />
-                      <span className="text-sm font-medium">
-                        {vehicle.capacity} {t('common.guests')}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-6">
-                    <h3 className="text-xl font-semibold text-foreground mb-2">
-                      {name}
-                    </h3>
-                    
-                    <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
-                      {description}
-                    </p>
-
-                    {/* Features */}
-                    {features.length > 0 && (
-                      <div className="mb-6">
-                        <h4 className="text-sm font-medium text-foreground mb-3">
-                          {t('transport.features')}:
-                        </h4>
-                        <ul className="space-y-2">
-                          {features.slice(0, 4).map((feature, i) => (
-                            <li key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
-                              <Check className="w-4 h-4 text-primary shrink-0" />
-                              <span>{feature}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-
-                    {/* Prices */}
-                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border mb-4">
-                      <div>
-                        <span className="text-xs text-muted-foreground">{t('transport.perTrip')}</span>
-                        <div className="text-lg font-bold text-primary">
-                          {vehicle.currency} {vehicle.price_per_trip?.toLocaleString()}
-                        </div>
-                      </div>
-                      <div>
-                        <span className="text-xs text-muted-foreground">{t('transport.perDay')}</span>
-                        <div className="text-lg font-bold text-primary">
-                          {vehicle.currency} {vehicle.price_per_day?.toLocaleString()}
-                        </div>
+                    <div className="flex-1 flex flex-col p-6 min-w-0">
+                      <h3 className="text-lg font-semibold text-foreground mb-3 line-clamp-2">
+                        {name}
+                      </h3>
+                      {loc && (
+                        <p className="flex items-center gap-1.5 text-sm text-muted-foreground mb-2">
+                          <MapPin className="w-4 h-4 shrink-0 text-primary" />
+                          <span>{loc}</span>
+                        </p>
+                      )}
+                      <p className="flex items-center gap-1.5 text-sm text-muted-foreground mb-4">
+                        <Car className="w-4 h-4 shrink-0 text-primary" />
+                        <span>
+                          {item.capacity} {t('transport.seats')}
+                        </span>
+                      </p>
+                      <div className="mt-auto pt-4 border-t border-border flex items-center justify-between gap-4">
+                        {priceStr && (
+                          <div className="min-w-0">
+                            <span className="text-xl font-bold text-primary">
+                              {priceStr}
+                            </span>
+                            <span className="text-sm text-muted-foreground block">
+                              {item.price_per_trip != null
+                                ? t('transport.perTrip')
+                                : t('transport.perDay')}
+                            </span>
+                          </div>
+                        )}
+                        <span
+                          className={cn(
+                            'shrink-0 px-4 py-2 rounded-md text-sm font-medium',
+                            'bg-primary text-primary-foreground',
+                            'group-hover:bg-primary/90 transition-colors',
+                          )}
+                        >
+                          {t('common.bookNow')}
+                        </span>
                       </div>
                     </div>
-
-                    <Button asChild className="w-full">
-                      <Link href="/contact">
-                        {t('common.bookNow')}
-                      </Link>
-                    </Button>
-                  </div>
-                </div>
+                  </Link>
+                </article>
               )
             })}
           </div>
 
-          {transportation.length === 0 && (
-            <div className="text-center py-16">
+          {displayedItems.length === 0 && (
+            <div className="text-center py-16 rounded-2xl border border-dashed border-border">
               <p className="text-muted-foreground">
-                {locale === 'ar' ? 'لا توجد وسائل نقل متاحة حالياً' : 'No transportation available at the moment'}
+                {locale === 'ar' ? 'لا توجد خدمات نقل تطابق البحث' : 'No transportation services match your search.'}
               </p>
             </div>
           )}

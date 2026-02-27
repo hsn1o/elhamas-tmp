@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,7 +20,16 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Plus, Trash2, ChevronLeft, ChevronRight, Check } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Plus, Trash2, ChevronLeft, ChevronRight, Check, Upload } from "lucide-react";
 import { MarkdownField } from "./MarkdownField";
 import { cn } from "@/lib/utils";
 
@@ -38,7 +47,10 @@ function validateStep(step: number, form: typeof defaultValues): string | null {
     case 1:
       if (!form.titleEn.trim()) return "Title (English) is required";
       if (!form.titleAr.trim()) return "Title (Arabic) is required";
-      const pType = form.packageType === "custom" ? form.packageTypeCustom.trim() : form.packageType;
+      const pType =
+        form.packageType === "custom"
+          ? form.packageTypeCustom.trim()
+          : form.packageType;
       if (!pType) return "Package type is required (or enter custom text)";
       if (!form.durationDays || form.durationDays < 1)
         return "Duration must be at least 1 day";
@@ -79,9 +91,9 @@ function validateStep(step: number, form: typeof defaultValues): string | null {
       return null;
     }
     case 6:
-      if (!form.imageUrl.trim()) return "Featured image URL is required";
+      if (!form.imageUrl.trim()) return "Featured image is required (upload an image)";
       if (!form.gallery.filter(Boolean).length)
-        return "At least one gallery URL is required";
+        return "At least one gallery image is required (upload images)";
       return null;
     default:
       return null;
@@ -203,6 +215,281 @@ function ArrayField({
   );
 }
 
+const ACCEPT_IMAGES = "image/jpeg,image/png,image/webp,image/gif";
+
+async function uploadFile(file: File): Promise<string> {
+  const formData = new FormData();
+  formData.append("file", file);
+  const res = await fetch("/api/admin/upload", {
+    method: "POST",
+    credentials: "include",
+    body: formData,
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || "Upload failed");
+  if (!data.url) throw new Error("No URL returned");
+  return data.url;
+}
+
+function FeaturedImageUpload({
+  value,
+  onChange,
+  disabled,
+}: {
+  value: string;
+  onChange: (url: string) => void;
+  disabled?: boolean;
+}) {
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    setUploadError("");
+    setUploading(true);
+    try {
+      const url = await uploadFile(file);
+      onChange(url);
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      <Label>Featured image *</Label>
+      {value ? (
+        <div className="flex items-start gap-3">
+          <div className="relative w-32 h-32 rounded-lg border overflow-hidden bg-muted shrink-0">
+            <img src={value} alt="Featured" className="w-full h-full object-cover" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={disabled || uploading}
+              onClick={() => document.getElementById("featured-upload")?.click()}
+            >
+              <Upload className="h-4 w-4 mr-2" />
+              {uploading ? "Uploading…" : "Replace"}
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              disabled={disabled}
+              onClick={() => onChange("")}
+            >
+              Remove
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div>
+          <input
+            id="featured-upload"
+            type="file"
+            accept={ACCEPT_IMAGES}
+            className="hidden"
+            disabled={disabled || uploading}
+            onChange={handleFile}
+          />
+          <Button
+            type="button"
+            variant="outline"
+            disabled={disabled || uploading}
+            onClick={() => document.getElementById("featured-upload")?.click()}
+          >
+            <Upload className="h-4 w-4 mr-2" />
+            {uploading ? "Uploading…" : "Upload featured image"}
+          </Button>
+        </div>
+      )}
+      {uploadError && <p className="text-sm text-destructive">{uploadError}</p>}
+    </div>
+  );
+}
+
+function GalleryUpload({
+  urls,
+  onChange,
+  disabled,
+}: {
+  urls: string[];
+  onChange: (urls: string[]) => void;
+  disabled?: boolean;
+}) {
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target;
+    const fileArray = input.files ? Array.from(input.files) : [];
+    input.value = "";
+    if (!fileArray.length) return;
+    setUploadError("");
+    setUploading(true);
+    try {
+      const added: string[] = [];
+      for (const file of fileArray) {
+        const url = await uploadFile(file);
+        added.push(url);
+      }
+      onChange([...urls, ...added]);
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const remove = (index: number) => {
+    onChange(urls.filter((_, i) => i !== index));
+  };
+
+  return (
+    <div className="space-y-2">
+      <Label>Gallery images *</Label>
+      <div className="flex flex-wrap gap-3">
+        {urls.map((url, i) => (
+          <div key={i} className="relative group">
+            <div className="w-24 h-24 rounded-lg border overflow-hidden bg-muted">
+              <img src={url} alt={`Gallery ${i + 1}`} className="w-full h-full object-cover" />
+            </div>
+            <Button
+              type="button"
+              variant="destructive"
+              size="icon"
+              className="absolute top-1 right-1 h-6 w-6 opacity-90"
+              disabled={disabled}
+              onClick={() => remove(i)}
+            >
+              <Trash2 className="h-3 w-3" />
+            </Button>
+          </div>
+        ))}
+        <div>
+          <input
+            ref={inputRef}
+            type="file"
+            accept={ACCEPT_IMAGES}
+            multiple
+            className="hidden"
+            disabled={disabled || uploading}
+            onChange={handleFiles}
+          />
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            className="w-24 h-24"
+            disabled={disabled || uploading}
+            onClick={() => inputRef.current?.click()}
+          >
+            <Plus className="h-6 w-6" />
+          </Button>
+        </div>
+      </div>
+      {uploadError && <p className="text-sm text-destructive">{uploadError}</p>}
+      {urls.length === 0 && (
+        <p className="text-sm text-muted-foreground">Upload at least one image.</p>
+      )}
+    </div>
+  );
+}
+
+function LocationImageUpload({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (url: string) => void;
+}) {
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    setUploadError("");
+    setUploading(true);
+    try {
+      const url = await uploadFile(file);
+      onChange(url);
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-2 mb-2">
+      <p className="text-xs font-medium text-muted-foreground">Image (optional)</p>
+      {value ? (
+        <div className="flex items-center gap-2">
+          <div className="w-16 h-16 rounded border overflow-hidden bg-muted shrink-0">
+            <img src={value} alt="Location" className="w-full h-full object-cover" />
+          </div>
+          <div className="flex flex-col gap-1">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="h-8 text-xs"
+              disabled={uploading}
+              onClick={() => inputRef.current?.click()}
+            >
+              <Upload className="h-3 w-3 mr-1" />
+              {uploading ? "…" : "Replace"}
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-8 text-xs"
+              onClick={() => onChange("")}
+            >
+              Remove
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div>
+          <input
+            ref={inputRef}
+            type="file"
+            accept={ACCEPT_IMAGES}
+            className="hidden"
+            disabled={uploading}
+            onChange={handleFile}
+          />
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="w-full"
+            disabled={uploading}
+            onClick={() => inputRef.current?.click()}
+          >
+            <Upload className="h-4 w-4 mr-2" />
+            {uploading ? "Uploading…" : "Upload from device"}
+          </Button>
+        </div>
+      )}
+      {uploadError && <p className="text-xs text-destructive">{uploadError}</p>}
+    </div>
+  );
+}
+
 export function TourPackageForm({
   pkg,
   onSuccess,
@@ -218,19 +505,29 @@ export function TourPackageForm({
   const [error, setError] = useState("");
   const [step, setStep] = useState(1);
   const [form, setForm] = useState(defaultValues);
-  const [categories, setCategories] = useState<{ id: string; nameEn: string; nameAr: string }[]>([]);
+  const [categories, setCategories] = useState<
+    { id: string; nameEn: string; nameAr: string }[]
+  >([]);
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [newCatEn, setNewCatEn] = useState("");
   const [newCatAr, setNewCatAr] = useState("");
   const [createCategoryLoading, setCreateCategoryLoading] = useState(false);
   const [createCategoryError, setCreateCategoryError] = useState("");
-  const [locations, setLocations] = useState<{ id: string; nameEn: string; nameAr: string; imageUrl: string | null }[]>([]);
+  const [categoryDeleteId, setCategoryDeleteId] = useState<string | null>(null);
+  const [categoryDeleteLoading, setCategoryDeleteLoading] = useState(false);
+  const [categorySavingId, setCategorySavingId] = useState<string | null>(null);
+  const [locations, setLocations] = useState<
+    { id: string; nameEn: string; nameAr: string; imageUrl: string | null }[]
+  >([]);
   const [locationOpen, setLocationOpen] = useState(false);
   const [newLocEn, setNewLocEn] = useState("");
   const [newLocAr, setNewLocAr] = useState("");
   const [newLocImageUrl, setNewLocImageUrl] = useState("");
   const [createLocationLoading, setCreateLocationLoading] = useState(false);
   const [createLocationError, setCreateLocationError] = useState("");
+  const [locationDeleteId, setLocationDeleteId] = useState<string | null>(null);
+  const [locationDeleteLoading, setLocationDeleteLoading] = useState(false);
+  const [locationSavingId, setLocationSavingId] = useState<string | null>(null);
 
   async function handleCreateCategory() {
     if (!newCatEn.trim() || !newCatAr.trim()) return;
@@ -241,7 +538,10 @@ export function TourPackageForm({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ nameEn: newCatEn.trim(), nameAr: newCatAr.trim() }),
+        body: JSON.stringify({
+          nameEn: newCatEn.trim(),
+          nameAr: newCatAr.trim(),
+        }),
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok && data.id) {
@@ -261,15 +561,74 @@ export function TourPackageForm({
     }
   }
 
+  async function refetchCategories() {
+    try {
+      const res = await fetch("/api/admin/categories");
+      if (res.ok) {
+        const data = await res.json();
+        setCategories(Array.isArray(data) ? data : []);
+      }
+    } catch {
+      // keep current list
+    }
+  }
+
+  async function handleUpdateCategory(
+    id: string,
+    nameEn: string,
+    nameAr: string,
+  ) {
+    if (!nameEn.trim() || !nameAr.trim()) return;
+    setCategorySavingId(id);
+    try {
+      const res = await fetch(`/api/admin/categories/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ nameEn: nameEn.trim(), nameAr: nameAr.trim() }),
+      });
+      if (res.ok) {
+        setCategories((prev) =>
+          prev.map((c) =>
+            c.id === id
+              ? { ...c, nameEn: nameEn.trim(), nameAr: nameAr.trim() }
+              : c,
+          ),
+        );
+      }
+    } finally {
+      setCategorySavingId(null);
+    }
+  }
+
+  async function handleDeleteCategory(id: string) {
+    setCategoryDeleteLoading(true);
+    try {
+      const res = await fetch(`/api/admin/categories/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (res.ok) {
+        await refetchCategories();
+        if (form.categoryId === id) {
+          setForm((f) => ({ ...f, categoryId: null }));
+        }
+        setCategoryDeleteId(null);
+      }
+    } finally {
+      setCategoryDeleteLoading(false);
+    }
+  }
+
   useEffect(() => {
     fetch("/api/admin/categories")
-      .then((r) => r.ok ? r.json() : [])
+      .then((r) => (r.ok ? r.json() : []))
       .then(setCategories)
       .catch(() => setCategories([]));
   }, []);
   useEffect(() => {
     fetch("/api/admin/locations")
-      .then((r) => r.ok ? r.json() : [])
+      .then((r) => (r.ok ? r.json() : []))
       .then(setLocations)
       .catch(() => setLocations([]));
   }, []);
@@ -308,6 +667,65 @@ export function TourPackageForm({
     }
   }
 
+  async function refetchLocations() {
+    try {
+      const res = await fetch("/api/admin/locations");
+      if (res.ok) {
+        const data = await res.json();
+        setLocations(Array.isArray(data) ? data : []);
+      }
+    } catch {
+      // keep current list
+    }
+  }
+
+  async function handleUpdateLocation(
+    id: string,
+    nameEn: string,
+    nameAr: string,
+  ) {
+    if (!nameEn.trim() || !nameAr.trim()) return;
+    setLocationSavingId(id);
+    try {
+      const res = await fetch(`/api/admin/locations/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ nameEn: nameEn.trim(), nameAr: nameAr.trim() }),
+      });
+      if (res.ok) {
+        setLocations((prev) =>
+          prev.map((l) =>
+            l.id === id
+              ? { ...l, nameEn: nameEn.trim(), nameAr: nameAr.trim() }
+              : l,
+          ),
+        );
+      }
+    } finally {
+      setLocationSavingId(null);
+    }
+  }
+
+  async function handleDeleteLocation(id: string) {
+    setLocationDeleteLoading(true);
+    try {
+      const res = await fetch(`/api/admin/locations/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (res.ok) {
+        await refetchLocations();
+        if (form.locationId === id) {
+          setForm((f) => ({ ...f, locationId: null }));
+        }
+        setLocationDeleteId(null);
+      }
+    } finally {
+      setLocationDeleteLoading(false);
+    }
+  }
+
   useEffect(() => {
     if (pkg) {
       const it = Array.isArray(pkg.itinerary)
@@ -332,10 +750,14 @@ export function TourPackageForm({
         shortDescriptionEn: pkg.shortDescriptionEn ?? "",
         shortDescriptionAr: pkg.shortDescriptionAr ?? "",
         locationId: pkg.locationId ?? null,
-        packageType: PACKAGE_TYPE_OPTIONS.includes(pkg.packageType as typeof PACKAGE_TYPE_OPTIONS[number])
+        packageType: PACKAGE_TYPE_OPTIONS.includes(
+          pkg.packageType as (typeof PACKAGE_TYPE_OPTIONS)[number],
+        )
           ? pkg.packageType
           : "custom",
-        packageTypeCustom: PACKAGE_TYPE_OPTIONS.includes(pkg.packageType as typeof PACKAGE_TYPE_OPTIONS[number])
+        packageTypeCustom: PACKAGE_TYPE_OPTIONS.includes(
+          pkg.packageType as (typeof PACKAGE_TYPE_OPTIONS)[number],
+        )
           ? ""
           : (pkg.packageType ?? ""),
         durationDays: pkg.durationDays ?? 7,
@@ -408,9 +830,10 @@ export function TourPackageForm({
         shortDescriptionEn: form.shortDescriptionEn.trim() || null,
         shortDescriptionAr: form.shortDescriptionAr.trim() || null,
         locationId: form.locationId?.trim() || null,
-        packageType: form.packageType === "custom"
-          ? form.packageTypeCustom.trim() || "custom"
-          : form.packageType,
+        packageType:
+          form.packageType === "custom"
+            ? form.packageTypeCustom.trim() || "custom"
+            : form.packageType,
         durationDays: Number(form.durationDays) || 7,
         price: parseFloat(form.price) || 0,
         currency: form.currency,
@@ -453,6 +876,7 @@ export function TourPackageForm({
   // Create mode: Stepper
   if (!isEdit) {
     return (
+      <>
       <form onSubmit={handleSubmit} className="space-y-6">
         {error && (
           <p className="text-sm text-destructive" role="alert">
@@ -519,7 +943,13 @@ export function TourPackageForm({
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label>Category</Label>
-                <Popover open={categoryOpen} onOpenChange={(open) => { setCategoryOpen(open); if (!open) setCreateCategoryError(""); }}>
+                <Popover
+                  open={categoryOpen}
+                  onOpenChange={(open) => {
+                    setCategoryOpen(open);
+                    if (!open) setCreateCategoryError("");
+                  }}
+                >
                   <PopoverTrigger asChild>
                     <Button
                       type="button"
@@ -527,11 +957,12 @@ export function TourPackageForm({
                       className="w-full justify-start font-normal"
                     >
                       {form.categoryId
-                        ? categories.find((c) => c.id === form.categoryId)?.nameEn ?? "Select category"
+                        ? (categories.find((c) => c.id === form.categoryId)
+                            ?.nameEn ?? "Select category")
                         : "Select or create category"}
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-80" align="start">
+                  <PopoverContent className="w-[420px]" align="start">
                     <div className="space-y-3">
                       <button
                         type="button"
@@ -544,40 +975,116 @@ export function TourPackageForm({
                         No category
                       </button>
                       {categories.map((c) => (
-                        <button
+                        <div
                           key={c.id}
-                          type="button"
-                          className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-muted"
-                          onClick={() => {
-                            setForm((f) => ({ ...f, categoryId: c.id }));
-                            setCategoryOpen(false);
-                          }}
+                          className={cn(
+                            "flex items-center gap-2 rounded-md border p-2",
+                            form.categoryId === c.id
+                              ? "border-primary bg-primary/5"
+                              : "border-border bg-background",
+                          )}
                         >
-                          {c.nameEn} / {c.nameAr}
-                        </button>
+                          <Input
+                            placeholder="Name (EN)"
+                            value={c.nameEn}
+                            onChange={(e) =>
+                              setCategories((prev) =>
+                                prev.map((x) =>
+                                  x.id === c.id
+                                    ? { ...x, nameEn: e.target.value }
+                                    : x,
+                                ),
+                              )
+                            }
+                            onBlur={(e) => {
+                              const v = e.target.value.trim();
+                              if (v && v !== c.nameEn) {
+                                handleUpdateCategory(c.id, v, c.nameAr);
+                              }
+                            }}
+                            className="flex-1 min-w-0 h-8 text-sm"
+                          />
+                          <Input
+                            placeholder="Name (AR)"
+                            value={c.nameAr}
+                            onChange={(e) =>
+                              setCategories((prev) =>
+                                prev.map((x) =>
+                                  x.id === c.id
+                                    ? { ...x, nameAr: e.target.value }
+                                    : x,
+                                ),
+                              )
+                            }
+                            onBlur={(e) => {
+                              const v = e.target.value.trim();
+                              if (v && v !== c.nameAr) {
+                                handleUpdateCategory(c.id, c.nameEn, v);
+                              }
+                            }}
+                            className="flex-1 min-w-0 h-8 text-sm"
+                            dir="rtl"
+                          />
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="h-8 shrink-0"
+                            onClick={() => {
+                              setForm((f) => ({ ...f, categoryId: c.id }));
+                              setCategoryOpen(false);
+                            }}
+                          >
+                            Select
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 shrink-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                            onClick={() => setCategoryDeleteId(c.id)}
+                            disabled={categorySavingId === c.id}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
                       ))}
                       <div className="border-t pt-3">
-                        <p className="text-xs font-medium text-muted-foreground mb-2">Create new</p>
+                        <p className="text-xs font-medium text-muted-foreground mb-2">
+                          Create new
+                        </p>
                         {createCategoryError && (
-                          <p className="text-xs text-destructive mb-2">{createCategoryError}</p>
+                          <p className="text-xs text-destructive mb-2">
+                            {createCategoryError}
+                          </p>
                         )}
                         <Input
                           placeholder="Name (EN)"
                           value={newCatEn}
-                          onChange={(e) => { setNewCatEn(e.target.value); setCreateCategoryError(""); }}
+                          onChange={(e) => {
+                            setNewCatEn(e.target.value);
+                            setCreateCategoryError("");
+                          }}
                           className="mb-2"
                         />
                         <Input
                           placeholder="Name (AR)"
                           value={newCatAr}
-                          onChange={(e) => { setNewCatAr(e.target.value); setCreateCategoryError(""); }}
+                          onChange={(e) => {
+                            setNewCatAr(e.target.value);
+                            setCreateCategoryError("");
+                          }}
                           className="mb-2"
                           dir="rtl"
                         />
                         <Button
                           type="button"
                           size="sm"
-                          disabled={!newCatEn.trim() || !newCatAr.trim() || createCategoryLoading}
+                          disabled={
+                            !newCatEn.trim() ||
+                            !newCatAr.trim() ||
+                            createCategoryLoading
+                          }
                           onClick={handleCreateCategory}
                         >
                           {createCategoryLoading ? "Adding…" : "Add & select"}
@@ -610,7 +1117,10 @@ export function TourPackageForm({
                     placeholder="Enter custom package type (e.g. Family Umrah)"
                     value={form.packageTypeCustom}
                     onChange={(e) =>
-                      setForm((f) => ({ ...f, packageTypeCustom: e.target.value }))
+                      setForm((f) => ({
+                        ...f,
+                        packageTypeCustom: e.target.value,
+                      }))
                     }
                     className="mt-2"
                   />
@@ -619,7 +1129,13 @@ export function TourPackageForm({
             </div>
             <div className="space-y-2">
               <Label>Location</Label>
-              <Popover open={locationOpen} onOpenChange={(open) => { setLocationOpen(open); if (!open) setCreateLocationError(""); }}>
+              <Popover
+                open={locationOpen}
+                onOpenChange={(open) => {
+                  setLocationOpen(open);
+                  if (!open) setCreateLocationError("");
+                }}
+              >
                 <PopoverTrigger asChild>
                   <Button
                     type="button"
@@ -627,11 +1143,12 @@ export function TourPackageForm({
                     className="w-full justify-start font-normal"
                   >
                     {form.locationId
-                      ? locations.find((l) => l.id === form.locationId)?.nameEn ?? "Select location"
+                      ? (locations.find((l) => l.id === form.locationId)
+                          ?.nameEn ?? "Select location")
                       : "Select or create location"}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-80" align="start">
+                <PopoverContent className="w-[420px]" align="start">
                   <div className="space-y-3">
                     <button
                       type="button"
@@ -644,46 +1161,120 @@ export function TourPackageForm({
                       No location
                     </button>
                     {locations.map((l) => (
-                      <button
+                      <div
                         key={l.id}
-                        type="button"
-                        className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-muted"
-                        onClick={() => {
-                          setForm((f) => ({ ...f, locationId: l.id }));
-                          setLocationOpen(false);
-                        }}
+                        className={cn(
+                          "flex items-center gap-2 rounded-md border p-2",
+                          form.locationId === l.id
+                            ? "border-primary bg-primary/5"
+                            : "border-border bg-background",
+                        )}
                       >
-                        {l.nameEn} / {l.nameAr}
-                      </button>
+                        <Input
+                          placeholder="Name (EN)"
+                          value={l.nameEn}
+                          onChange={(e) =>
+                            setLocations((prev) =>
+                              prev.map((x) =>
+                                x.id === l.id
+                                  ? { ...x, nameEn: e.target.value }
+                                  : x,
+                              ),
+                            )
+                          }
+                          onBlur={(e) => {
+                            const v = e.target.value.trim();
+                            if (v && v !== l.nameEn) {
+                              handleUpdateLocation(l.id, v, l.nameAr);
+                            }
+                          }}
+                          className="flex-1 min-w-0 h-8 text-sm"
+                        />
+                        <Input
+                          placeholder="Name (AR)"
+                          value={l.nameAr}
+                          onChange={(e) =>
+                            setLocations((prev) =>
+                              prev.map((x) =>
+                                x.id === l.id
+                                  ? { ...x, nameAr: e.target.value }
+                                  : x,
+                              ),
+                            )
+                          }
+                          onBlur={(e) => {
+                            const v = e.target.value.trim();
+                            if (v && v !== l.nameAr) {
+                              handleUpdateLocation(l.id, l.nameEn, v);
+                            }
+                          }}
+                          className="flex-1 min-w-0 h-8 text-sm"
+                          dir="rtl"
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="h-8 shrink-0"
+                          onClick={() => {
+                            setForm((f) => ({ ...f, locationId: l.id }));
+                            setLocationOpen(false);
+                          }}
+                        >
+                          Select
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 shrink-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                          onClick={() => setLocationDeleteId(l.id)}
+                          disabled={locationSavingId === l.id}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     ))}
                     <div className="border-t pt-3">
-                      <p className="text-xs font-medium text-muted-foreground mb-2">Create new</p>
+                      <p className="text-xs font-medium text-muted-foreground mb-2">
+                        Create new
+                      </p>
                       {createLocationError && (
-                        <p className="text-xs text-destructive mb-2">{createLocationError}</p>
+                        <p className="text-xs text-destructive mb-2">
+                          {createLocationError}
+                        </p>
                       )}
                       <Input
                         placeholder="Name (EN)"
                         value={newLocEn}
-                        onChange={(e) => { setNewLocEn(e.target.value); setCreateLocationError(""); }}
+                        onChange={(e) => {
+                          setNewLocEn(e.target.value);
+                          setCreateLocationError("");
+                        }}
                         className="mb-2"
                       />
                       <Input
                         placeholder="Name (AR)"
                         value={newLocAr}
-                        onChange={(e) => { setNewLocAr(e.target.value); setCreateLocationError(""); }}
+                        onChange={(e) => {
+                          setNewLocAr(e.target.value);
+                          setCreateLocationError("");
+                        }}
                         className="mb-2"
                         dir="rtl"
                       />
-                      <Input
-                        placeholder="Image URL (optional)"
+                      <LocationImageUpload
                         value={newLocImageUrl}
-                        onChange={(e) => setNewLocImageUrl(e.target.value)}
-                        className="mb-2"
+                        onChange={setNewLocImageUrl}
                       />
                       <Button
                         type="button"
                         size="sm"
-                        disabled={!newLocEn.trim() || !newLocAr.trim() || createLocationLoading}
+                        disabled={
+                          !newLocEn.trim() ||
+                          !newLocAr.trim() ||
+                          createLocationLoading
+                        }
                         onClick={handleCreateLocation}
                       >
                         {createLocationLoading ? "Adding…" : "Add & select"}
@@ -919,23 +1510,13 @@ export function TourPackageForm({
 
         {step === 6 && (
           <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="imageUrl">Featured image URL *</Label>
-              <Input
-                id="imageUrl"
-                value={form.imageUrl}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, imageUrl: e.target.value }))
-                }
-                required
-                placeholder="https://..."
-              />
-            </div>
-            <ArrayField
-              items={form.gallery}
-              onChange={(v) => setForm((f) => ({ ...f, gallery: v }))}
-              label="Gallery URLs *"
-              placeholder="https://..."
+            <FeaturedImageUpload
+              value={form.imageUrl}
+              onChange={(url) => setForm((f) => ({ ...f, imageUrl: url }))}
+            />
+            <GalleryUpload
+              urls={form.gallery.filter(Boolean)}
+              onChange={(urls) => setForm((f) => ({ ...f, gallery: urls }))}
             />
             <div className="flex items-center justify-between rounded-lg border p-4">
               <div>
@@ -987,11 +1568,67 @@ export function TourPackageForm({
           )}
         </div>
       </form>
+      <AlertDialog
+        open={!!categoryDeleteId}
+        onOpenChange={(open) => !open && setCategoryDeleteId(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete category?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will remove the category. Packages using it will have no category. This cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={categoryDeleteLoading}>
+              Cancel
+            </AlertDialogCancel>
+            <Button
+              variant="destructive"
+              disabled={categoryDeleteLoading}
+              onClick={() =>
+                categoryDeleteId && handleDeleteCategory(categoryDeleteId)
+              }
+            >
+              {categoryDeleteLoading ? "Deleting…" : "Delete"}
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      <AlertDialog
+        open={!!locationDeleteId}
+        onOpenChange={(open) => !open && setLocationDeleteId(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete location?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will remove the location. Packages using it will have no location. This cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={locationDeleteLoading}>
+              Cancel
+            </AlertDialogCancel>
+            <Button
+              variant="destructive"
+              disabled={locationDeleteLoading}
+              onClick={() =>
+                locationDeleteId && handleDeleteLocation(locationDeleteId)
+              }
+            >
+              {locationDeleteLoading ? "Deleting…" : "Delete"}
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
     );
   }
 
   // Edit mode: Tabs
   return (
+    <>
     <form onSubmit={handleSubmit} className="space-y-6">
       {error && (
         <p className="text-sm text-destructive" role="alert">
@@ -1046,11 +1683,12 @@ export function TourPackageForm({
                     className="w-full justify-start font-normal"
                   >
                     {form.categoryId
-                      ? categories.find((c) => c.id === form.categoryId)?.nameEn ?? "Select category"
+                      ? (categories.find((c) => c.id === form.categoryId)
+                          ?.nameEn ?? "Select category")
                       : "Select or create category"}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-80" align="start">
+                <PopoverContent className="w-[420px]" align="start">
                   <div className="space-y-3">
                     <button
                       type="button"
@@ -1063,40 +1701,116 @@ export function TourPackageForm({
                       No category
                     </button>
                     {categories.map((c) => (
-                      <button
+                      <div
                         key={c.id}
-                        type="button"
-                        className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-muted"
-                        onClick={() => {
-                          setForm((f) => ({ ...f, categoryId: c.id }));
-                          setCategoryOpen(false);
-                        }}
+                        className={cn(
+                          "flex items-center gap-2 rounded-md border p-2",
+                          form.categoryId === c.id
+                            ? "border-primary bg-primary/5"
+                            : "border-border bg-background",
+                        )}
                       >
-                        {c.nameEn} / {c.nameAr}
-                      </button>
+                        <Input
+                          placeholder="Name (EN)"
+                          value={c.nameEn}
+                          onChange={(e) =>
+                            setCategories((prev) =>
+                              prev.map((x) =>
+                                x.id === c.id
+                                  ? { ...x, nameEn: e.target.value }
+                                  : x,
+                              ),
+                            )
+                          }
+                          onBlur={(e) => {
+                            const v = e.target.value.trim();
+                            if (v && v !== c.nameEn) {
+                              handleUpdateCategory(c.id, v, c.nameAr);
+                            }
+                          }}
+                          className="flex-1 min-w-0 h-8 text-sm"
+                        />
+                        <Input
+                          placeholder="Name (AR)"
+                          value={c.nameAr}
+                          onChange={(e) =>
+                            setCategories((prev) =>
+                              prev.map((x) =>
+                                x.id === c.id
+                                  ? { ...x, nameAr: e.target.value }
+                                  : x,
+                              ),
+                            )
+                          }
+                          onBlur={(e) => {
+                            const v = e.target.value.trim();
+                            if (v && v !== c.nameAr) {
+                              handleUpdateCategory(c.id, c.nameEn, v);
+                            }
+                          }}
+                          className="flex-1 min-w-0 h-8 text-sm"
+                          dir="rtl"
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="h-8 shrink-0"
+                          onClick={() => {
+                            setForm((f) => ({ ...f, categoryId: c.id }));
+                            setCategoryOpen(false);
+                          }}
+                        >
+                          Select
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 shrink-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                          onClick={() => setCategoryDeleteId(c.id)}
+                          disabled={categorySavingId === c.id}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     ))}
                     <div className="border-t pt-3">
-                      <p className="text-xs font-medium text-muted-foreground mb-2">Create new</p>
+                      <p className="text-xs font-medium text-muted-foreground mb-2">
+                        Create new
+                      </p>
                       {createCategoryError && (
-                        <p className="text-xs text-destructive mb-2">{createCategoryError}</p>
+                        <p className="text-xs text-destructive mb-2">
+                          {createCategoryError}
+                        </p>
                       )}
                       <Input
                         placeholder="Name (EN)"
                         value={newCatEn}
-                        onChange={(e) => { setNewCatEn(e.target.value); setCreateCategoryError(""); }}
+                        onChange={(e) => {
+                          setNewCatEn(e.target.value);
+                          setCreateCategoryError("");
+                        }}
                         className="mb-2"
                       />
                       <Input
                         placeholder="Name (AR)"
                         value={newCatAr}
-                        onChange={(e) => { setNewCatAr(e.target.value); setCreateCategoryError(""); }}
+                        onChange={(e) => {
+                          setNewCatAr(e.target.value);
+                          setCreateCategoryError("");
+                        }}
                         className="mb-2"
                         dir="rtl"
                       />
                       <Button
                         type="button"
                         size="sm"
-                        disabled={!newCatEn.trim() || !newCatAr.trim() || createCategoryLoading}
+                        disabled={
+                          !newCatEn.trim() ||
+                          !newCatAr.trim() ||
+                          createCategoryLoading
+                        }
                         onClick={handleCreateCategory}
                       >
                         {createCategoryLoading ? "Adding…" : "Add & select"}
@@ -1129,7 +1843,10 @@ export function TourPackageForm({
                   placeholder="Enter custom package type (e.g. Family Umrah)"
                   value={form.packageTypeCustom}
                   onChange={(e) =>
-                    setForm((f) => ({ ...f, packageTypeCustom: e.target.value }))
+                    setForm((f) => ({
+                      ...f,
+                      packageTypeCustom: e.target.value,
+                    }))
                   }
                   className="mt-2"
                 />
@@ -1138,7 +1855,13 @@ export function TourPackageForm({
           </div>
           <div className="space-y-2">
             <Label>Location</Label>
-            <Popover open={locationOpen} onOpenChange={(open) => { setLocationOpen(open); if (!open) setCreateLocationError(""); }}>
+            <Popover
+              open={locationOpen}
+              onOpenChange={(open) => {
+                setLocationOpen(open);
+                if (!open) setCreateLocationError("");
+              }}
+            >
               <PopoverTrigger asChild>
                 <Button
                   type="button"
@@ -1146,11 +1869,12 @@ export function TourPackageForm({
                   className="w-full justify-start font-normal"
                 >
                   {form.locationId
-                    ? locations.find((l) => l.id === form.locationId)?.nameEn ?? "Select location"
+                    ? (locations.find((l) => l.id === form.locationId)
+                        ?.nameEn ?? "Select location")
                     : "Select or create location"}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-80" align="start">
+              <PopoverContent className="w-[420px]" align="start">
                 <div className="space-y-3">
                   <button
                     type="button"
@@ -1163,46 +1887,120 @@ export function TourPackageForm({
                     No location
                   </button>
                   {locations.map((l) => (
-                    <button
+                    <div
                       key={l.id}
-                      type="button"
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-muted"
-                      onClick={() => {
-                        setForm((f) => ({ ...f, locationId: l.id }));
-                        setLocationOpen(false);
-                      }}
+                      className={cn(
+                        "flex items-center gap-2 rounded-md border p-2",
+                        form.locationId === l.id
+                          ? "border-primary bg-primary/5"
+                          : "border-border bg-background",
+                      )}
                     >
-                      {l.nameEn} / {l.nameAr}
-                    </button>
+                      <Input
+                        placeholder="Name (EN)"
+                        value={l.nameEn}
+                        onChange={(e) =>
+                          setLocations((prev) =>
+                            prev.map((x) =>
+                              x.id === l.id
+                                ? { ...x, nameEn: e.target.value }
+                                : x,
+                            ),
+                          )
+                        }
+                        onBlur={(e) => {
+                          const v = e.target.value.trim();
+                          if (v && v !== l.nameEn) {
+                            handleUpdateLocation(l.id, v, l.nameAr);
+                          }
+                        }}
+                        className="flex-1 min-w-0 h-8 text-sm"
+                      />
+                      <Input
+                        placeholder="Name (AR)"
+                        value={l.nameAr}
+                        onChange={(e) =>
+                          setLocations((prev) =>
+                            prev.map((x) =>
+                              x.id === l.id
+                                ? { ...x, nameAr: e.target.value }
+                                : x,
+                            ),
+                          )
+                        }
+                        onBlur={(e) => {
+                          const v = e.target.value.trim();
+                          if (v && v !== l.nameAr) {
+                            handleUpdateLocation(l.id, l.nameEn, v);
+                          }
+                        }}
+                        className="flex-1 min-w-0 h-8 text-sm"
+                        dir="rtl"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="h-8 shrink-0"
+                        onClick={() => {
+                          setForm((f) => ({ ...f, locationId: l.id }));
+                          setLocationOpen(false);
+                        }}
+                      >
+                        Select
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 shrink-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                        onClick={() => setLocationDeleteId(l.id)}
+                        disabled={locationSavingId === l.id}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   ))}
                   <div className="border-t pt-3">
-                    <p className="text-xs font-medium text-muted-foreground mb-2">Create new</p>
+                    <p className="text-xs font-medium text-muted-foreground mb-2">
+                      Create new
+                    </p>
                     {createLocationError && (
-                      <p className="text-xs text-destructive mb-2">{createLocationError}</p>
+                      <p className="text-xs text-destructive mb-2">
+                        {createLocationError}
+                      </p>
                     )}
                     <Input
                       placeholder="Name (EN)"
                       value={newLocEn}
-                      onChange={(e) => { setNewLocEn(e.target.value); setCreateLocationError(""); }}
+                      onChange={(e) => {
+                        setNewLocEn(e.target.value);
+                        setCreateLocationError("");
+                      }}
                       className="mb-2"
                     />
                     <Input
                       placeholder="Name (AR)"
                       value={newLocAr}
-                      onChange={(e) => { setNewLocAr(e.target.value); setCreateLocationError(""); }}
+                      onChange={(e) => {
+                        setNewLocAr(e.target.value);
+                        setCreateLocationError("");
+                      }}
                       className="mb-2"
                       dir="rtl"
                     />
-                    <Input
-                      placeholder="Image URL (optional)"
+                    <LocationImageUpload
                       value={newLocImageUrl}
-                      onChange={(e) => setNewLocImageUrl(e.target.value)}
-                      className="mb-2"
+                      onChange={setNewLocImageUrl}
                     />
                     <Button
                       type="button"
                       size="sm"
-                      disabled={!newLocEn.trim() || !newLocAr.trim() || createLocationLoading}
+                      disabled={
+                        !newLocEn.trim() ||
+                        !newLocAr.trim() ||
+                        createLocationLoading
+                      }
                       onClick={handleCreateLocation}
                     >
                       {createLocationLoading ? "Adding…" : "Add & select"}
@@ -1410,22 +2208,13 @@ export function TourPackageForm({
         </TabsContent>
 
         <TabsContent value="media" className="space-y-4 mt-4">
-          <div className="space-y-2">
-            <Label htmlFor="imageUrl">Featured image URL</Label>
-            <Input
-              id="imageUrl"
-              value={form.imageUrl}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, imageUrl: e.target.value }))
-              }
-              placeholder="https://..."
-            />
-          </div>
-          <ArrayField
-            items={form.gallery}
-            onChange={(v) => setForm((f) => ({ ...f, gallery: v }))}
-            label="Gallery URLs"
-            placeholder="https://..."
+          <FeaturedImageUpload
+            value={form.imageUrl}
+            onChange={(url) => setForm((f) => ({ ...f, imageUrl: url }))}
+          />
+          <GalleryUpload
+            urls={form.gallery.filter(Boolean)}
+            onChange={(urls) => setForm((f) => ({ ...f, gallery: urls }))}
           />
         </TabsContent>
 
@@ -1464,5 +2253,60 @@ export function TourPackageForm({
         </Button>
       </div>
     </form>
+    <AlertDialog
+      open={!!categoryDeleteId}
+      onOpenChange={(open) => !open && setCategoryDeleteId(null)}
+    >
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Delete category?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This will remove the category. Packages using it will have no category. This cannot be undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={categoryDeleteLoading}>
+            Cancel
+          </AlertDialogCancel>
+          <Button
+            variant="destructive"
+            disabled={categoryDeleteLoading}
+            onClick={() =>
+              categoryDeleteId && handleDeleteCategory(categoryDeleteId)
+            }
+          >
+            {categoryDeleteLoading ? "Deleting…" : "Delete"}
+          </Button>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+    <AlertDialog
+      open={!!locationDeleteId}
+      onOpenChange={(open) => !open && setLocationDeleteId(null)}
+    >
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Delete location?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This will remove the location. Packages using it will have no location. This cannot be undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={locationDeleteLoading}>
+            Cancel
+          </AlertDialogCancel>
+          <Button
+            variant="destructive"
+            disabled={locationDeleteLoading}
+            onClick={() =>
+              locationDeleteId && handleDeleteLocation(locationDeleteId)
+            }
+          >
+            {locationDeleteLoading ? "Deleting…" : "Delete"}
+          </Button>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+    </>
   );
 }

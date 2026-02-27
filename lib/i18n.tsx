@@ -26,13 +26,13 @@ const translations: Record<Locale, Record<string, string>> = {
     "nav.packages": "Tour Packages",
     "nav.events": "Events",
     "nav.transportation": "Transportation",
+    "nav.visas": "Visas",
     "nav.blog": "Our Blog",
     "nav.about": "About Us",
     "nav.contact": "Contact Us",
     "nav.destinations": "Destinations",
     "nav.bookTrip": "Book Your Trip",
     "nav.services": "Services",
-
 
     // Hero
     "hero.title": "Your journey to Umrah starts with peace of mind",
@@ -100,6 +100,21 @@ const translations: Record<Locale, Record<string, string>> = {
     "hotels.starRating": "Star Rating",
     "hotels.distanceToHaram": "Distance to Haram",
     "hotels.amenities": "Amenities",
+    "hotels.backToPlaces": "Back to places",
+    "hotels.hotelsIn": "Hotels in",
+    "hotels.searchPlaceholder": "Search by name, description, city, location, rating or price...",
+    "hotels.rooms": "Rooms",
+    "hotels.pricePerNight": "Price per night",
+    "hotels.maxGuests": "Max guests",
+    "hotels.whatsIncluded": "What's Included",
+    "hotels.accommodation": "Accommodation",
+    "hotels.roomOnly": "Room only",
+    "hotels.guests": "Guests",
+    "hotels.fitsPerson": "Fits {{count}} person",
+    "hotels.fitsPersons": "Fits {{count}} persons",
+    "hotels.stay": "Stay",
+    "hotels.priceDisclaimer":
+      "Prices may vary by period and are subject to change. Final price confirmed at booking.",
 
     // Packages
     "packages.title": "Tour Packages",
@@ -110,7 +125,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "packages.itinerary": "Itinerary",
     "packages.fullDescription": "Full Description",
     "packages.day": "Day",
-    "packages.searchPlaceholder": "Search packages by title...",
+    "packages.searchPlaceholder": "Search by name, description, location, type, or duration...",
     "packages.filterAll": "All",
     "packages.hajj": "Hajj",
     "packages.umrah": "Umrah",
@@ -119,6 +134,41 @@ const translations: Record<Locale, Record<string, string>> = {
     "packages.backToCategories": "Back to categories",
     "packages.selectLocation": "Select a location",
     "packages.packagesIn": "Packages in",
+    "packages.form.adults": "Adults",
+    "packages.form.children": "Children",
+    "packages.form.rooms": "Rooms",
+    "packages.form.dateOfTravel": "Date of Travel",
+    "packages.form.ticketBooked": "Is the Ticket booked?",
+    "list.sortBy": "Sort by",
+    "list.sort.priceAsc": "Price (low to high)",
+    "list.sort.priceDesc": "Price (high to low)",
+    "list.sort.durationAsc": "Duration (shortest first)",
+    "list.sort.durationDesc": "Duration (longest first)",
+    "list.sort.nameAsc": "Name (A–Z)",
+    "list.sort.nameDesc": "Name (Z–A)",
+    "list.sort.starDesc": "Rating (highest first)",
+    "list.sort.starAsc": "Rating (lowest first)",
+    "list.sort.capacityAsc": "Capacity (smallest first)",
+    "list.sort.capacityDesc": "Capacity (largest first)",
+
+    // Services (page hero)
+    "services.title": "Our Services",
+    "services.subtitle": "Comprehensive support for your pilgrimage journey",
+    "services.visas.title": "Issuing Visas",
+    "services.visas.desc":
+      "We handle Umrah and Hajj visa applications and paperwork so you can travel with peace of mind.",
+    "services.visas.explanation":
+      "From Umrah and Hajj visas to tourist and business visas, we manage the full application process—document preparation, submission, and follow-up—so you can focus on your journey. Our team stays up to date with requirements and processing times to keep your application on track.",
+    "services.hotels.title": "Hotel Bookings",
+    "services.hotels.desc":
+      "Quality accommodation near the Haram. We secure the best rates and locations for your stay.",
+    "services.hotels.explanation":
+      "We partner with carefully selected hotels close to the holy sites to offer comfortable, well-located accommodation. Whether you prefer proximity to the Haram or a quieter area, we help you find the right option and secure the best available rates for your dates.",
+    "services.transportation.title": "Transportation",
+    "services.transportation.desc":
+      "Comfortable transfers and travel between holy sites throughout your pilgrimage.",
+    "services.transportation.explanation":
+      "From airport pickups to transfers between Mecca, Medina, and Jeddah, we provide reliable, comfortable vehicles and professional drivers. Choose from sedans for small groups or larger vehicles for families and groups, with transparent pricing and flexible scheduling.",
 
     // Events
     "events.title": "Upcoming Events",
@@ -127,6 +177,17 @@ const translations: Record<Locale, Record<string, string>> = {
     "events.time": "Time",
     "events.location": "Location",
     "events.capacity": "Capacity",
+    "events.price": "Price",
+    "events.bookNow": "Book Now",
+    "events.overview": "Overview",
+    "events.eventDate": "Event Date",
+    "events.information": "Information",
+    "events.fromPrice": "From",
+    "events.perPerson": "Per Person",
+    "events.audience": "Audience",
+    "events.all": "All",
+    "events.backToEvents": "Back to Events",
+    "events.searchPlaceholder": "Search by title, description, location, frequency or price...",
 
     // Transportation
     "transport.title": "Transportation Services",
@@ -135,13 +196,39 @@ const translations: Record<Locale, Record<string, string>> = {
     "transport.perDay": "per day",
     "transport.capacity": "Capacity",
     "transport.features": "Features",
+    "transport.seats": "Seats",
+    "transport.overview": "Overview",
+    "transport.offerIncludes": "Offer includes",
+    "transport.offerExcludes": "Offer excludes",
+    "transport.searchPlaceholder": "Search by name, description, vehicle type, location, capacity or price...",
+
+    // Visas
+    "visa.title": "Issuing Visas",
+    "visa.subtitle": "Visa services for Umrah, Hajj, and travel",
+    "visa.viewDetails": "View details",
+    "visa.apply": "Apply now",
+    "visa.processingTime": "Processing time",
+    "visa.validity": "Validity",
+    "visa.requiredDocuments": "Required documents",
+    "visa.whatIncluded": "What's included",
+    "visa.whatExcluded": "What's excluded",
+    "visa.eligibility": "Eligibility",
+    "visa.notes": "Notes & conditions",
+    "visa.overview": "Overview",
+    "visa.backToVisas": "Back to Visas",
+    "visa.searchPlaceholder": "Search by name, description, visa type, processing time, validity or price...",
 
     // Blog
     "blog.title": "Our Blog",
     "blog.magazineTitle": "The Travel Magazine",
     "blog.tag": "Information & Tips",
-    "blog.subtitle": "Diverse articles about travel, information and tips on unique destinations, activities, and places for travelers.",
+    "blog.subtitle":
+      "Diverse articles about travel, information and tips on unique destinations, activities, and places for travelers.",
     "blog.allArticles": "All Articles",
+    "blog.articles": "Articles",
+    "blog.events": "Events",
+    "blog.place": "Place",
+    "blog.date": "Date",
     "blog.readTime": "min read",
     "blog.category": "Category",
 
@@ -195,9 +282,42 @@ const translations: Record<Locale, Record<string, string>> = {
     "contact.info.email": "Email",
     "contact.info.hours": "Working Hours",
 
+    // Inquiry form (visa, hotel, etc.)
+    "inquiry.form.nationality": "Nationality",
+    "inquiry.form.countryCode": "Country Code",
+    "inquiry.form.phone": "Phone",
+    "inquiry.form.destination": "Destination",
+    "inquiry.form.dateOfBooking": "Date of Booking",
+    "inquiry.form.send": "Send",
+    "booking.needVisa": "Do you need a visa?",
+    "booking.bookedFlight": "Have you booked a flight?",
+    "booking.needTransport": "Do you need transportation services?",
+    "booking.yes": "Yes",
+    "booking.no": "No",
+
+    // FAQ (Contact page)
+    "faq.title": "Frequently Asked Questions",
+    "faq.1.question": "How can I book an Umrah package?",
+    "faq.1.answer":
+      "You can book through our website by choosing a package and filling the form, or contact us via WhatsApp or phone. Our team will guide you through the steps and required documents.",
+    "faq.2.question": "What services do you offer?",
+    "faq.2.answer":
+      "We offer Umrah packages (with flights, accommodation, and transport), Hajj packages, hotel reservations near the Haram, transportation, and visa services. We also provide ongoing support before and during the trip.",
+    "faq.3.question": "Do you offer custom or group packages?",
+    "faq.3.answer":
+      "Yes. We can tailor packages to your dates, budget, and group size. For groups and families we offer special rates and dedicated follow-up.",
+    "faq.4.question": "What is included in the Umrah package?",
+    "faq.4.answer":
+      "Typically: round-trip flights, accommodation in Mecca and Medina, ground transport between cities and to the Haram, visa fees, and support from our team. Details vary by package—check each offer or ask us for a quote.",
+    "faq.5.question": "How can I reach you in an emergency during the trip?",
+    "faq.5.answer":
+      "We provide a 24/7 contact number and WhatsApp for all our guests. Our team is available to assist with any issue during your stay.",
+    "faq.6.question": "Do you help with visa procedures?",
+    "faq.6.answer":
+      "Yes. We handle visa application support and required documentation as part of our packages or as a standalone service. Contact us for your travel dates and we will outline the steps.",
+
     // Footer
-    "footer.description":
-      "Your trusted partner for Hajj and Umrah services.",
+    "footer.description": "Your trusted partner for Hajj and Umrah services.",
     "footer.quickLinks": "Quick Links",
     "footer.services": "Our Services",
     "footer.contact": "Contact Info",
@@ -228,6 +348,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "nav.packages": "باقات العمره",
     "nav.events": "الفعاليات",
     "nav.transportation": "المواصلات",
+    "nav.visas": "التأشيرات",
     "nav.blog": "المجلة السياحية",
     "nav.about": "من نحن",
     "nav.services": "خدماتنا",
@@ -237,8 +358,7 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // Hero
     "hero.title": "رحلتك للعمرة تبدأ من الطمأنينة",
-    "hero.subtitle":
-      "خدمة متكاملة تليق بضيوف الرحمن",
+    "hero.subtitle": "خدمة متكاملة تليق بضيوف الرحمن",
     "hero.cta": "استعرض باقات العمرة",
     "hero.secondary": "تواصل واتساب",
     "hero.destinations": "الوجهات",
@@ -298,6 +418,21 @@ const translations: Record<Locale, Record<string, string>> = {
     "hotels.starRating": "تصنيف النجوم",
     "hotels.distanceToHaram": "المسافة للحرم",
     "hotels.amenities": "المرافق",
+    "hotels.backToPlaces": "العودة للأماكن",
+    "hotels.hotelsIn": "الفنادق في",
+    "hotels.searchPlaceholder": "البحث بالاسم أو الوصف أو المدينة أو الموقع أو التصنيف أو السعر...",
+    "hotels.rooms": "الغرف",
+    "hotels.pricePerNight": "السعر لليلة",
+    "hotels.maxGuests": "عدد الضيوف",
+    "hotels.whatsIncluded": "ما المشمول",
+    "hotels.accommodation": "الإقامة",
+    "hotels.roomOnly": "غرفة فقط",
+    "hotels.guests": "الضيوف",
+    "hotels.fitsPerson": "لشخص واحد",
+    "hotels.fitsPersons": "لـ {{count}} أشخاص",
+    "hotels.stay": "الإقامة",
+    "hotels.priceDisclaimer":
+      "الأسعار قد تختلف حسب الفترة. السعر النهائي عند الحجز.",
 
     // Packages
     "packages.title": "باقات السفر",
@@ -308,7 +443,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "packages.itinerary": "البرنامج",
     "packages.fullDescription": "الوصف الكامل",
     "packages.day": "اليوم",
-    "packages.searchPlaceholder": "البحث بالعنوان...",
+    "packages.searchPlaceholder": "البحث بالاسم أو الوصف أو الموقع أو النوع أو المدة  ...",
     "packages.filterAll": "الكل",
     "packages.hajj": "حج",
     "packages.umrah": "عمرة",
@@ -317,6 +452,43 @@ const translations: Record<Locale, Record<string, string>> = {
     "packages.backToCategories": "العودة للفئات",
     "packages.selectLocation": "اختر الموقع",
     "packages.packagesIn": "الباقات في",
+    "packages.form.adults": "البالغون",
+    "packages.form.children": "الأطفال",
+    "packages.form.rooms": "الغرف",
+    "packages.form.dateOfTravel": "تاريخ السفر",
+    "packages.form.ticketBooked": "هل تم حجز التذكرة؟",
+    "list.sortBy": "ترتيب حسب",
+    "list.sort.priceAsc": "السعر (من الأقل للأعلى)",
+    "list.sort.priceDesc": "السعر (من الأعلى للأقل)",
+    "list.sort.durationAsc": "المدة (الأقصر أولاً)",
+    "list.sort.durationDesc": "المدة (الأطول أولاً)",
+    "list.sort.nameAsc": "الاسم (أ–ي)",
+    "list.sort.nameDesc": "الاسم (ي–أ)",
+    "list.sort.starDesc": "التصنيف (الأعلى أولاً)",
+    "list.sort.starAsc": "التصنيف (الأقل أولاً)",
+    "list.sort.capacityAsc": "السعة (الأصغر أولاً)",
+    "list.sort.capacityDesc": "السعة (الأكبر أولاً)",
+    "list.sort.dateAsc": "التاريخ (الأقرب أولاً)",
+    "list.sort.dateDesc": "التاريخ (الأبعد أولاً)",
+
+    // Services (page hero)
+    "services.title": "خدماتنا",
+    "services.subtitle": "دعم متكامل لرحلة حجك وعمرتك",
+    "services.visas.title": "إصدار التأشيرات",
+    "services.visas.desc":
+      "نقوم بإجراءات تأشيرة العمرة والحج والمستندات نيابة عنك لسفر مريح.",
+    "services.visas.explanation":
+      "من تأشيرات العمرة والحج إلى التأشيرات السياحية والتجارية، نتابع عملية التقديم بالكامل—إعداد المستندات والتقديم والمتابعة—حتى تركز على رحلتك. فريقنا يتابع المتطلبات ومواعيد المعالجة لضمان إكمال طلبك في الوقت المناسب.",
+    "services.hotels.title": "حجز الفنادق",
+    "services.hotels.desc":
+      "إقامة مريحة قريبة من الحرم. نوفر أفضل الأسعار والمواقع لإقامتك.",
+    "services.hotels.explanation":
+      "نتعاون مع فنادق مختارة قريبة من الأماكن المقدسة لتوفير إقامة مريحة ومواقع مناسبة. سواء كنت تفضل القرب من الحرم أو منطقة أكثر هدوءاً، نساعدك في اختيار الأنسب ونضمن أفضل الأسعار المتاحة لتواريخ إقامتك.",
+    "services.transportation.title": "النقل",
+    "services.transportation.desc":
+      "تنقلات مريحة بين الأماكن المقدسة طوال رحلتك.",
+    "services.transportation.explanation":
+      "من الاستقبال في المطار إلى التنقل بين مكة والمدينة وجدة، نوفر مركبات مريحة وسائقين محترفين. اختر بين سيارات سيدان للمجموعات الصغيرة أو مركبات أكبر للعائلات والمجموعات، مع أسعار واضحة ومواعيد مرنة.",
 
     // Events
     "events.title": "الفعاليات القادمة",
@@ -325,6 +497,17 @@ const translations: Record<Locale, Record<string, string>> = {
     "events.time": "الوقت",
     "events.location": "الموقع",
     "events.capacity": "السعة",
+    "events.price": "السعر",
+    "events.bookNow": "احجز الآن",
+    "events.overview": "نظرة عامة",
+    "events.eventDate": "تاريخ الفعالية",
+    "events.information": "معلومات",
+    "events.fromPrice": "من",
+    "events.perPerson": "للشخص",
+    "events.audience": "الجمهور",
+    "events.all": "الكل",
+    "events.backToEvents": "العودة للفعاليات",
+    "events.searchPlaceholder": "البحث بالعنوان أو الوصف أو الموقع أو التكرار أو السعر...",
 
     // Transportation
     "transport.title": "خدمات النقل",
@@ -333,13 +516,39 @@ const translations: Record<Locale, Record<string, string>> = {
     "transport.perDay": "لليوم",
     "transport.capacity": "السعة",
     "transport.features": "المميزات",
+    "transport.seats": "مقاعد",
+    "transport.overview": "نظرة عامة",
+    "transport.offerIncludes": "يشمل العرض",
+    "transport.offerExcludes": "لا يشمل العرض",
+    "transport.searchPlaceholder": "البحث بالاسم أو الوصف أو نوع المركبة أو الموقع أو السعة أو السعر...",
+
+    // Visas
+    "visa.title": "إصدار التأشيرات",
+    "visa.subtitle": "خدمات التأشيرات للعمرة والحج والسفر",
+    "visa.viewDetails": "عرض التفاصيل",
+    "visa.apply": "قدم الآن",
+    "visa.processingTime": "مدة المعالجة",
+    "visa.validity": "الصلاحية",
+    "visa.requiredDocuments": "المستندات المطلوبة",
+    "visa.whatIncluded": "ما المشمول",
+    "visa.whatExcluded": "ما غير المشمول",
+    "visa.eligibility": "الأهلية",
+    "visa.notes": "ملاحظات وشروط",
+    "visa.overview": "نظرة عامة",
+    "visa.backToVisas": "العودة للتأشيرات",
+    "visa.searchPlaceholder": "البحث بالاسم أو الوصف أو نوع التأشيرة أو مدة المعالجة أو الصلاحية أو السعر...",
 
     // Blog
     "blog.title": "المدونة",
     "blog.magazineTitle": "المجلة السياحية",
     "blog.tag": "معلومات & نصائح",
-    "blog.subtitle": "مقالات منوعة عن السفر معلومات ونصائح حول الوجهات السياحية والأنشطة والأماكن المميزة للمسافرين",
+    "blog.subtitle":
+      "مقالات منوعة عن السفر معلومات ونصائح حول الوجهات السياحية والأنشطة والأماكن المميزة للمسافرين",
     "blog.allArticles": "كل المقالات",
+    "blog.articles": "المقالات",
+    "blog.events": "الفعاليات",
+    "blog.place": "المكان",
+    "blog.date": "التاريخ",
     "blog.readTime": "دقائق للقراءة",
     "blog.category": "التصنيف",
 
@@ -393,6 +602,40 @@ const translations: Record<Locale, Record<string, string>> = {
     "contact.info.email": "البريد الإلكتروني",
     "contact.info.hours": "ساعات العمل",
 
+    // Inquiry form (visa, hotel, etc.)
+    "inquiry.form.nationality": "الجنسية",
+    "inquiry.form.countryCode": "رمز الدولة",
+    "inquiry.form.phone": "رقم الهاتف",
+    "inquiry.form.destination": "الوجهة",
+    "inquiry.form.dateOfBooking": "تاريخ الحجز",
+    "inquiry.form.send": "إرسال",
+    "booking.needVisa": "هل تحتاج إلى تأشيرة؟",
+    "booking.bookedFlight": "هل حجزت تذكرة الطيران؟",
+    "booking.needTransport": "هل تحتاج إلى خدمات المواصلات؟",
+    "booking.yes": "نعم",
+    "booking.no": "لا",
+
+    // FAQ (Contact page)
+    "faq.title": "الأسئلة الشائعة",
+    "faq.1.question": "كيف يمكنني حجز باقة عمرة؟",
+    "faq.1.answer":
+      "يمكنك الحجز عبر الموقع باختيار الباقة وتعبئة النموذج، أو التواصل معنا عبر واتساب أو الهاتف. فريقنا يرشدك للخطوات والمستندات المطلوبة.",
+    "faq.2.question": "ما الخدمات التي تقدمونها؟",
+    "faq.2.answer":
+      "نقدم باقات العمرة (طيران، إقامة، نقل)، باقات الحج، حجز فنادق قريبة من الحرم، المواصلات، وخدمات التأشيرة. كما نقدم متابعة قبل الرحلة وأثناءها.",
+    "faq.3.question": "هل تقدمون باقات مخصصة أو للجماعات؟",
+    "faq.3.answer":
+      "نعم. نعدّل الباقات حسب تواريخك وميزانيتك وعدد المجموعة. للجماعات والعائلات نقدم أسعاراً خاصة ومتابعة مخصصة.",
+    "faq.4.question": "ماذا يشمل باقة العمرة؟",
+    "faq.4.answer":
+      "عادة: تذاكر ذهاب وعودة، إقامة في مكة والمدينة، نقل بري بين المدن وإلى الحرم، رسوم التأشيرة، ودعم من فريقنا. التفاصيل تختلف حسب الباقة—راجع كل عرض أو اطلب عرض سعر.",
+    "faq.5.question": "كيف أتواصل معكم في حال طارئ أثناء الرحلة؟",
+    "faq.5.answer":
+      "نوفر رقم اتصال وواتساب على مدار الساعة لجميع الضيوف. فريقنا متاح لمساعدتك في أي أمر أثناء إقامتك.",
+    "faq.6.question": "هل تساعدون في إجراءات التأشيرة؟",
+    "faq.6.answer":
+      "نعم. نتابع طلب التأشيرة والمستندات المطلوبة ضمن الباقات أو كخدمة مستقلة. تواصل معنا لمواعيد سفرك ونوضح لك الخطوات.",
+
     // Footer
     "footer.description": "شريكك الموثوق لخدمات الحج والعمرة.",
     "footer.quickLinks": "روابط سريعة",
@@ -443,7 +686,7 @@ export function I18nProvider({
   defaultLocale?: Locale;
 }) {
   const [locale, setLocaleState] = useState<Locale>(() =>
-    getStoredLocale(defaultLocale)
+    getStoredLocale(defaultLocale),
   );
 
   const setLocale = useCallback((newLocale: Locale) => {

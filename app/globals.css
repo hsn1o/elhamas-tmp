@@ -155,6 +155,16 @@
     animation: fadeInUp 0.5s var(--ease-out-expo, ease-out) forwards;
   }
 
+  .animate-slow-zoom-in {
+    animation: slowZoomIn 18s ease-in-out infinite alternate;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-slow-zoom-in {
+      animation: none;
+    }
+  }
+
   .animation-delay-100 { animation-delay: 75ms; }
   .animation-delay-200 { animation-delay: 150ms; }
   .animation-delay-300 { animation-delay: 225ms; }
@@ -180,6 +190,15 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes slowZoomIn {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.08);
   }
 }
 

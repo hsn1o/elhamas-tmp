@@ -2,25 +2,57 @@ import { prisma } from '@/lib/prisma'
 import { Decimal } from '@prisma/client/runtime/library'
 
 // Re-export types used by the app (ids are string for Supabase UUID)
+export interface HotelLocation {
+  id: string
+  name_en: string
+  name_ar: string
+  sort_order: number
+  image_url: string | null
+  image_urls: string[]
+}
+
+export interface Room {
+  id: string
+  hotel_id: string
+  name_en: string
+  name_ar: string
+  description_en: string | null
+  description_ar: string | null
+  price_per_night: number
+  currency: string
+  max_guests: number
+  amenities: string[]
+  amenities_ar: string[]
+  image_url: string | null
+  is_active: boolean
+  created_at: Date
+  updated_at: Date
+}
+
 export interface Hotel {
   id: string
+  location_id: string | null
   name_en: string
   name_ar: string
   description_en: string | null
   description_ar: string | null
   location_en: string | null
   location_ar: string | null
+  location_image_url: string | null
   city: string | null
+  city_ar: string | null
   star_rating: number
   distance_to_haram: string | null
   price_per_night: number | null
   currency: string
   amenities: string[]
+  amenities_ar: string[]
   images: string[]
   featured: boolean
   is_active: boolean
   created_at: Date
   updated_at: Date
+  rooms?: Room[]
 }
 
 export interface PackageCategory {
@@ -29,6 +61,8 @@ export interface PackageCategory {
   name_ar: string
   sort_order: number
   image_url: string | null
+  /** All featured images of packages in this category (for animated category card) */
+  image_urls: string[]
 }
 
 export interface Location {
@@ -69,18 +103,25 @@ export interface TourPackage {
 
 export interface Event {
   id: string
+  slug: string
   title_en: string
   title_ar: string
   description_en: string | null
   description_ar: string | null
-  event_date: Date | null
-  event_time: string | null
+  short_description_en: string | null
+  short_description_ar: string | null
+  event_date: Date
+  end_date: Date | null
+  frequency_en: string | null
+  frequency_ar: string | null
   location_en: string | null
   location_ar: string | null
+  featured_image: string | null
+  images: string[]
   price: number | null
   currency: string
-  capacity: number | null
-  images: string[]
+  max_attendees: number | null
+  is_featured: boolean
   is_active: boolean
   created_at: Date
   updated_at: Date
@@ -92,12 +133,48 @@ export interface Transportation {
   name_ar: string
   description_en: string | null
   description_ar: string | null
-  vehicle_type: string | null
-  capacity: number | null
+  vehicle_type: string
+  vehicle_type_ar: string | null
+  capacity: number
+  location_en: string | null
+  location_ar: string | null
   price_per_trip: number | null
   price_per_day: number | null
   currency: string
   features: string[]
+  features_ar: string[]
+  excludes: string[]
+  excludes_ar: string[]
+  images: string[]
+  is_active: boolean
+  created_at: Date
+  updated_at: Date
+}
+
+export interface Visa {
+  id: string
+  name_en: string
+  name_ar: string
+  description_en: string | null
+  description_ar: string | null
+  visa_type_en: string
+  visa_type_ar: string | null
+  processing_time_en: string | null
+  processing_time_ar: string | null
+  validity_en: string | null
+  validity_ar: string | null
+  price: number | null
+  currency: string
+  requirements: string[]
+  requirements_ar: string[]
+  includes: string[]
+  includes_ar: string[]
+  excludes: string[]
+  excludes_ar: string[]
+  eligibility_en: string | null
+  eligibility_ar: string | null
+  notes_en: string | null
+  notes_ar: string | null
   images: string[]
   is_active: boolean
   created_at: Date
@@ -109,6 +186,8 @@ export interface BlogPost {
   slug: string
   title_en: string
   title_ar: string
+  place_en: string | null
+  place_ar: string | null
   excerpt_en: string | null
   excerpt_ar: string | null
   content_en: string | null
@@ -129,10 +208,9 @@ export interface Testimonial {
   name_ar: string | null
   content_en: string
   content_ar: string | null
+  work_en: string | null
+  work_ar: string | null
   rating: number
-  avatar: string | null
-  location_en: string | null
-  location_ar: string | null
   is_active: boolean
   created_at: Date
 }
@@ -181,35 +259,110 @@ function toNum(d: Decimal | null | undefined): number | null {
   return Number(d)
 }
 
-function mapHotel(row: Awaited<ReturnType<typeof prisma.hotel.findFirst>>): Hotel | null {
+type HotelRow = Awaited<ReturnType<typeof prisma.hotel.findFirst>> & {
+  location?: { nameEn: string; nameAr: string; imageUrl: string | null } | null
+  rooms?: Array<{
+    id: string
+    hotelId: string
+    nameEn: string
+    nameAr: string
+    descriptionEn: string | null
+    descriptionAr: string | null
+    pricePerNight: Decimal
+    currency: string
+    maxGuests: number
+    amenities: string[]
+    imageUrl: string | null
+    isActive: boolean
+    createdAt: Date
+    updatedAt: Date
+  }>
+}
+
+function mapHotel(row: HotelRow | null): Hotel | null {
   if (!row) return null
-  const images = row.gallery?.length ? row.gallery : row.imageUrl ? [row.imageUrl] : []
+  const featured = row.imageUrl ?? null
+  const gallery = row.gallery ?? []
+  const images = featured ? [featured, ...gallery.filter((u: string) => u !== featured)] : gallery
+  const loc = row.location
   return {
     id: row.id,
+    location_id: row.locationId ?? null,
     name_en: row.nameEn,
     name_ar: row.nameAr,
     description_en: row.descriptionEn,
     description_ar: row.descriptionAr,
-    location_en: row.locationEn,
-    location_ar: row.locationAr,
+    location_en: loc?.nameEn ?? row.locationEn ?? null,
+    location_ar: loc?.nameAr ?? row.locationAr ?? null,
+    location_image_url: loc?.imageUrl ?? null,
     city: row.city,
+    city_ar: (row as { cityAr?: string | null }).cityAr ?? null,
     star_rating: row.starRating,
     distance_to_haram: row.distanceToHaram,
     price_per_night: toNum(row.pricePerNight),
     currency: row.currency,
     amenities: row.amenities ?? [],
+    amenities_ar: (row as { amenitiesAr?: string[] }).amenitiesAr ?? [],
     images,
     featured: row.isFeatured,
     is_active: row.isActive,
     created_at: row.createdAt,
     updated_at: row.updatedAt,
+    rooms: row.rooms?.map((r) => ({
+      id: r.id,
+      hotel_id: r.hotelId,
+      name_en: r.nameEn,
+      name_ar: r.nameAr,
+      description_en: r.descriptionEn,
+      description_ar: r.descriptionAr,
+      price_per_night: Number(r.pricePerNight),
+      currency: r.currency,
+      max_guests: r.maxGuests,
+      amenities: r.amenities ?? [],
+      amenities_ar: (r as { amenitiesAr?: string[] }).amenitiesAr ?? [],
+      image_url: r.imageUrl,
+      is_active: r.isActive,
+      created_at: r.createdAt,
+      updated_at: r.updatedAt,
+    })),
   }
+}
+
+export async function getHotelLocations(): Promise<HotelLocation[]> {
+  return safeDb(async () => {
+    const list = await prisma.hotelLocation.findMany({
+      orderBy: [{ sortOrder: 'asc' }, { createdAt: 'asc' }],
+      include: {
+        hotels: {
+          where: { isActive: true },
+          orderBy: { createdAt: 'desc' },
+          select: { imageUrl: true },
+        },
+      },
+    })
+    return list.map((row) => {
+      const imageUrls = (row.hotels ?? []).map((h) => h.imageUrl).filter((url): url is string => Boolean(url))
+      return {
+        id: row.id,
+        name_en: row.nameEn,
+        name_ar: row.nameAr,
+        sort_order: row.sortOrder,
+        image_url: imageUrls[0] ?? null,
+        image_urls: imageUrls,
+      }
+    })
+  }, [])
 }
 
 function mapTourPackage(row: Awaited<ReturnType<typeof prisma.tourPackage.findFirst>> & { location?: { nameEn: string; nameAr: string; imageUrl: string | null } | null }): TourPackage | null {
   if (!row) return null
   const itinerary = Array.isArray(row.itinerary) ? (row.itinerary as { day: number; title_en: string; title_ar: string }[]) : []
-  const images = row.gallery?.length ? row.gallery : row.imageUrl ? [row.imageUrl] : []
+  // Featured image (imageUrl) is always the cover; then gallery (without duplicating featured)
+  const featured = row.imageUrl ?? null
+  const gallery = row.gallery ?? []
+  const images = featured
+    ? [featured, ...gallery.filter((u) => u !== featured)]
+    : gallery
   const loc = row.location
   return {
     id: row.id,
@@ -241,33 +394,47 @@ function mapTourPackage(row: Awaited<ReturnType<typeof prisma.tourPackage.findFi
   }
 }
 
-function mapEvent(row: Awaited<ReturnType<typeof prisma.event.findFirst>>): Event | null {
+function mapEvent(row: Awaited<ReturnType<typeof prisma.event.findFirst>> | null): Event | null {
   if (!row) return null
-  const images = row.gallery?.length ? row.gallery : row.imageUrl ? [row.imageUrl] : []
+  const featured = row.imageUrl ?? null
+  const gallery = row.gallery ?? []
+  const images = featured ? [featured, ...gallery.filter((u: string) => u !== featured)] : gallery
+  const r = row as typeof row & { frequencyEn?: string | null; frequencyAr?: string | null }
   return {
     id: row.id,
+    slug: row.slug,
     title_en: row.titleEn,
     title_ar: row.titleAr,
     description_en: row.descriptionEn,
     description_ar: row.descriptionAr,
+    short_description_en: row.shortDescriptionEn ?? null,
+    short_description_ar: row.shortDescriptionAr ?? null,
     event_date: row.eventDate,
-    event_time: null,
+    end_date: row.endDate ?? null,
+    frequency_en: r.frequencyEn ?? null,
+    frequency_ar: r.frequencyAr ?? null,
     location_en: row.locationEn,
     location_ar: row.locationAr,
+    featured_image: featured,
+    images,
     price: toNum(row.price),
     currency: row.currency,
-    capacity: row.maxAttendees ?? null,
-    images,
+    max_attendees: row.maxAttendees ?? null,
+    is_featured: row.isFeatured,
     is_active: row.isActive,
     created_at: row.createdAt,
     updated_at: row.updatedAt,
   }
 }
 
-function mapTransportation(row: Awaited<ReturnType<typeof prisma.transportation.findFirst>>): Transportation | null {
+function mapTransportation(row: Awaited<ReturnType<typeof prisma.transportation.findFirst>> | null): Transportation | null {
   if (!row) return null
-  const features = row.featuresEn?.length ? row.featuresEn : []
-  const images = row.imageUrl ? [row.imageUrl] : []
+  const featured = row.imageUrl ?? null
+  const gallery = (row as { gallery?: string[] }).gallery ?? []
+  const images = featured ? [featured, ...gallery.filter((u: string) => u !== featured)] : gallery
+  const features = (row as { featuresEn?: string[] }).featuresEn ?? []
+  const excludesEn = (row as { excludesEn?: string[] }).excludesEn ?? []
+  const excludesAr = (row as { excludesAr?: string[] }).excludesAr ?? []
   return {
     id: row.id,
     name_en: row.nameEn,
@@ -275,11 +442,84 @@ function mapTransportation(row: Awaited<ReturnType<typeof prisma.transportation.
     description_en: row.descriptionEn,
     description_ar: row.descriptionAr,
     vehicle_type: row.vehicleType,
+    vehicle_type_ar: (row as { vehicleTypeAr?: string | null }).vehicleTypeAr ?? null,
     capacity: row.capacity,
+    location_en: (row as { locationEn?: string | null }).locationEn ?? null,
+    location_ar: (row as { locationAr?: string | null }).locationAr ?? null,
     price_per_trip: toNum(row.pricePerTrip),
     price_per_day: toNum(row.pricePerDay),
     currency: row.currency,
-    features,
+    features: (row as { featuresEn?: string[] }).featuresEn ?? [],
+    features_ar: (row as { featuresAr?: string[] }).featuresAr ?? [],
+    excludes: excludesEn,
+    excludes_ar: excludesAr,
+    images,
+    is_active: row.isActive,
+    created_at: row.createdAt,
+    updated_at: row.updatedAt,
+  }
+}
+
+type VisaPrismaRow = {
+  id: string
+  nameEn: string
+  nameAr: string
+  descriptionEn: string | null
+  descriptionAr: string | null
+  visaTypeEn: string
+  visaTypeAr?: string | null
+  processingTimeEn?: string | null
+  processingTimeAr?: string | null
+  validityEn?: string | null
+  validityAr?: string | null
+  price: unknown
+  currency: string
+  imageUrl: string | null
+  gallery?: string[]
+  requirementsEn?: string[]
+  requirementsAr?: string[]
+  includesEn?: string[]
+  includesAr?: string[]
+  excludesEn?: string[]
+  excludesAr?: string[]
+  eligibilityEn?: string | null
+  eligibilityAr?: string | null
+  notesEn?: string | null
+  notesAr?: string | null
+  isActive: boolean
+  createdAt: Date
+  updatedAt: Date
+}
+
+function mapVisa(row: VisaPrismaRow | null): Visa | null {
+  if (!row) return null
+  const featured = row.imageUrl ?? null
+  const gallery = row.gallery ?? []
+  const images = featured ? [featured, ...gallery.filter((u: string) => u !== featured)] : gallery
+  return {
+    id: row.id,
+    name_en: row.nameEn,
+    name_ar: row.nameAr,
+    description_en: row.descriptionEn,
+    description_ar: row.descriptionAr,
+    visa_type_en: row.visaTypeEn,
+    visa_type_ar: row.visaTypeAr ?? null,
+    processing_time_en: row.processingTimeEn ?? null,
+    processing_time_ar: row.processingTimeAr ?? null,
+    validity_en: row.validityEn ?? null,
+    validity_ar: row.validityAr ?? null,
+    price: toNum(row.price as Parameters<typeof toNum>[0]),
+    currency: row.currency,
+    requirements: row.requirementsEn ?? [],
+    requirements_ar: row.requirementsAr ?? [],
+    includes: row.includesEn ?? [],
+    includes_ar: row.includesAr ?? [],
+    excludes: row.excludesEn ?? [],
+    excludes_ar: row.excludesAr ?? [],
+    eligibility_en: row.eligibilityEn ?? null,
+    eligibility_ar: row.eligibilityAr ?? null,
+    notes_en: row.notesEn ?? null,
+    notes_ar: row.notesAr ?? null,
     images,
     is_active: row.isActive,
     created_at: row.createdAt,
@@ -295,10 +535,9 @@ function mapTestimonial(row: Awaited<ReturnType<typeof prisma.testimonial.findFi
     name_ar: row.nameAr,
     content_en: row.contentEn,
     content_ar: row.contentAr,
+    work_en: row.workEn ?? null,
+    work_ar: row.workAr ?? null,
     rating: row.rating,
-    avatar: row.imageUrl,
-    location_en: row.location,
-    location_ar: row.location,
     is_active: row.isActive,
     created_at: row.createdAt,
   }
@@ -315,18 +554,28 @@ async function safeDb<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
 
 // --- Database queries (Prisma + Supabase) ---
 
-export async function getHotels(featured?: boolean): Promise<Hotel[]> {
+export async function getHotels(featured?: boolean, locationId?: string | null): Promise<Hotel[]> {
   return safeDb(async () => {
     const list = await prisma.hotel.findMany({
-      where: { isActive: true, ...(featured ? { isFeatured: true } : {}) },
+      where: {
+        isActive: true,
+        ...(featured ? { isFeatured: true } : {}),
+        ...(locationId ? { locationId } : {}),
+      },
       orderBy: { createdAt: 'desc' },
+      include: { location: true },
     })
     return list.map((row) => mapHotel(row)!).filter(Boolean)
   }, [])
 }
 
 export async function getHotelById(id: string): Promise<Hotel | undefined> {
-  const row = await prisma.hotel.findUnique({ where: { id } }).catch(() => null)
+  const row = await prisma.hotel
+    .findUnique({
+      where: { id },
+      include: { location: true, rooms: { where: { isActive: true }, orderBy: { createdAt: 'asc' } } },
+    })
+    .catch(() => null)
   return mapHotel(row) ?? undefined
 }
 
@@ -356,22 +605,25 @@ export async function getPackageCategories(): Promise<PackageCategory[]> {
       include: {
         tourPackages: {
           where: { isActive: true },
-          take: 1,
           orderBy: { createdAt: 'desc' },
-          select: { imageUrl: true, gallery: true },
+          select: { imageUrl: true },
         },
       },
     })
-    return list.map((row) => ({
-      id: row.id,
-      name_en: row.nameEn,
-      name_ar: row.nameAr,
-      sort_order: row.sortOrder,
-      image_url:
-        row.tourPackages?.[0]?.gallery?.[0] ??
-        row.tourPackages?.[0]?.imageUrl ??
-        null,
-    }))
+    return list.map((row) => {
+      const imageUrls = (row.tourPackages ?? [])
+        .map((p) => p.imageUrl)
+        .filter((url): url is string => Boolean(url))
+      const image_url = imageUrls[0] ?? null
+      return {
+        id: row.id,
+        name_en: row.nameEn,
+        name_ar: row.nameAr,
+        sort_order: row.sortOrder,
+        image_url,
+        image_urls: imageUrls,
+      }
+    })
   }, [])
 }
 
@@ -404,6 +656,12 @@ export async function getEventById(id: string): Promise<Event | undefined> {
   return mapEvent(row) ?? undefined
 }
 
+export async function getEventBySlug(slug: string): Promise<Event | undefined> {
+  const row = await prisma.event.findUnique({ where: { slug } }).catch(() => null)
+  if (!row || !row.isActive) return undefined
+  return mapEvent(row) ?? undefined
+}
+
 export async function getTransportation(): Promise<Transportation[]> {
   return safeDb(async () => {
     const list = await prisma.transportation.findMany({
@@ -419,6 +677,21 @@ export async function getTransportationById(id: string): Promise<Transportation 
   return mapTransportation(row) ?? undefined
 }
 
+export async function getVisas(): Promise<Visa[]> {
+  return safeDb(async () => {
+    const list = await (prisma as unknown as { visa: { findMany: (opts: { where: { isActive: boolean }; orderBy: { createdAt: string } }) => Promise<VisaPrismaRow[]> } }).visa.findMany({
+      where: { isActive: true },
+      orderBy: { createdAt: 'desc' },
+    })
+    return list.map((row) => mapVisa(row)!).filter(Boolean)
+  }, [])
+}
+
+export async function getVisaById(id: string): Promise<Visa | undefined> {
+  const row = await (prisma as unknown as { visa: { findUnique: (opts: { where: { id: string } }) => Promise<VisaPrismaRow | null> } }).visa.findUnique({ where: { id } }).catch(() => null)
+  return mapVisa(row) ?? undefined
+}
+
 export async function getBlogPosts(limit?: number): Promise<BlogPost[]> {
   return safeDb(async () => {
     const list = await prisma.blogPost.findMany({
@@ -431,6 +704,8 @@ export async function getBlogPosts(limit?: number): Promise<BlogPost[]> {
       slug: row.slug,
       title_en: row.titleEn,
       title_ar: row.titleAr,
+      place_en: (row as { placeEn?: string | null }).placeEn ?? null,
+      place_ar: (row as { placeAr?: string | null }).placeAr ?? null,
       excerpt_en: row.excerptEn,
       excerpt_ar: row.excerptAr,
       content_en: row.contentEn,
@@ -455,6 +730,8 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | undefi
     slug: row.slug,
     title_en: row.titleEn,
     title_ar: row.titleAr,
+    place_en: (row as { placeEn?: string | null }).placeEn ?? null,
+    place_ar: (row as { placeAr?: string | null }).placeAr ?? null,
     excerpt_en: row.excerptEn,
     excerpt_ar: row.excerptAr,
     content_en: row.contentEn,

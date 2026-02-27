@@ -29,12 +29,12 @@ export function HomePageClient({ hotels, packages, testimonials, blogPosts }: Ho
       <FeaturedPackagesSection packages={packages} />
       <BlogPreviewSection posts={blogPosts} />
       <AboutSection/>
+      <TestimonialsSection testimonials={testimonials} />
       <ContactFormSection />
       {/* <PartnersSection />
       <FeaturesSection /> */}
       {/* <FeaturedHotelsSection hotels={hotels} /> */}
       {/* <WhyUsSection /> */}
-      {/* <TestimonialsSection testimonials={testimonials} /> */}
       {/* <CTASection /> */}
     </>
   )

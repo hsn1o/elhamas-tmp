@@ -1,5 +1,6 @@
 import { getSession } from '@/lib/auth'
 import { redirect } from 'next/navigation'
+import { AdminHotelsClient } from '@/components/admin/AdminHotelsClient'
 
 export default async function AdminHotelsPage() {
   const session = await getSession()
@@ -7,8 +8,7 @@ export default async function AdminHotelsPage() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-semibold">Hotels</h1>
-      <p className="mt-2 text-muted-foreground">Coming in Phase 3.</p>
+      <AdminHotelsClient />
     </div>
   )
 }

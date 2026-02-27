@@ -1,5 +1,6 @@
 import { getSession } from '@/lib/auth'
 import { redirect } from 'next/navigation'
+import { AdminTransportationClient } from '@/components/admin/AdminTransportationClient'
 
 export default async function AdminTransportationPage() {
   const session = await getSession()
@@ -7,8 +8,7 @@ export default async function AdminTransportationPage() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-semibold">Transportation</h1>
-      <p className="mt-2 text-muted-foreground">Coming in Phase 3.</p>
+      <AdminTransportationClient />
     </div>
   )
 }

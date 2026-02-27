@@ -7,19 +7,31 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { PackageDetailHeader } from '@/components/package-detail-header'
 import { useI18n, getLocalizedContent } from '@/lib/i18n'
 import type { TourPackage } from '@/lib/db'
 import { cn } from '@/lib/utils'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 interface PackageDetailClientProps {
   package: TourPackage
 }
 
 export function PackageDetailClient({ package: pkg }: PackageDetailClientProps) {
-  const { t, locale } = useI18n()
+  const { t, locale, isRTL } = useI18n()
   const [selectedIndex, setSelectedIndex] = useState(0)
+  const [loading, setLoading] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [todayIso, setTodayIso] = useState<string | undefined>()
+
+  useEffect(() => {
+    const now = new Date()
+    const localMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+    setTodayIso(localMidnight.toISOString().slice(0, 10))
+  }, [])
 
   const images = pkg.images?.length
     ? pkg.images
@@ -37,6 +49,70 @@ export function PackageDetailClient({ package: pkg }: PackageDetailClientProps) 
   const exclusions = locale === 'ar' ? pkg.exclusions_ar : pkg.exclusions_en
 
   const sectionCard = 'rounded-xl border border-border bg-card p-6 md:p-8'
+
+  const handleInquirySubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (loading) return
+    setLoading(true)
+    setError(null)
+    const form = e.currentTarget
+    const formData = new FormData(form)
+    const countryCode = (formData.get('countryCode')?.toString() ?? '').trim()
+    const phone = (formData.get('phone')?.toString() ?? '').trim()
+    const fullPhone =
+      countryCode || phone ? [countryCode, phone].filter(Boolean).join(' ') : undefined
+    const adults = formData.get('adults')?.toString() ?? ''
+    const children = formData.get('children')?.toString() ?? ''
+    const rooms = formData.get('rooms')?.toString() ?? ''
+    const dateOfTravel = formData.get('dateOfTravel')?.toString() ?? ''
+    const ticketBooked = formData.get('ticketBooked')?.toString() ?? ''
+    const payload = {
+      type: 'package',
+      referenceId: pkg.id,
+      referenceName: name,
+      referenceSummary:
+        pkg.price != null
+          ? `${pkg.currency} ${pkg.price.toLocaleString()} ${t('common.perPerson')} • ${pkg.duration_days} ${t('common.days')}`
+          : undefined,
+      meta: {
+        adults,
+        children,
+        rooms,
+        dateOfTravel,
+        ticketBooked,
+        durationDays: pkg.duration_days,
+        packageType: pkg.package_type,
+      },
+      name: formData.get('name')?.toString() ?? '',
+      email: formData.get('email')?.toString() ?? '',
+      nationality: formData.get('nationality')?.toString() ?? '',
+      phone: fullPhone,
+      message:
+        [adults && `Adults: ${adults}`, children && `Children: ${children}`, rooms && `Rooms: ${rooms}`, dateOfTravel && `Date: ${dateOfTravel}`, ticketBooked && `Ticket booked: ${ticketBooked}`]
+          .filter(Boolean)
+          .join(', ') || 'Package booking request',
+      locale,
+    }
+    try {
+      const res = await fetch('/api/inquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+      if (!res.ok) throw new Error('Request failed')
+      setSubmitted(true)
+      form.reset()
+    } catch (err) {
+      console.error(err)
+      setError(
+        locale === 'ar'
+          ? 'حدث خطأ أثناء الإرسال. حاول مرة أخرى.'
+          : 'Something went wrong. Please try again.',
+      )
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <>
@@ -305,24 +381,190 @@ export function PackageDetailClient({ package: pkg }: PackageDetailClientProps) 
               </div>
             )}
 
-            {/* Bottom CTA - full width bar */}
-            <div
-              className={cn(
-                sectionCard,
-                "flex flex-col sm:flex-row items-center justify-between gap-6",
-                "bg-primary/5 border-primary/20"
-              )}
-            >
-              <div className="text-center sm:text-left">
-                <p className="text-xl font-bold text-foreground">{name}</p>
-                <p className="text-muted-foreground text-sm mt-1">
-                  {pkg.currency} {pkg.price?.toLocaleString()} {t('common.perPerson')} •{' '}
-                  {pkg.duration_days} {t('common.days')}
-                </p>
-              </div>
-              <Button asChild size="lg" className="min-w-[180px] shrink-0">
-                <Link href={`/contact?package=${pkg.id}`}>{t('common.bookNow')}</Link>
-              </Button>
+            {/* Booking & Inquiries form – unified with other inquiry forms */}
+            <div className="rounded-2xl border border-border/60 bg-background shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)] p-6 sm:p-8">
+              <h2 className="text-xl font-bold text-foreground mb-2">
+                {locale === 'ar' ? 'الحجز والاستفسارات' : 'Booking & Inquiries'}
+              </h2>
+              <p className="text-sm text-muted-foreground mb-6">
+                {locale === 'ar'
+                  ? 'أدخل بياناتك لإرسال طلب الحجز أو الاستفسار عن هذه الباقة.'
+                  : 'Enter your details to send a booking request or inquiry for this package.'}
+              </p>
+              <form
+                onSubmit={handleInquirySubmit}
+                className={cn('space-y-4', isRTL && 'text-right')}
+              >
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="pkg-name" className="text-foreground">
+                      {t('contact.form.name')}
+                    </Label>
+                    <Input
+                      id="pkg-name"
+                      name="name"
+                      required
+                      placeholder={t('contact.form.name')}
+                      dir={isRTL ? 'rtl' : 'ltr'}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="pkg-email" className="text-foreground">
+                      {t('contact.form.email')}
+                    </Label>
+                    <Input
+                      id="pkg-email"
+                      name="email"
+                      type="email"
+                      required
+                      placeholder={t('contact.form.email')}
+                      dir={isRTL ? 'rtl' : 'ltr'}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="pkg-phone" className="text-foreground">
+                    {t('inquiry.form.phone')}
+                  </Label>
+                  <div
+                    className={cn(
+                      'flex flex-col gap-3 sm:flex-row',
+                      isRTL && 'sm:flex-row-reverse',
+                    )}
+                  >
+                    <Input
+                      id="pkg-countryCode"
+                      name="countryCode"
+                      type="tel"
+                      placeholder="+966"
+                      className="w-full sm:w-28"
+                      dir="ltr"
+                    />
+                    <Input
+                      id="pkg-phone"
+                      name="phone"
+                      type="tel"
+                      placeholder={t('inquiry.form.phone')}
+                      className="flex-1"
+                      dir="ltr"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="pkg-nationality" className="text-foreground">
+                    {t('inquiry.form.nationality')}
+                  </Label>
+                  <Input
+                    id="pkg-nationality"
+                    name="nationality"
+                    placeholder={t('inquiry.form.nationality')}
+                    dir={isRTL ? 'rtl' : 'ltr'}
+                  />
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="pkg-adults" className="text-foreground">
+                      {t('packages.form.adults')}
+                    </Label>
+                    <Input
+                      id="pkg-adults"
+                      name="adults"
+                      type="number"
+                      min={1}
+                      placeholder={t('packages.form.adults')}
+                      dir="ltr"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="pkg-children" className="text-foreground">
+                      {t('packages.form.children')}
+                    </Label>
+                    <Input
+                      id="pkg-children"
+                      name="children"
+                      type="number"
+                      min={0}
+                      placeholder={t('packages.form.children')}
+                      dir="ltr"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="pkg-rooms" className="text-foreground">
+                    {t('packages.form.rooms')}
+                  </Label>
+                  <Input
+                    id="pkg-rooms"
+                    name="rooms"
+                    type="number"
+                    min={1}
+                    placeholder={t('packages.form.rooms')}
+                    dir="ltr"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="pkg-dateOfTravel" className="text-foreground">
+                    {t('packages.form.dateOfTravel')}
+                  </Label>
+                  <Input
+                    id="pkg-dateOfTravel"
+                    name="dateOfTravel"
+                    type="date"
+                    min={todayIso}
+                    dir="ltr"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-foreground">
+                    {t('packages.form.ticketBooked')} <span className="text-destructive">*</span>
+                  </p>
+                  <div
+                    className={cn(
+                      'flex flex-col gap-2 text-sm text-foreground',
+                      isRTL && 'items-end text-right',
+                    )}
+                  >
+                    <label className="inline-flex items-center gap-2">
+                      <input
+                        type="radio"
+                        name="ticketBooked"
+                        value="yes"
+                        required
+                        className="h-4 w-4 border border-border rounded-full text-primary focus:ring-primary"
+                      />
+                      <span>{t('booking.yes')}</span>
+                    </label>
+                    <label className="inline-flex items-center gap-2">
+                      <input
+                        type="radio"
+                        name="ticketBooked"
+                        value="no"
+                        className="h-4 w-4 border border-border rounded-full text-primary focus:ring-primary"
+                      />
+                      <span>{t('booking.no')}</span>
+                    </label>
+                  </div>
+                </div>
+                {error && (
+                  <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+                )}
+                {submitted && !error && (
+                  <p className="text-sm text-green-700 dark:text-green-400">
+                    {locale === 'ar' ? 'شكراً! تم إرسال طلبك.' : 'Thank you! Your request has been sent.'}
+                  </p>
+                )}
+                <div className={cn('pt-2', isRTL && 'text-right')}>
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    className="min-w-[180px]"
+                  >
+                    {loading
+                      ? (locale === 'ar' ? 'جاري الإرسال...' : 'Sending...')
+                      : t('inquiry.form.send')}
+                  </Button>
+                </div>
+              </form>
             </div>
           </div>
         </div>

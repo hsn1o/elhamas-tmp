@@ -34,28 +34,67 @@ model SiteSetting {
   @@map("site_settings")
 }
 
+model HotelLocation {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nameEn    String   @map("name_en") @db.VarChar(255)
+  nameAr    String   @map("name_ar") @db.VarChar(255)
+  sortOrder Int      @default(0) @map("sort_order") @db.Integer
+  imageUrl  String?  @map("image_url") @db.Text
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  hotels    Hotel[]
+
+  @@map("hotel_locations")
+}
+
 model Hotel {
-  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  nameEn          String   @map("name_en") @db.VarChar(255)
-  nameAr          String   @map("name_ar") @db.VarChar(255)
-  descriptionEn   String?  @map("description_en") @db.Text
-  descriptionAr   String?  @map("description_ar") @db.Text
-  locationEn      String?  @map("location_en") @db.VarChar(255)
-  locationAr      String?  @map("location_ar") @db.VarChar(255)
-  city            String   @db.VarChar(100)
-  distanceToHaram String?  @map("distance_to_haram") @db.VarChar(100)
-  starRating      Int      @default(5) @map("star_rating") @db.Integer
-  pricePerNight   Decimal? @map("price_per_night") @db.Decimal(10, 2)
-  currency        String   @default("SAR") @db.VarChar(10)
-  imageUrl        String?  @map("image_url") @db.Text
-  gallery         String[] @db.Text
-  amenities       String[] @db.Text
-  isFeatured      Boolean  @default(false) @map("is_featured") @db.Boolean
-  isActive        Boolean  @default(true) @map("is_active") @db.Boolean
-  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt       DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  id              String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  locationId      String?        @map("location_id") @db.Uuid
+  location        HotelLocation? @relation(fields: [locationId], references: [id], onDelete: SetNull)
+  nameEn          String         @map("name_en") @db.VarChar(255)
+  nameAr          String         @map("name_ar") @db.VarChar(255)
+  descriptionEn   String?        @map("description_en") @db.Text
+  descriptionAr   String?        @map("description_ar") @db.Text
+  locationEn      String?        @map("location_en") @db.VarChar(255)
+  locationAr      String?        @map("location_ar") @db.VarChar(255)
+  city            String        @db.VarChar(100)
+  cityAr          String?       @map("city_ar") @db.VarChar(255)
+  distanceToHaram String?        @map("distance_to_haram") @db.VarChar(100)
+  starRating      Int            @default(5) @map("star_rating") @db.Integer
+  pricePerNight   Decimal?       @map("price_per_night") @db.Decimal(10, 2)
+  currency        String         @default("SAR") @db.VarChar(10)
+  imageUrl        String?        @map("image_url") @db.Text
+  gallery         String[]       @db.Text
+  amenities       String[]       @db.Text
+  amenitiesAr     String[]       @default([]) @map("amenities_ar") @db.Text
+  isFeatured      Boolean        @default(false) @map("is_featured") @db.Boolean
+  isActive        Boolean        @default(true) @map("is_active") @db.Boolean
+  createdAt       DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  rooms           Room[]
 
   @@map("hotels")
+}
+
+model Room {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hotelId       String   @map("hotel_id") @db.Uuid
+  hotel         Hotel    @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  nameEn        String   @map("name_en") @db.VarChar(255)
+  nameAr        String   @map("name_ar") @db.VarChar(255)
+  descriptionEn String?  @map("description_en") @db.Text
+  descriptionAr String?  @map("description_ar") @db.Text
+  pricePerNight Decimal  @map("price_per_night") @db.Decimal(10, 2)
+  currency      String   @default("SAR") @db.VarChar(10)
+  maxGuests     Int      @map("max_guests") @db.Integer
+  amenities     String[] @db.Text
+  amenitiesAr   String[] @default([]) @map("amenities_ar") @db.Text
+  imageUrl      String?   @map("image_url") @db.Text
+  isActive      Boolean  @default(true) @map("is_active") @db.Boolean
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("rooms")
 }
 
 model PackageCategory {
@@ -124,6 +163,8 @@ model Event {
   shortDescriptionAr String?   @map("short_description_ar") @db.Text
   eventDate          DateTime  @map("event_date") @db.Timestamptz(6)
   endDate            DateTime? @map("end_date") @db.Timestamptz(6)
+  frequencyEn        String?   @map("frequency_en") @db.VarChar(100)
+  frequencyAr        String?   @map("frequency_ar") @db.VarChar(100)
   locationEn         String?   @map("location_en") @db.VarChar(255)
   locationAr         String?   @map("location_ar") @db.VarChar(255)
   imageUrl           String?   @map("image_url") @db.Text
@@ -146,13 +187,19 @@ model Transportation {
   descriptionEn String?  @map("description_en") @db.Text
   descriptionAr String?  @map("description_ar") @db.Text
   vehicleType   String   @map("vehicle_type") @db.VarChar(100)
+  vehicleTypeAr String?  @map("vehicle_type_ar") @db.VarChar(100)
   capacity      Int      @db.Integer
+  locationEn    String?  @map("location_en") @db.VarChar(255)
+  locationAr    String?  @map("location_ar") @db.VarChar(255)
   pricePerTrip  Decimal? @map("price_per_trip") @db.Decimal(10, 2)
   pricePerDay   Decimal? @map("price_per_day") @db.Decimal(10, 2)
   currency      String   @default("SAR") @db.VarChar(10)
   imageUrl      String?  @map("image_url") @db.Text
+  gallery       String[] @default([]) @db.Text
   featuresEn    String[] @map("features_en") @db.Text
   featuresAr    String[] @map("features_ar") @db.Text
+  excludesEn    String[] @default([]) @map("excludes_en") @db.Text
+  excludesAr    String[] @default([]) @map("excludes_ar") @db.Text
   isFeatured    Boolean  @default(false) @map("is_featured") @db.Boolean
   isActive      Boolean  @default(true) @map("is_active") @db.Boolean
   createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
@@ -161,11 +208,47 @@ model Transportation {
   @@map("transportation")
 }
 
+model Visa {
+  id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nameEn            String   @map("name_en") @db.VarChar(255)
+  nameAr            String   @map("name_ar") @db.VarChar(255)
+  descriptionEn     String?  @map("description_en") @db.Text
+  descriptionAr     String?  @map("description_ar") @db.Text
+  visaTypeEn        String   @map("visa_type_en") @db.VarChar(100)
+  visaTypeAr        String?  @map("visa_type_ar") @db.VarChar(100)
+  processingTimeEn  String?  @map("processing_time_en") @db.VarChar(255)
+  processingTimeAr  String?  @map("processing_time_ar") @db.VarChar(255)
+  validityEn        String?  @map("validity_en") @db.VarChar(255)
+  validityAr        String?  @map("validity_ar") @db.VarChar(255)
+  price             Decimal? @map("price") @db.Decimal(10, 2)
+  currency          String   @default("SAR") @db.VarChar(10)
+  imageUrl          String?  @map("image_url") @db.Text
+  gallery           String[] @default([]) @db.Text
+  requirementsEn    String[] @map("requirements_en") @db.Text
+  requirementsAr    String[] @map("requirements_ar") @db.Text
+  includesEn        String[] @map("includes_en") @db.Text
+  includesAr        String[] @map("includes_ar") @db.Text
+  excludesEn        String[] @default([]) @map("excludes_en") @db.Text
+  excludesAr        String[] @default([]) @map("excludes_ar") @db.Text
+  eligibilityEn     String?  @map("eligibility_en") @db.VarChar(255)
+  eligibilityAr     String?  @map("eligibility_ar") @db.VarChar(255)
+  notesEn           String?  @map("notes_en") @db.Text
+  notesAr           String?  @map("notes_ar") @db.Text
+  isFeatured        Boolean  @default(false) @map("is_featured") @db.Boolean
+  isActive          Boolean  @default(true) @map("is_active") @db.Boolean
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("visas")
+}
+
 model BlogPost {
   id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   titleEn     String    @map("title_en") @db.VarChar(255)
   titleAr     String    @map("title_ar") @db.VarChar(255)
   slug        String    @unique @db.VarChar(255)
+  placeEn     String?   @map("place_en") @db.VarChar(255)
+  placeAr     String?   @map("place_ar") @db.VarChar(255)
   contentEn   String?   @map("content_en") @db.Text
   contentAr   String?   @map("content_ar") @db.Text
   excerptEn   String?   @map("excerpt_en") @db.Text
@@ -224,10 +307,9 @@ model Testimonial {
   nameAr     String?  @map("name_ar") @db.VarChar(255)
   contentEn  String   @map("content_en") @db.Text
   contentAr  String?  @map("content_ar") @db.Text
+  workEn     String?  @map("work_en") @db.VarChar(255)
+  workAr     String?  @map("work_ar") @db.VarChar(255)
   rating     Int      @default(5) @db.Integer
-  imageUrl   String?  @map("image_url") @db.Text
-  location   String?  @db.VarChar(255)
-  isFeatured Boolean  @default(false) @map("is_featured") @db.Boolean
   isActive   Boolean  @default(true) @map("is_active") @db.Boolean
   createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
 

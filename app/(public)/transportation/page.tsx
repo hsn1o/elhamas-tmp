@@ -2,11 +2,11 @@ import { getTransportation } from '@/lib/db'
 import { TransportationPageClient } from './page-client'
 
 export const metadata = {
-  title: 'Transportation',
-  description: 'Premium transportation services for comfortable travel between holy sites.',
+  title: 'Transportation Services',
+  description: 'Comfortable travel between holy sites. Browse vehicles and book your transfer.',
 }
 
 export default async function TransportationPage() {
-  const transportation = await getTransportation()
-  return <TransportationPageClient transportation={transportation} />
+  const items = await getTransportation()
+  return <TransportationPageClient items={items} />
 }

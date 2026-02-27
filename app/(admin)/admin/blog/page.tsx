@@ -1,5 +1,6 @@
 import { getSession } from '@/lib/auth'
 import { redirect } from 'next/navigation'
+import { AdminBlogClient } from '@/components/admin/AdminBlogClient'
 
 export default async function AdminBlogPage() {
   const session = await getSession()
@@ -7,8 +8,7 @@ export default async function AdminBlogPage() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-semibold">Blog</h1>
-      <p className="mt-2 text-muted-foreground">Coming in Phase 4.</p>
+      <AdminBlogClient />
     </div>
   )
 }

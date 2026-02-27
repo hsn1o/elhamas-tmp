@@ -41,7 +41,7 @@ export function Footer() {
             </p>
             <div className="space-y-2 text-sm text-primary-foreground/60">
               <p className="flex items-center gap-2"><Phone className="h-4 w-4" /> <span dir="ltr">+966566610996</span></p>
-              <p className="flex items-center gap-2"><Mail className="h-4 w-4" /> info@ilhamas.com</p>
+              <p className="flex items-center gap-2"><Mail className="h-4 w-4" /> support@elhamas.com</p>
               <p className="flex items-center gap-2"><MapPin className="h-4 w-4" /> Makkah, Saudi Arabia</p>
             </div>
             {/* Social Media */}
