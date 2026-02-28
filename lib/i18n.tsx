@@ -345,9 +345,9 @@ const translations: Record<Locale, Record<string, string>> = {
     // Navigation
     "nav.home": "الرئيسية",
     "nav.hotels": "الفنادق",
-    "nav.packages": "باقات العمره",
+    "nav.packages": "الباقات",
     "nav.events": "الفعاليات",
-    "nav.transportation": "المواصلات",
+    "nav.transportation": "النقل",
     "nav.visas": "التأشيرات",
     "nav.blog": "المجلة السياحية",
     "nav.about": "من نحن",
@@ -359,7 +359,7 @@ const translations: Record<Locale, Record<string, string>> = {
     // Hero
     "hero.title": "رحلتك للعمرة تبدأ من الطمأنينة",
     "hero.subtitle": "خدمة متكاملة تليق بضيوف الرحمن",
-    "hero.cta": "استعرض باقات العمرة",
+    "hero.cta": "استعرض الباقات",
     "hero.secondary": "تواصل واتساب",
     "hero.destinations": "الوجهات",
     "hero.tours": "الجولات",
@@ -377,7 +377,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "common.readMore": "اقرأ المزيد",
 
     // Home
-    "home.featuredPackages": "باقات العمره",
+    "home.featuredPackages": "الباقات",
     "home.featuredPackages.subtitle":
       "اكتشف تجارب الحج والعمرة المختارة بعناية",
     "home.featuredPackages.exploreWithUs": "إستكشف معنا",
@@ -611,7 +611,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "inquiry.form.send": "إرسال",
     "booking.needVisa": "هل تحتاج إلى تأشيرة؟",
     "booking.bookedFlight": "هل حجزت تذكرة الطيران؟",
-    "booking.needTransport": "هل تحتاج إلى خدمات المواصلات؟",
+    "booking.needTransport": "هل تحتاج إلى خدمات النقل؟",
     "booking.yes": "نعم",
     "booking.no": "لا",
 
@@ -622,7 +622,7 @@ const translations: Record<Locale, Record<string, string>> = {
       "يمكنك الحجز عبر الموقع باختيار الباقة وتعبئة النموذج، أو التواصل معنا عبر واتساب أو الهاتف. فريقنا يرشدك للخطوات والمستندات المطلوبة.",
     "faq.2.question": "ما الخدمات التي تقدمونها؟",
     "faq.2.answer":
-      "نقدم باقات العمرة (طيران، إقامة، نقل)، باقات الحج، حجز فنادق قريبة من الحرم، المواصلات، وخدمات التأشيرة. كما نقدم متابعة قبل الرحلة وأثناءها.",
+      "نقدم باقات (طيران، إقامة، نقل)، حجز فنادق قريبة من الحرم، النقل، وخدمات التأشيرة. كما نقدم متابعة قبل الرحلة وأثناءها.",
     "faq.3.question": "هل تقدمون باقات مخصصة أو للجماعات؟",
     "faq.3.answer":
       "نعم. نعدّل الباقات حسب تواريخك وميزانيتك وعدد المجموعة. للجماعات والعائلات نقدم أسعاراً خاصة ومتابعة مخصصة.",
@@ -651,7 +651,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "footer.termsOfService": "شروط الخدمة",
     "footer.companyName": "شركة إلهام ناصر أبو سرهد",
     "footer.hajjPackages": "باقات الحج",
-    "footer.umrahPackages": "باقات العمرة",
+    "footer.umrahPackages": "الباقات",
     "why.competent": "كفاءة",
     "why.competent.desc": "فريق خبير بسنوات من الخبرة في الحج والعمرة.",
     "why.affordable": "أسعار مناسبة",
