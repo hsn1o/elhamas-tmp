@@ -257,9 +257,9 @@ const translations: Record<Locale, Record<string, string>> = {
     "about.message.text":
       "We are committed to providing an integrated Umrah experience that respects the sanctity of the journey, through professional service, continuous follow-up, and well-considered details that enhance peace of mind and ease.",
     "about.reems.title": "Reems & Dreems",
-    "about.reems.subtitle": "For Hotel Management and Operation",
+    "about.reems.subtitle": "A Dedicated Hotel Management Company with a Spiritual Mission",
     "about.reems.description":
-      "Reems & Dreems is a sister company of Elham Nasser Abu Sarahd Company, specializing in hotel management and operation. Together we deliver trusted accommodation and hospitality services for pilgrims and visitors.",
+      "Elham owns a specialized hotel management company that ensures high standards of quality and hospitality for the Guests of Allah in Makkah and Madinah. Combining professional hotel operations with our expertise in Umrah services, we provide a comfortable, well-organized stay that supports pilgrims in experiencing their journey with tranquility and peace.",
     "about.learnMore": "Learn More About Us",
     "about.stats.years": "Years Experience",
     "about.stats.pilgrims": "Pilgrims Served",
@@ -581,9 +581,9 @@ const translations: Record<Locale, Record<string, string>> = {
     "about.message.text":
       "نلتزم بتوفير تجربة عمرة متكاملة تراعي قدسية الرحلة، عبر خدمة احترافية ومتابعة مستمرة، وتفاصيل مدروسة تعزز الطمأنينة واليسر.",
     "about.reems.title": "ريمز آند دريمز",
-    "about.reems.subtitle": "لإدارة وتشغيل الفنادق",
+    "about.reems.subtitle": "شركة إدارة فندقية بخبرة وروح رسالة",
     "about.reems.description":
-      "ريمز آند دريمز شركة شقيقة لشركة إلهام ناصر أبو سرهد، متخصصة في إدارة وتشغيل الفنادق. نقدم معاً خدمات سكن وضيافة موثوقة للحجاج والزوار.",
+      "تمتلك شركة إلهام شركة متخصصة في إدارة وتشغيل الفنادق، لتكون الذراع التشغيلي الذي يضمن أعلى معايير الجودة والضيافة لضيوف الرحمن في مكة المكرمة والمدينة المنورة. لا ننظر إلى الإدارة الفندقية كخدمة تشغيلية فحسب، بل كجزء من رسالتنا في خدمة المعتمرين، حيث نعتني بأدق التفاصيل التي تصنع راحة النزيل وتمنحه أجواء السكينة والطمأنينة.\n\nوبفضل خبرتنا في تنظيم برامج العمرة وإدارة الفنادق معًا، نقدم تجربة إقامة متكاملة تجمع بين الاحترافية في التشغيل والبعد الروحاني للرحلة، بما يليق بقدسية المكان وعظمة المقصد.",
     "about.learnMore": "اعرف المزيد عنا",
     "about.stats.years": "سنوات الخبرة",
     "about.stats.pilgrims": "معتمرون نخدمهم",

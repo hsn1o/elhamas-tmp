@@ -151,7 +151,7 @@ export function AboutPageClient({ testimonials }: AboutPageClientProps) {
               <p className="text-sm font-medium text-primary uppercase tracking-wider mb-4" dir={isRTL ? 'rtl' : 'ltr'}>
                 {t('about.reems.subtitle')}
               </p>
-              <p className="text-muted-foreground leading-relaxed max-w-[55ch] md:max-w-none" dir={isRTL ? 'rtl' : 'ltr'}>
+              <p className="text-muted-foreground leading-relaxed max-w-[55ch] md:max-w-none whitespace-pre-line" dir={isRTL ? 'rtl' : 'ltr'}>
                 {t('about.reems.description')}
               </p>
             </div>
