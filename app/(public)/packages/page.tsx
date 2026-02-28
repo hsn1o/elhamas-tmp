@@ -1,6 +1,9 @@
 import { getTourPackages, getPackageCategories, getLocations, getPackageDiscoverCard } from '@/lib/db'
 import { PackagesPageClient } from './page-client'
 
+// Force dynamic rendering so categories/locations added in admin appear immediately in production
+export const dynamic = 'force-dynamic'
+
 export const metadata = {
   title: 'Tour Packages',
   description: 'Explore our comprehensive Hajj and Umrah packages designed for a meaningful spiritual journey.',

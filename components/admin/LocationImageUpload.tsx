@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
-import { Upload } from 'lucide-react'
+import { Upload, Loader2 } from 'lucide-react'
 
 const ACCEPT_IMAGES = 'image/jpeg,image/png,image/webp,image/gif'
 
@@ -64,8 +64,12 @@ export function LocationImageUpload({
               disabled={uploading}
               onClick={() => inputRef.current?.click()}
             >
-              <Upload className="h-3 w-3 mr-1" />
-              {uploading ? '…' : 'Replace'}
+              {uploading ? (
+                <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+              ) : (
+                <Upload className="h-3 w-3 mr-1" />
+              )}
+              {uploading ? 'Uploading…' : 'Replace'}
             </Button>
             <Button
               type="button"
@@ -96,7 +100,11 @@ export function LocationImageUpload({
             disabled={uploading}
             onClick={() => inputRef.current?.click()}
           >
-            <Upload className="h-4 w-4 mr-2" />
+            {uploading ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Upload className="h-4 w-4 mr-2" />
+            )}
             {uploading ? 'Uploading…' : 'Upload from device'}
           </Button>
         </div>

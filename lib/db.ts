@@ -340,21 +340,11 @@ export async function getHotelLocations(): Promise<HotelLocation[]> {
   return safeDb(async () => {
     const list = await prisma.hotelLocation.findMany({
       orderBy: [{ sortOrder: 'asc' }, { createdAt: 'asc' }],
-      include: {
-        hotels: {
-          where: { isActive: true },
-          orderBy: { createdAt: 'desc' },
-          select: { imageUrl: true },
-        },
-      },
     })
     return list.map((row) => {
-      const hotelImageUrls = (row.hotels ?? []).map((h) => h.imageUrl).filter((url): url is string => Boolean(url))
       const locationImageUrl = row.imageUrl ?? null
-      const image_url = locationImageUrl ?? hotelImageUrls[0] ?? null
-      const image_urls = locationImageUrl
-        ? [locationImageUrl, ...hotelImageUrls.filter((u) => u !== locationImageUrl)]
-        : hotelImageUrls
+      const image_url = locationImageUrl
+      const image_urls = locationImageUrl ? [locationImageUrl] : []
       return {
         id: row.id,
         name_en: row.nameEn,
@@ -615,23 +605,11 @@ export async function getPackageCategories(): Promise<PackageCategory[]> {
   return safeDb(async () => {
     const list = await prisma.packageCategory.findMany({
       orderBy: [{ sortOrder: 'asc' }, { createdAt: 'asc' }],
-      include: {
-        tourPackages: {
-          where: { isActive: true },
-          orderBy: { createdAt: 'desc' },
-          select: { imageUrl: true },
-        },
-      },
     })
     return list.map((row) => {
-      const packageImageUrls = (row.tourPackages ?? [])
-        .map((p) => p.imageUrl)
-        .filter((url): url is string => Boolean(url))
-      const categoryImageUrl = (row as { imageUrl?: string | null }).imageUrl ?? null
-      const image_url = categoryImageUrl ?? packageImageUrls[0] ?? null
-      const image_urls = categoryImageUrl
-        ? [categoryImageUrl, ...packageImageUrls.filter((u) => u !== categoryImageUrl)]
-        : packageImageUrls
+      const categoryImageUrl = row.imageUrl ?? null
+      const image_url = categoryImageUrl
+      const image_urls = categoryImageUrl ? [categoryImageUrl] : []
       return {
         id: row.id,
         name_en: row.nameEn,

@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
-import { Upload, Plus, Trash2 } from 'lucide-react'
+import { Upload, Plus, Trash2, Loader2 } from 'lucide-react'
 
 const ACCEPT_IMAGES = 'image/jpeg,image/png,image/webp,image/gif'
 
@@ -66,7 +66,11 @@ export function FeaturedImageUpload({
               disabled={disabled || uploading}
               onClick={() => inputRef.current?.click()}
             >
-              <Upload className="h-4 w-4 mr-2" />
+              {uploading ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Upload className="h-4 w-4 mr-2" />
+              )}
               {uploading ? 'Uploading…' : 'Replace'}
             </Button>
             <Button type="button" variant="ghost" size="sm" disabled={disabled} onClick={() => onChange('')}>
@@ -90,7 +94,11 @@ export function FeaturedImageUpload({
             disabled={disabled || uploading}
             onClick={() => inputRef.current?.click()}
           >
-            <Upload className="h-4 w-4 mr-2" />
+            {uploading ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Upload className="h-4 w-4 mr-2" />
+            )}
             {uploading ? 'Uploading…' : 'Upload featured image'}
           </Button>
         </div>
@@ -172,12 +180,19 @@ export function GalleryUpload({
           <Button
             type="button"
             variant="outline"
-            size="icon"
-            className="w-24 h-24"
+            size={uploading ? 'default' : 'icon'}
+            className={uploading ? 'w-24 h-24 flex flex-col gap-1.5' : 'w-24 h-24'}
             disabled={disabled || uploading}
             onClick={() => inputRef.current?.click()}
           >
-            <Plus className="h-6 w-6" />
+            {uploading ? (
+              <>
+                <Loader2 className="h-6 w-6 animate-spin shrink-0" />
+                <span className="text-xs">Uploading…</span>
+              </>
+            ) : (
+              <Plus className="h-6 w-6" />
+            )}
           </Button>
         </div>
       </div>
