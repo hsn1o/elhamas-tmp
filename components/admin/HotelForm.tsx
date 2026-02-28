@@ -25,6 +25,7 @@ import {
 import { Plus, Trash2 } from 'lucide-react'
 import { FeaturedImageUpload, GalleryUpload } from '@/components/admin/HotelImageUploads'
 import { LocationImageUpload } from '@/components/admin/LocationImageUpload'
+import { PlaceImageInline } from '@/components/admin/PlaceImageInline'
 import { cn } from '@/lib/utils'
 
 type HotelRow = {
@@ -213,7 +214,9 @@ export function HotelForm({
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [form, setForm] = useState(defaultValues)
-  const [locations, setLocations] = useState<{ id: string; nameEn: string; nameAr: string }[]>([])
+  const [locations, setLocations] = useState<
+    { id: string; nameEn: string; nameAr: string; imageUrl?: string | null }[]
+  >([])
   const [locationOpen, setLocationOpen] = useState(false)
   const [newLocEn, setNewLocEn] = useState('')
   const [newLocAr, setNewLocAr] = useState('')
@@ -276,7 +279,15 @@ export function HotelForm({
       })
       const data = await res.json().catch(() => ({}))
       if (res.ok && data.id) {
-        setLocations((prev) => [...prev, data])
+        setLocations((prev) => [
+          ...prev,
+          {
+            id: data.id,
+            nameEn: data.nameEn ?? newLocEn.trim(),
+            nameAr: data.nameAr ?? newLocAr.trim(),
+            imageUrl: data.imageUrl ?? (newLocImageUrl.trim() || null),
+          },
+        ])
         setForm((f) => ({ ...f, locationId: data.id }))
         setNewLocEn('')
         setNewLocAr('')
@@ -304,20 +315,37 @@ export function HotelForm({
     }
   }
 
-  async function handleUpdateLocation(id: string, nameEn: string, nameAr: string) {
+  async function handleUpdateLocation(
+    id: string,
+    nameEn: string,
+    nameAr: string,
+    imageUrl?: string | null,
+  ) {
     if (!nameEn.trim() || !nameAr.trim()) return
     setLocationSavingId(id)
     try {
+      const body: { nameEn: string; nameAr: string; imageUrl?: string | null } = {
+        nameEn: nameEn.trim(),
+        nameAr: nameAr.trim(),
+      }
+      if (imageUrl !== undefined) body.imageUrl = imageUrl
       const res = await fetch(`/api/admin/hotel-locations/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ nameEn: nameEn.trim(), nameAr: nameAr.trim() }),
+        body: JSON.stringify(body),
       })
       if (res.ok) {
         setLocations((prev) =>
           prev.map((l) =>
-            l.id === id ? { ...l, nameEn: nameEn.trim(), nameAr: nameAr.trim() } : l,
+            l.id === id
+              ? {
+                  ...l,
+                  nameEn: nameEn.trim(),
+                  nameAr: nameAr.trim(),
+                  ...(imageUrl !== undefined && { imageUrl }),
+                }
+              : l,
           ),
         )
       }
@@ -445,27 +473,35 @@ export function HotelForm({
                 </PopoverTrigger>
                 <PopoverContent className="w-[420px]" align="start">
                   <div className="space-y-3">
-                    <button
-                      type="button"
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-muted"
-                      onClick={() => {
-                        setForm((f) => ({ ...f, locationId: null }))
-                        setLocationOpen(false)
-                      }}
-                    >
-                      No place
-                    </button>
-                    {locations.map((l) => (
-                      <div
-                        key={l.id}
-                        className={cn(
-                          'flex items-center gap-2 rounded-md border p-2',
-                          form.locationId === l.id
-                            ? 'border-primary bg-primary/5'
-                            : 'border-border bg-background',
-                        )}
+                    <div className="max-h-[280px] overflow-y-auto space-y-3 pr-1">
+                      <button
+                        type="button"
+                        className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-muted"
+                        onClick={() => {
+                          setForm((f) => ({ ...f, locationId: null }))
+                          setLocationOpen(false)
+                        }}
                       >
-                        <Input
+                        No place
+                      </button>
+                      {locations.map((l) => (
+                        <div
+                          key={l.id}
+                          className={cn(
+                            'flex items-center gap-2 rounded-md border p-2',
+                            form.locationId === l.id
+                              ? 'border-primary bg-primary/5'
+                              : 'border-border bg-background',
+                          )}
+                        >
+                          <PlaceImageInline
+                            value={l.imageUrl ?? ''}
+                            onChange={(url) =>
+                              handleUpdateLocation(l.id, l.nameEn, l.nameAr, url)
+                            }
+                            disabled={locationSavingId === l.id}
+                          />
+                          <Input
                           placeholder="Name (EN)"
                           value={l.nameEn}
                           onChange={(e) =>
@@ -526,6 +562,7 @@ export function HotelForm({
                         </Button>
                       </div>
                     ))}
+                    </div>
                     <div className="border-t pt-3">
                       <p className="text-xs font-medium text-muted-foreground mb-2">Create new place</p>
                       {createLocationError && (

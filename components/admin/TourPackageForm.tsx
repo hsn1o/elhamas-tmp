@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,7 +28,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Plus, Trash2, ChevronLeft, ChevronRight, Check, Upload } from "lucide-react";
+import { Plus, Trash2, ChevronLeft, ChevronRight, Check, Upload, Loader2 } from "lucide-react";
 import { MarkdownField } from "./MarkdownField";
 import { cn } from "@/lib/utils";
 
@@ -275,7 +274,11 @@ function FeaturedImageUpload({
               disabled={disabled || uploading}
               onClick={() => document.getElementById("featured-upload")?.click()}
             >
-              <Upload className="h-4 w-4 mr-2" />
+              {uploading ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Upload className="h-4 w-4 mr-2" />
+              )}
               {uploading ? "Uploading…" : "Replace"}
             </Button>
             <Button
@@ -305,7 +308,11 @@ function FeaturedImageUpload({
             disabled={disabled || uploading}
             onClick={() => document.getElementById("featured-upload")?.click()}
           >
-            <Upload className="h-4 w-4 mr-2" />
+            {uploading ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Upload className="h-4 w-4 mr-2" />
+            )}
             {uploading ? "Uploading…" : "Upload featured image"}
           </Button>
         </div>
@@ -392,13 +399,100 @@ function GalleryUpload({
             disabled={disabled || uploading}
             onClick={() => inputRef.current?.click()}
           >
-            <Plus className="h-6 w-6" />
+            {uploading ? (
+              <Loader2 className="h-6 w-6 animate-spin" />
+            ) : (
+              <Plus className="h-6 w-6" />
+            )}
           </Button>
         </div>
       </div>
       {uploadError && <p className="text-sm text-destructive">{uploadError}</p>}
       {urls.length === 0 && (
         <p className="text-sm text-muted-foreground">Upload at least one image.</p>
+      )}
+    </div>
+  );
+}
+
+function CategoryImageInline({
+  value,
+  onChange,
+  disabled,
+}: {
+  value: string;
+  onChange: (url: string) => void;
+  disabled?: boolean;
+}) {
+  const [uploading, setUploading] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    setUploading(true);
+    try {
+      const url = await uploadFile(file);
+      onChange(url);
+    } finally {
+      setUploading(false);
+    }
+  };
+  return (
+    <div className="shrink-0">
+      <input
+        ref={inputRef}
+        type="file"
+        accept={ACCEPT_IMAGES}
+        className="hidden"
+        disabled={disabled || uploading}
+        onChange={handleFile}
+      />
+      {value ? (
+        <div className="flex flex-col gap-0.5 items-center">
+          <div className="relative group">
+            <div className="w-10 h-10 rounded border overflow-hidden bg-muted">
+              <img src={value} alt="" className="w-full h-full object-cover" />
+            </div>
+            <Button
+              type="button"
+              variant="secondary"
+              size="icon"
+              className="absolute inset-0 h-10 w-10 opacity-0 group-hover:opacity-100 transition-opacity bg-black/50 hover:bg-black/60"
+              disabled={disabled || uploading}
+              onClick={() => inputRef.current?.click()}
+            >
+              {uploading ? (
+                <Loader2 className="h-4 w-4 animate-spin text-white" />
+              ) : (
+                <Upload className="h-4 w-4 text-white" />
+              )}
+            </Button>
+          </div>
+          <button
+            type="button"
+            className="text-[10px] text-muted-foreground hover:text-destructive"
+            onClick={() => onChange("")}
+            disabled={disabled || uploading}
+          >
+            Remove
+          </button>
+        </div>
+      ) : (
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          className="h-10 w-10"
+          disabled={disabled || uploading}
+          onClick={() => inputRef.current?.click()}
+        >
+          {uploading ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Upload className="h-4 w-4" />
+          )}
+        </Button>
       )}
     </div>
   );
@@ -448,8 +542,12 @@ function LocationImageUpload({
               disabled={uploading}
               onClick={() => inputRef.current?.click()}
             >
-              <Upload className="h-3 w-3 mr-1" />
-              {uploading ? "…" : "Replace"}
+              {uploading ? (
+                <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+              ) : (
+                <Upload className="h-3 w-3 mr-1" />
+              )}
+              {uploading ? "Uploading…" : "Replace"}
             </Button>
             <Button
               type="button"
@@ -480,7 +578,11 @@ function LocationImageUpload({
             disabled={uploading}
             onClick={() => inputRef.current?.click()}
           >
-            <Upload className="h-4 w-4 mr-2" />
+            {uploading ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Upload className="h-4 w-4 mr-2" />
+            )}
             {uploading ? "Uploading…" : "Upload from device"}
           </Button>
         </div>
@@ -499,18 +601,18 @@ export function TourPackageForm({
   onSuccess: () => void;
   onCancel: () => void;
 }) {
-  const router = useRouter();
   const isEdit = Boolean(pkg?.id);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [step, setStep] = useState(1);
   const [form, setForm] = useState(defaultValues);
   const [categories, setCategories] = useState<
-    { id: string; nameEn: string; nameAr: string }[]
+    { id: string; nameEn: string; nameAr: string; imageUrl?: string | null }[]
   >([]);
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [newCatEn, setNewCatEn] = useState("");
   const [newCatAr, setNewCatAr] = useState("");
+  const [newCatImageUrl, setNewCatImageUrl] = useState("");
   const [createCategoryLoading, setCreateCategoryLoading] = useState(false);
   const [createCategoryError, setCreateCategoryError] = useState("");
   const [categoryDeleteId, setCategoryDeleteId] = useState<string | null>(null);
@@ -541,14 +643,24 @@ export function TourPackageForm({
         body: JSON.stringify({
           nameEn: newCatEn.trim(),
           nameAr: newCatAr.trim(),
+          imageUrl: newCatImageUrl.trim() || undefined,
         }),
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok && data.id) {
-        setCategories((prev) => [...prev, data]);
+        setCategories((prev) => [
+          ...prev,
+          {
+            id: data.id,
+            nameEn: data.nameEn ?? newCatEn.trim(),
+            nameAr: data.nameAr ?? newCatAr.trim(),
+            imageUrl: data.imageUrl ?? (newCatImageUrl.trim() || null),
+          },
+        ]);
         setForm((f) => ({ ...f, categoryId: data.id }));
         setNewCatEn("");
         setNewCatAr("");
+        setNewCatImageUrl("");
         setCreateCategoryError("");
         setCategoryOpen(false);
       } else {
@@ -577,21 +689,32 @@ export function TourPackageForm({
     id: string,
     nameEn: string,
     nameAr: string,
+    imageUrl?: string | null,
   ) {
     if (!nameEn.trim() || !nameAr.trim()) return;
     setCategorySavingId(id);
     try {
+      const body: { nameEn: string; nameAr: string; imageUrl?: string | null } = {
+        nameEn: nameEn.trim(),
+        nameAr: nameAr.trim(),
+      };
+      if (imageUrl !== undefined) body.imageUrl = imageUrl;
       const res = await fetch(`/api/admin/categories/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ nameEn: nameEn.trim(), nameAr: nameAr.trim() }),
+        body: JSON.stringify(body),
       });
       if (res.ok) {
         setCategories((prev) =>
           prev.map((c) =>
             c.id === id
-              ? { ...c, nameEn: nameEn.trim(), nameAr: nameAr.trim() }
+              ? {
+                  ...c,
+                  nameEn: nameEn.trim(),
+                  nameAr: nameAr.trim(),
+                  ...(imageUrl !== undefined && { imageUrl }),
+                }
               : c,
           ),
         );
@@ -864,7 +987,6 @@ export function TourPackageForm({
         setError(data.error || "Request failed");
         return;
       }
-      router.refresh();
       onSuccess();
     } catch {
       setError("Something went wrong");
@@ -964,27 +1086,35 @@ export function TourPackageForm({
                   </PopoverTrigger>
                   <PopoverContent className="w-[420px]" align="start">
                     <div className="space-y-3">
-                      <button
-                        type="button"
-                        className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-muted"
-                        onClick={() => {
-                          setForm((f) => ({ ...f, categoryId: null }));
-                          setCategoryOpen(false);
-                        }}
-                      >
-                        No category
-                      </button>
-                      {categories.map((c) => (
-                        <div
-                          key={c.id}
-                          className={cn(
-                            "flex items-center gap-2 rounded-md border p-2",
-                            form.categoryId === c.id
-                              ? "border-primary bg-primary/5"
-                              : "border-border bg-background",
-                          )}
+                      <div className="max-h-[280px] overflow-y-auto space-y-3 pr-1">
+                        <button
+                          type="button"
+                          className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-muted"
+                          onClick={() => {
+                            setForm((f) => ({ ...f, categoryId: null }));
+                            setCategoryOpen(false);
+                          }}
                         >
-                          <Input
+                          No category
+                        </button>
+                        {categories.map((c) => (
+                          <div
+                            key={c.id}
+                            className={cn(
+                              "flex items-center gap-2 rounded-md border p-2",
+                              form.categoryId === c.id
+                                ? "border-primary bg-primary/5"
+                                : "border-border bg-background",
+                            )}
+                          >
+                            <CategoryImageInline
+                              value={c.imageUrl ?? ""}
+                              onChange={(url) =>
+                                handleUpdateCategory(c.id, c.nameEn, c.nameAr, url)
+                              }
+                              disabled={categorySavingId === c.id}
+                            />
+                            <Input
                             placeholder="Name (EN)"
                             value={c.nameEn}
                             onChange={(e) =>
@@ -1048,7 +1178,8 @@ export function TourPackageForm({
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
-                      ))}
+                        ))}
+                      </div>
                       <div className="border-t pt-3">
                         <p className="text-xs font-medium text-muted-foreground mb-2">
                           Create new
@@ -1076,6 +1207,10 @@ export function TourPackageForm({
                           }}
                           className="mb-2"
                           dir="rtl"
+                        />
+                        <LocationImageUpload
+                          value={newCatImageUrl}
+                          onChange={setNewCatImageUrl}
                         />
                         <Button
                           type="button"
@@ -1563,7 +1698,14 @@ export function TourPackageForm({
             </Button>
           ) : (
             <Button type="submit" disabled={loading}>
-              {loading ? "Creating…" : "Create package"}
+              {loading ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Creating…
+                </>
+              ) : (
+                "Create package"
+              )}
             </Button>
           )}
         </div>
@@ -1690,26 +1832,34 @@ export function TourPackageForm({
                 </PopoverTrigger>
                 <PopoverContent className="w-[420px]" align="start">
                   <div className="space-y-3">
-                    <button
-                      type="button"
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-muted"
-                      onClick={() => {
-                        setForm((f) => ({ ...f, categoryId: null }));
-                        setCategoryOpen(false);
-                      }}
-                    >
-                      No category
-                    </button>
-                    {categories.map((c) => (
-                      <div
-                        key={c.id}
-                        className={cn(
-                          "flex items-center gap-2 rounded-md border p-2",
-                          form.categoryId === c.id
-                            ? "border-primary bg-primary/5"
-                            : "border-border bg-background",
-                        )}
+                    <div className="max-h-[180px] overflow-y-auto space-y-3 pr-1">
+                      <button
+                        type="button"
+                        className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-muted"
+                        onClick={() => {
+                          setForm((f) => ({ ...f, categoryId: null }));
+                          setCategoryOpen(false);
+                        }}
                       >
+                        No category
+                      </button>
+                      {categories.map((c) => (
+                        <div
+                          key={c.id}
+                          className={cn(
+                            "flex items-center gap-2 rounded-md border p-2",
+                            form.categoryId === c.id
+                              ? "border-primary bg-primary/5"
+                              : "border-border bg-background",
+                          )}
+                        >
+                          <CategoryImageInline
+                            value={c.imageUrl ?? ""}
+                            onChange={(url) =>
+                              handleUpdateCategory(c.id, c.nameEn, c.nameAr, url)
+                            }
+                            disabled={categorySavingId === c.id}
+                          />
                         <Input
                           placeholder="Name (EN)"
                           value={c.nameEn}
@@ -1775,6 +1925,7 @@ export function TourPackageForm({
                         </Button>
                       </div>
                     ))}
+                    </div>
                     <div className="border-t pt-3">
                       <p className="text-xs font-medium text-muted-foreground mb-2">
                         Create new
@@ -1802,6 +1953,10 @@ export function TourPackageForm({
                         }}
                         className="mb-2"
                         dir="rtl"
+                      />
+                      <LocationImageUpload
+                        value={newCatImageUrl}
+                        onChange={setNewCatImageUrl}
                       />
                       <Button
                         type="button"
@@ -2246,7 +2401,16 @@ export function TourPackageForm({
 
       <div className="flex gap-2 pt-4 border-t">
         <Button type="submit" disabled={loading}>
-          {loading ? "Saving…" : isEdit ? "Update package" : "Create package"}
+          {loading ? (
+            <>
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              Saving…
+            </>
+          ) : isEdit ? (
+            "Update package"
+          ) : (
+            "Create package"
+          )}
         </Button>
         <Button type="button" variant="outline" onClick={onCancel}>
           Cancel

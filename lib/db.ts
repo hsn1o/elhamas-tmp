@@ -65,6 +65,14 @@ export interface PackageCategory {
   image_urls: string[]
 }
 
+export interface PackageDiscoverCard {
+  id: string
+  title_en: string
+  title_ar: string
+  image_url: string | null
+  is_visible: boolean
+}
+
 export interface Location {
   id: string
   name_en: string
@@ -341,14 +349,19 @@ export async function getHotelLocations(): Promise<HotelLocation[]> {
       },
     })
     return list.map((row) => {
-      const imageUrls = (row.hotels ?? []).map((h) => h.imageUrl).filter((url): url is string => Boolean(url))
+      const hotelImageUrls = (row.hotels ?? []).map((h) => h.imageUrl).filter((url): url is string => Boolean(url))
+      const locationImageUrl = row.imageUrl ?? null
+      const image_url = locationImageUrl ?? hotelImageUrls[0] ?? null
+      const image_urls = locationImageUrl
+        ? [locationImageUrl, ...hotelImageUrls.filter((u) => u !== locationImageUrl)]
+        : hotelImageUrls
       return {
         id: row.id,
         name_en: row.nameEn,
         name_ar: row.nameAr,
         sort_order: row.sortOrder,
-        image_url: imageUrls[0] ?? null,
-        image_urls: imageUrls,
+        image_url,
+        image_urls,
       }
     })
   }, [])
@@ -611,20 +624,38 @@ export async function getPackageCategories(): Promise<PackageCategory[]> {
       },
     })
     return list.map((row) => {
-      const imageUrls = (row.tourPackages ?? [])
+      const packageImageUrls = (row.tourPackages ?? [])
         .map((p) => p.imageUrl)
         .filter((url): url is string => Boolean(url))
-      const image_url = imageUrls[0] ?? null
+      const categoryImageUrl = (row as { imageUrl?: string | null }).imageUrl ?? null
+      const image_url = categoryImageUrl ?? packageImageUrls[0] ?? null
+      const image_urls = categoryImageUrl
+        ? [categoryImageUrl, ...packageImageUrls.filter((u) => u !== categoryImageUrl)]
+        : packageImageUrls
       return {
         id: row.id,
         name_en: row.nameEn,
         name_ar: row.nameAr,
         sort_order: row.sortOrder,
         image_url,
-        image_urls: imageUrls,
+        image_urls,
       }
     })
   }, [])
+}
+
+export async function getPackageDiscoverCard(): Promise<PackageDiscoverCard | null> {
+  return safeDb(async () => {
+    const row = await (prisma as { packageDiscoverCard?: { findFirst: () => Promise<{ id: string; titleEn: string; titleAr: string; imageUrl: string | null; isVisible: boolean } | null> } }).packageDiscoverCard?.findFirst()
+    if (!row) return null
+    return {
+      id: row.id,
+      title_en: row.titleEn,
+      title_ar: row.titleAr,
+      image_url: row.imageUrl ?? null,
+      is_visible: row.isVisible,
+    }
+  }, null)
 }
 
 export async function getLocations(): Promise<Location[]> {

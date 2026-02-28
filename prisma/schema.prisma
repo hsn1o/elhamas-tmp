@@ -101,12 +101,25 @@ model PackageCategory {
   id           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   nameEn       String        @map("name_en") @db.VarChar(255)
   nameAr       String        @map("name_ar") @db.VarChar(255)
+  imageUrl     String?       @map("image_url") @db.Text
   sortOrder    Int           @default(0) @map("sort_order") @db.Integer
   createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt    DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
   tourPackages TourPackage[]
 
   @@map("package_categories")
+}
+
+model PackageDiscoverCard {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  titleEn   String   @map("title_en") @db.VarChar(255)
+  titleAr   String   @map("title_ar") @db.VarChar(255)
+  imageUrl  String?  @map("image_url") @db.Text
+  isVisible Boolean  @default(true) @map("is_visible") @db.Boolean
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("package_discover_cards")
 }
 
 model Location {

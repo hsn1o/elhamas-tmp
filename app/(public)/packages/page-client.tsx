@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/page-header";
 import { SearchSortBar } from "@/components/search-sort-bar";
 import { useI18n, getLocalizedContent } from "@/lib/i18n";
-import type { TourPackage, PackageCategory, Location } from "@/lib/db";
+import type { TourPackage, PackageCategory, Location, PackageDiscoverCard } from "@/lib/db";
 import { cn } from "@/lib/utils";
 
 const PACKAGE_SORT_DEFAULT = "priceAsc";
@@ -17,6 +17,7 @@ interface PackagesPageClientProps {
   packages: TourPackage[];
   categories: PackageCategory[];
   locations: Location[];
+  discoverCard: PackageDiscoverCard | null;
 }
 
 const CATEGORY_IMAGE_INTERVAL_MS = 4000;
@@ -148,6 +149,7 @@ export function PackagesPageClient({
   packages,
   categories,
   locations,
+  discoverCard,
 }: PackagesPageClientProps) {
   const { t, locale } = useI18n();
   const [view, setView] = useState<ViewMode>("categories");
@@ -258,18 +260,30 @@ export function PackagesPageClient({
         <section className="min-h-[calc(100vh-var(--header-height,64px)-180px)] flex flex-col py-8 sm:py-12">
           <div className="container mx-auto px-4 flex-1 flex flex-col">
             <div className="grid grid-cols-[repeat(auto-fill,minmax(360px,1fr))] gap-6 flex-1 content-start max-w-6xl mx-auto justify-items-center w-full">
-              <CategoryCard
-                title={t("packages.discoverLocations")}
-                imageUrl={locations[0]?.image_url ?? null}
-                isSelected={false}
-                onClick={() => {
-                  setSelectedCategoryId(null);
-                  setSelectedLocationId(null);
-                  setView(LOCATIONS_VIEW);
-                }}
-                locale={locale}
-                size="large"
-              />
+              {discoverCard?.is_visible !== false && (
+                <CategoryCard
+                  title={
+                    discoverCard
+                      ? locale === "ar"
+                        ? discoverCard.title_ar
+                        : discoverCard.title_en
+                      : t("packages.discoverLocations")
+                  }
+                  imageUrl={
+                    discoverCard?.image_url ??
+                    locations[0]?.image_url ??
+                    null
+                  }
+                  isSelected={false}
+                  onClick={() => {
+                    setSelectedCategoryId(null);
+                    setSelectedLocationId(null);
+                    setView(LOCATIONS_VIEW);
+                  }}
+                  locale={locale}
+                  size="large"
+                />
+              )}
               {categories.map((cat) => (
                 <CategoryCard
                   key={cat.id}

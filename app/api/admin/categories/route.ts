@@ -39,9 +39,13 @@ export async function POST(request: NextRequest) {
       )
     }
     const sortOrder = typeof body.sortOrder === 'number' ? body.sortOrder : 0
+    const imageUrl =
+      typeof body.imageUrl === 'string' && body.imageUrl.trim()
+        ? body.imageUrl.trim()
+        : null
 
     const category = await prisma.packageCategory.create({
-      data: { nameEn, nameAr, sortOrder },
+      data: { nameEn, nameAr, sortOrder, imageUrl },
     })
     return NextResponse.json(category)
   } catch (e) {

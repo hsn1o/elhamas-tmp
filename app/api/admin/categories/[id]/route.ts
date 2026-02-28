@@ -29,6 +29,12 @@ export async function PATCH(
       typeof body.nameEn === 'string' ? body.nameEn.trim() : existing.nameEn
     const nameAr =
       typeof body.nameAr === 'string' ? body.nameAr.trim() : existing.nameAr
+    const imageUrl =
+      body.imageUrl === null || body.imageUrl === ''
+        ? null
+        : typeof body.imageUrl === 'string' && body.imageUrl.trim()
+          ? body.imageUrl.trim()
+          : existing.imageUrl
 
     if (!nameEn || !nameAr) {
       return NextResponse.json(
@@ -39,7 +45,7 @@ export async function PATCH(
 
     const category = await prisma.packageCategory.update({
       where: { id },
-      data: { nameEn, nameAr },
+      data: { nameEn, nameAr, imageUrl },
     })
     return NextResponse.json(category)
   } catch (e) {
