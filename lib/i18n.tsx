@@ -256,6 +256,10 @@ const translations: Record<Locale, Record<string, string>> = {
     "about.message": "Message",
     "about.message.text":
       "We are committed to providing an integrated Umrah experience that respects the sanctity of the journey, through professional service, continuous follow-up, and well-considered details that enhance peace of mind and ease.",
+    "about.reems.title": "Reems & Dreems",
+    "about.reems.subtitle": "For Hotel Management and Operation",
+    "about.reems.description":
+      "Reems & Dreems is a sister company of Elham Nasser Abu Sarahd Company, specializing in hotel management and operation. Together we deliver trusted accommodation and hospitality services for pilgrims and visitors.",
     "about.learnMore": "Learn More About Us",
     "about.stats.years": "Years Experience",
     "about.stats.pilgrims": "Pilgrims Served",
@@ -576,6 +580,10 @@ const translations: Record<Locale, Record<string, string>> = {
     "about.message": "الرسالة",
     "about.message.text":
       "نلتزم بتوفير تجربة عمرة متكاملة تراعي قدسية الرحلة، عبر خدمة احترافية ومتابعة مستمرة، وتفاصيل مدروسة تعزز الطمأنينة واليسر.",
+    "about.reems.title": "ريمز آند دريمز",
+    "about.reems.subtitle": "لإدارة وتشغيل الفنادق",
+    "about.reems.description":
+      "ريمز آند دريمز شركة شقيقة لشركة إلهام ناصر أبو سرهد، متخصصة في إدارة وتشغيل الفنادق. نقدم معاً خدمات سكن وضيافة موثوقة للحجاج والزوار.",
     "about.learnMore": "اعرف المزيد عنا",
     "about.stats.years": "سنوات الخبرة",
     "about.stats.pilgrims": "معتمرون نخدمهم",

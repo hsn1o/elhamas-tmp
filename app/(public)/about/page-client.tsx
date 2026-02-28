@@ -129,6 +129,36 @@ export function AboutPageClient({ testimonials }: AboutPageClientProps) {
         </div>
       </section>
 
+      {/* Reems & Dreems - under message */}
+      <section className="py-16 md:py-24 border-t border-border">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <div className="flex flex-col md:flex-row gap-10 md:gap-16 items-center">
+            <div className={cn('shrink-0', isRTL && 'md:order-2')}>
+              <div className="relative w-64 h-64 md:w-80 md:h-80">
+                <Image
+                  src="/images/reems.png"
+                  alt={t('about.reems.title')}
+                  fill
+                  className="object-contain mix-blend-multiply"
+                  sizes="(max-width: 768px) 256px, 320px"
+                />
+              </div>
+            </div>
+            <div className={cn('min-w-0 text-center md:text-left', isRTL && 'md:order-1 md:text-right')}>
+              <h3 className="text-xl md:text-2xl font-semibold text-foreground mb-2" dir={isRTL ? 'rtl' : 'ltr'}>
+                {t('about.reems.title')}
+              </h3>
+              <p className="text-sm font-medium text-primary uppercase tracking-wider mb-4" dir={isRTL ? 'rtl' : 'ltr'}>
+                {t('about.reems.subtitle')}
+              </p>
+              <p className="text-muted-foreground leading-relaxed max-w-[55ch] md:max-w-none" dir={isRTL ? 'rtl' : 'ltr'}>
+                {t('about.reems.description')}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Stats */}
       <section className="py-16 md:py-20">
         <div className="container mx-auto px-4">
