@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Calendar, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
@@ -13,6 +13,7 @@ import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 
 const PACKAGE_COLOR = "#4a1c20";
 const DEFAULT_IMAGE = "/images/img1.jpg";
+const SM_BREAKPOINT = 640;
 
 interface FeaturedPackagesProps {
   packages: TourPackage[];
@@ -24,6 +25,15 @@ export function FeaturedPackagesSection({ packages }: FeaturedPackagesProps) {
   const { t, locale, isRTL } = useI18n();
   const [sectionRef, isVisible] = useScrollAnimation<HTMLElement>(0.08);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [cardsPerPage, setCardsPerPage] = useState(2);
+
+  useEffect(() => {
+    const mq = window.matchMedia(`(min-width: ${SM_BREAKPOINT}px)`);
+    const update = () => setCardsPerPage(mq.matches ? 2 : 1);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   const featuredPackages = useMemo(
     () =>
@@ -33,12 +43,16 @@ export function FeaturedPackagesSection({ packages }: FeaturedPackagesProps) {
     [packages]
   );
 
-  const totalSlides = Math.max(1, Math.ceil(featuredPackages.length / 2));
+  const totalSlides = Math.max(1, Math.ceil(featuredPackages.length / cardsPerPage));
   const currentPair = useMemo(
     () =>
-      featuredPackages.slice(currentSlide * 2, currentSlide * 2 + 2),
-    [featuredPackages, currentSlide]
+      featuredPackages.slice(currentSlide * cardsPerPage, currentSlide * cardsPerPage + cardsPerPage),
+    [featuredPackages, currentSlide, cardsPerPage]
   );
+
+  useEffect(() => {
+    setCurrentSlide((prev) => Math.min(prev, Math.max(0, totalSlides - 1)));
+  }, [totalSlides]);
 
   const goPrev = () => {
     setCurrentSlide((prev) => Math.max(0, prev - 1));
@@ -56,8 +70,8 @@ export function FeaturedPackagesSection({ packages }: FeaturedPackagesProps) {
       ref={sectionRef}
       id="packages"
       className={cn(
-        "relative overflow-hidden py-16 md:py-24 scroll-mt-[4.5rem]",
-        "min-h-[480px] flex flex-col"
+        "relative overflow-hidden py-10 sm:py-14 md:py-16 lg:py-24 scroll-mt-[4.5rem] overflow-x-hidden",
+        "min-h-[400px] sm:min-h-[480px] flex flex-col"
       )}
     >
       <div
@@ -77,7 +91,7 @@ export function FeaturedPackagesSection({ packages }: FeaturedPackagesProps) {
         {/* Left: title block */}
         <motion.div
           className={cn(
-            "flex flex-col justify-center items-start lg:min-w-[320px] order-2 lg:order-1",
+            "flex flex-col justify-center items-start lg:min-w-[280px] xl:min-w-[320px] order-2 lg:order-1 min-w-0",
             isRTL
               ? "lg:items-start lg:text-left"
               : "lg:items-end lg:text-right"
@@ -86,10 +100,10 @@ export function FeaturedPackagesSection({ packages }: FeaturedPackagesProps) {
           animate={isVisible ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.5, ease: easeOutExpo }}
         >
-          <p className="text-white/90 text-sm font-medium mb-2">
+          <p className="text-white/90 text-xs sm:text-sm font-medium mb-2">
             {t("home.featuredPackages.exploreWithUs")}
           </p>
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 leading-tight">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 sm:mb-6 leading-tight break-words">
             {t("home.featuredPackages")}
           </h2>
           <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
@@ -105,7 +119,7 @@ export function FeaturedPackagesSection({ packages }: FeaturedPackagesProps) {
 
         {/* Right: cards with navigation */}
         <div className="flex-1 flex items-center order-1 lg:order-2">
-          <div className="w-full relative flex items-center gap-2 max-w-4xl mx-auto">
+          <div className="w-full relative flex items-center gap-1.5 sm:gap-2 max-w-4xl mx-auto min-w-0">
             {/* Left arrow */}
             <button
               type="button"
@@ -113,20 +127,20 @@ export function FeaturedPackagesSection({ packages }: FeaturedPackagesProps) {
               disabled={!canGoPrev}
               aria-label={locale === "ar" ? "السابق" : "Previous"}
               className={cn(
-                "shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200",
+                "shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-all duration-200",
                 "bg-white/90 text-[#4a1c20] hover:bg-white shadow-lg",
                 !canGoPrev && "opacity-40 cursor-not-allowed hover:bg-white/90"
               )}
             >
               <ChevronLeft
-                className={cn("w-6 h-6", isRTL && "rotate-180")}
+                className={cn("w-5 h-5 sm:w-6 sm:h-6", isRTL && "rotate-180")}
               />
             </button>
 
             {/* Cards grid */}
-            <div className="flex-1 min-w-0 grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="flex-1 min-w-0 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               {currentPair.length === 0 ? (
-                <p className="text-white/80 col-span-2 text-center py-12">
+                <p className="text-white/80 col-span-2 text-center py-8 sm:py-12 text-sm">
                   {locale === "ar"
                     ? "لا توجد باقات مميزة متاحة حالياً"
                     : "No featured packages available at the moment"}
@@ -154,7 +168,7 @@ export function FeaturedPackagesSection({ packages }: FeaturedPackagesProps) {
                     return (
                       <motion.div
                         key={`${pkg.id}-${currentSlide}`}
-                        className="group rounded-2xl overflow-hidden bg-white shadow-lg border border-[#4a1c20]/10 flex flex-col"
+                        className="group rounded-xl sm:rounded-2xl overflow-hidden bg-white shadow-lg border border-[#4a1c20]/10 flex flex-col min-w-0"
                         initial={{ opacity: 0, y: 24 }}
                         animate={isVisible ? { opacity: 1, y: 0 } : {}}
                         exit={{ opacity: 0, y: -24 }}
@@ -175,24 +189,24 @@ export function FeaturedPackagesSection({ packages }: FeaturedPackagesProps) {
                           />
                         </div>
                         <div
-                          className="p-5 flex flex-col flex-1 transition-shadow duration-300 group-hover:shadow-xl"
+                          className="p-4 sm:p-5 flex flex-col flex-1 transition-shadow duration-300 group-hover:shadow-xl min-w-0"
                           style={{ color: PACKAGE_COLOR }}
                         >
-                          <h3 className="text-lg font-bold mb-3 line-clamp-2">
+                          <h3 className="text-base sm:text-lg font-bold mb-2 sm:mb-3 line-clamp-2 break-words">
                             {name}
                           </h3>
                           {location && (
-                            <div className="flex items-center gap-2 text-sm mb-1">
+                            <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm mb-1 min-w-0">
                               <MapPin
-                                className="w-4 h-4 shrink-0"
+                                className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0"
                                 style={{ color: PACKAGE_COLOR }}
                               />
-                              <span>{location}</span>
+                              <span className="truncate">{location}</span>
                             </div>
                           )}
-                          <div className="flex items-center gap-2 text-sm mb-4">
+                          <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm mb-3 sm:mb-4">
                             <Calendar
-                              className="w-4 h-4 shrink-0"
+                              className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0"
                               style={{ color: PACKAGE_COLOR }}
                             />
                             <span>
@@ -203,7 +217,7 @@ export function FeaturedPackagesSection({ packages }: FeaturedPackagesProps) {
                             <p className="text-xs opacity-90">
                               {t("common.startingFrom")}
                             </p>
-                            <p className="text-xl font-bold">
+                            <p className="text-lg sm:text-xl font-bold break-words">
                               {price.toLocaleString()} {currency}
                             </p>
                             <p className="text-xs opacity-90">
@@ -235,13 +249,13 @@ export function FeaturedPackagesSection({ packages }: FeaturedPackagesProps) {
               disabled={!canGoNext}
               aria-label={locale === "ar" ? "التالي" : "Next"}
               className={cn(
-                "shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200",
+                "shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-all duration-200",
                 "bg-white/90 text-[#4a1c20] hover:bg-white shadow-lg",
                 !canGoNext && "opacity-40 cursor-not-allowed hover:bg-white/90"
               )}
             >
               <ChevronRight
-                className={cn("w-6 h-6", isRTL && "rotate-180")}
+                className={cn("w-5 h-5 sm:w-6 sm:h-6", isRTL && "rotate-180")}
               />
             </button>
           </div>

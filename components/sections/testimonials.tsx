@@ -36,7 +36,7 @@ export function TestimonialsSection({ testimonials }: TestimonialsSectionProps) 
   if (!testimonials.length) return null
 
   return (
-    <section className="relative py-16 md:py-24 overflow-hidden">
+    <section className="relative py-10 sm:py-14 md:py-16 lg:py-24 overflow-hidden">
       {/* Subtle dot pattern background */}
       <div
         className="absolute inset-0 opacity-[0.03]"
@@ -46,18 +46,18 @@ export function TestimonialsSection({ testimonials }: TestimonialsSectionProps) 
         }}
         aria-hidden
       />
-      <div className="container relative z-10 mx-auto px-4">
-        <div className="mx-auto max-w-3xl text-center mb-10 md:mb-14">
-          <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground" dir={isRTL ? 'rtl' : 'ltr'}>
+      <div className="container relative z-10 mx-auto px-3 sm:px-4 min-w-0">
+        <div className="mx-auto max-w-3xl text-center mb-8 sm:mb-10 md:mb-14">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-foreground break-words" dir={isRTL ? 'rtl' : 'ltr'}>
             <span className="text-foreground">{locale === 'ar' ? 'آراء' : 'Client '}</span>
             <span className="text-primary">{locale === 'ar' ? ' العملاء' : 'Testimonials'}</span>
           </h2>
-          <p className="mt-3 text-muted-foreground text-base md:text-lg" dir={isRTL ? 'rtl' : 'ltr'}>
+          <p className="mt-2 sm:mt-3 text-muted-foreground text-sm sm:text-base md:text-lg break-words" dir={isRTL ? 'rtl' : 'ltr'}>
             {t('home.testimonials.subtitle')}
           </p>
         </div>
 
-        <div className="relative px-12 md:px-16 lg:px-20">
+        <div className="relative px-8 sm:px-10 md:px-14 lg:px-20">
           <Carousel
             key={isRTL ? 'rtl' : 'ltr'}
             setApi={setApi}
@@ -69,7 +69,7 @@ export function TestimonialsSection({ testimonials }: TestimonialsSectionProps) 
             className="w-full"
             dir={isRTL ? 'rtl' : 'ltr'}
           >
-            <CarouselContent className="-ml-4 md:-ml-6">
+            <CarouselContent className="-ml-3 sm:-ml-4 md:-ml-6">
               {testimonials.map((testimonial) => {
                 const name = getLocalizedContent(testimonial, 'name', locale)
                 const content = getLocalizedContent(testimonial, 'content', locale)
@@ -79,14 +79,14 @@ export function TestimonialsSection({ testimonials }: TestimonialsSectionProps) 
                 return (
                   <CarouselItem
                     key={testimonial.id}
-                    className="pl-4 md:pl-6 basis-full md:basis-1/2 lg:basis-1/3"
+                    className="pl-3 sm:pl-4 md:pl-6 basis-full md:basis-1/2 lg:basis-1/3"
                   >
                     <div
-                      className="h-full rounded-xl bg-card border border-border shadow-sm p-6 flex flex-col"
+                      className="h-full rounded-lg sm:rounded-xl bg-card border border-border shadow-sm p-4 sm:p-6 flex flex-col min-w-0"
                       dir={isRTL ? 'rtl' : 'ltr'}
                     >
-                      <Quote className="w-10 h-10 text-primary mb-4 shrink-0" aria-hidden />
-                      <p className="text-muted-foreground leading-relaxed flex-1 mb-4">
+                      <Quote className="w-8 h-8 sm:w-10 sm:h-10 text-primary mb-3 sm:mb-4 shrink-0" aria-hidden />
+                      <p className="text-muted-foreground text-sm sm:text-base leading-relaxed flex-1 mb-3 sm:mb-4 break-words">
                         &ldquo;{content}&rdquo;
                       </p>
                       <div className="flex items-center gap-1 mb-3">

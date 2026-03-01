@@ -125,7 +125,7 @@ export function EventDetailClient({ event: evt }: EventDetailClientProps) {
   return (
     <>
       {/* Hero */}
-      <section className="relative min-h-[320px] md:min-h-[380px] flex flex-col justify-end overflow-hidden pt-24">
+      <section className="relative min-h-[260px] sm:min-h-[300px] md:min-h-[360px] lg:min-h-[380px] flex flex-col justify-end overflow-hidden pt-20 sm:pt-24">
         <Image
           src={img}
           alt=""
@@ -135,29 +135,29 @@ export function EventDetailClient({ event: evt }: EventDetailClientProps) {
           sizes="100vw"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black/80" />
-        <div className="relative z-10 container mx-auto px-4 pb-10">
-          <Link href="/blog/events" className="inline-block mb-6">
+        <div className="relative z-10 container mx-auto px-3 sm:px-4 pb-8 sm:pb-10 min-w-0">
+          <Link href="/blog/events" className="inline-block mb-4 sm:mb-6">
             <Button variant="secondary" size="sm" className="gap-2">
               <ArrowLeft className={cn('h-4 w-4', locale === 'ar' && 'rotate-180')} />
               {t('events.backToEvents')}
             </Button>
           </Link>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white drop-shadow-lg max-w-4xl" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white drop-shadow-lg max-w-4xl break-words" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
             {title}
           </h1>
         </div>
       </section>
 
       {/* Main + sidebar */}
-      <div className="container mx-auto px-4 py-12 max-w-6xl">
-        <div className={cn('grid grid-cols-1 lg:grid-cols-3 gap-8', locale === 'ar' && 'lg:grid-flow-dense')}>
+      <div className="container mx-auto px-3 sm:px-4 py-8 sm:py-10 md:py-12 max-w-6xl min-w-0 overflow-x-hidden">
+        <div className={cn('grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8', locale === 'ar' && 'lg:grid-flow-dense')}>
           {/* Overview card - left, spans 2 cols on lg */}
-          <div className={cn('lg:col-span-2', locale === 'ar' && 'lg:col-start-2')}>
-            <div className="rounded-2xl bg-card border border-border shadow-sm overflow-hidden">
-              <div className="bg-primary px-6 py-3">
-                <h2 className="text-lg font-semibold text-white">{t('events.overview')}</h2>
+          <div className={cn('lg:col-span-2 min-w-0', locale === 'ar' && 'lg:col-start-2')}>
+            <div className="rounded-xl sm:rounded-2xl bg-card border border-border shadow-sm overflow-hidden">
+              <div className="bg-primary px-4 sm:px-6 py-2.5 sm:py-3">
+                <h2 className="text-base sm:text-lg font-semibold text-white">{t('events.overview')}</h2>
               </div>
-              <div className="p-6 md:p-8">
+              <div className="p-4 sm:p-6 md:p-8">
                 <div
                   className={cn(
                     'prose prose-lg max-w-none dark:prose-invert',
@@ -175,26 +175,26 @@ export function EventDetailClient({ event: evt }: EventDetailClientProps) {
           </div>
 
           {/* Sidebar - right on lg */}
-          <div className={cn('space-y-4', locale === 'ar' && 'lg:col-start-1 lg:row-start-1')}>
+          <div className={cn('space-y-3 sm:space-y-4 min-w-0', locale === 'ar' && 'lg:col-start-1 lg:row-start-1')}>
             {/* Event Date card */}
-            <div className="rounded-2xl bg-card border border-border shadow-sm overflow-hidden">
-              <div className="bg-primary px-6 py-3">
-                <h3 className="text-sm font-semibold text-white">{t('events.eventDate')}</h3>
+            <div className="rounded-xl sm:rounded-2xl bg-card border border-border shadow-sm overflow-hidden">
+              <div className="bg-primary px-4 sm:px-6 py-2.5 sm:py-3">
+                <h3 className="text-xs sm:text-sm font-semibold text-white">{t('events.eventDate')}</h3>
               </div>
-              <div className="p-4 flex items-center gap-3">
-                <Calendar className="w-5 h-5 text-primary shrink-0" />
-                <span className="text-foreground font-medium" dir={locale === 'ar' ? 'rtl' : 'ltr'}>{dateDisplay}</span>
+              <div className="p-3 sm:p-4 flex items-center gap-2 sm:gap-3 min-w-0">
+                <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-primary shrink-0" />
+                <span className="text-foreground font-medium text-sm sm:text-base truncate" dir={locale === 'ar' ? 'rtl' : 'ltr'}>{dateDisplay}</span>
               </div>
             </div>
 
             {/* Price card */}
-            <div className="rounded-2xl bg-card border border-border shadow-sm overflow-hidden">
-              <div className="bg-primary px-6 py-3">
-                <h3 className="text-sm font-semibold text-white">{t('events.price')}</h3>
+            <div className="rounded-xl sm:rounded-2xl bg-card border border-border shadow-sm overflow-hidden">
+              <div className="bg-primary px-4 sm:px-6 py-2.5 sm:py-3">
+                <h3 className="text-xs sm:text-sm font-semibold text-white">{t('events.price')}</h3>
               </div>
-              <div className="p-4 flex items-center gap-3">
-                <Banknote className="w-5 h-5 text-primary shrink-0" />
-                <span className="text-foreground font-medium">
+              <div className="p-3 sm:p-4 flex items-center gap-2 sm:gap-3 min-w-0">
+                <Banknote className="w-4 h-4 sm:w-5 sm:h-5 text-primary shrink-0" />
+                <span className="text-foreground font-medium text-sm sm:text-base break-words">
                   {priceStr
                     ? `${t('events.fromPrice')} ${priceStr} / ${t('events.perPerson')}`
                     : '—'}
@@ -203,20 +203,20 @@ export function EventDetailClient({ event: evt }: EventDetailClientProps) {
             </div>
 
             {/* Information card */}
-            <div className="rounded-2xl bg-card border border-border shadow-sm overflow-hidden">
-              <div className="bg-primary px-6 py-3">
-                <h3 className="text-sm font-semibold text-white">{t('events.information')}</h3>
+            <div className="rounded-xl sm:rounded-2xl bg-card border border-border shadow-sm overflow-hidden">
+              <div className="bg-primary px-4 sm:px-6 py-2.5 sm:py-3">
+                <h3 className="text-xs sm:text-sm font-semibold text-white">{t('events.information')}</h3>
               </div>
-              <div className="p-4 space-y-3">
+              <div className="p-3 sm:p-4 space-y-2 sm:space-y-3">
                 {location && (
-                  <div className="flex items-center gap-3">
-                    <MapPin className="w-5 h-5 text-primary shrink-0" />
-                    <span className="text-foreground" dir={locale === 'ar' ? 'rtl' : 'ltr'}>{location}</span>
+                  <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                    <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-primary shrink-0" />
+                    <span className="text-foreground text-sm sm:text-base truncate" dir={locale === 'ar' ? 'rtl' : 'ltr'}>{location}</span>
                   </div>
                 )}
-                <div className="flex items-center gap-3">
-                  <Users className="w-5 h-5 text-primary shrink-0" />
-                  <span className="text-foreground">{t('events.audience')}: {audienceDisplay}</span>
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <Users className="w-4 h-4 sm:w-5 sm:h-5 text-primary shrink-0" />
+                  <span className="text-foreground text-sm sm:text-base">{t('events.audience')}: {audienceDisplay}</span>
                 </div>
               </div>
             </div>
@@ -224,11 +224,11 @@ export function EventDetailClient({ event: evt }: EventDetailClientProps) {
         </div>
 
         {/* Booking & Inquiries form – full width, unified design */}
-        <div className="mt-12 rounded-2xl border border-border/60 bg-background shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)] p-6 sm:p-8">
-          <h2 className="text-xl font-bold text-foreground mb-2">
+        <div className="mt-8 sm:mt-12 rounded-xl sm:rounded-2xl border border-border/60 bg-background shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)] p-4 sm:p-6 md:p-8 min-w-0">
+          <h2 className="text-lg sm:text-xl font-bold text-foreground mb-2">
             {locale === 'ar' ? 'الحجز والاستفسارات' : 'Booking & Inquiries'}
           </h2>
-          <p className="text-sm text-muted-foreground mb-6">
+          <p className="text-sm text-muted-foreground mb-4 sm:mb-6">
             {locale === 'ar'
               ? 'أدخل بياناتك للتسجيل أو الاستفسار عن هذه الفعالية.'
               : 'Enter your details to register or inquire about this event.'}
@@ -342,7 +342,7 @@ export function EventDetailClient({ event: evt }: EventDetailClientProps) {
               <Button
                 type="submit"
                 disabled={loading}
-                className="min-w-[180px]"
+                className="w-full sm:w-auto min-w-0 sm:min-w-[180px]"
               >
                 {loading
                   ? (locale === 'ar' ? 'جاري الإرسال...' : 'Sending...')

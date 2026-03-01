@@ -18,20 +18,20 @@ export default function ContactPageClient() {
         subtitle={t('contact.subtitle')}
       />
       <ContactFormSection />
-      <section className="py-16 sm:py-20 bg-white">
-        <div className="container mx-auto px-4">
+      <section className="py-10 sm:py-14 md:py-16 lg:py-20 bg-white overflow-x-hidden">
+        <div className="container mx-auto px-3 sm:px-4 min-w-0">
           <div className="max-w-4xl mx-auto">
-            <div className="rounded-2xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)] border border-border/60">
+            <div className="rounded-xl sm:rounded-2xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)] border border-border/60 min-h-[280px] sm:min-h-[360px] md:min-h-[400px]">
               <iframe
                 src={MAP_EMBED_URL}
                 width="100%"
                 height="450"
-                style={{ border: 0 }}
+                style={{ border: 0, minHeight: '280px' }}
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 title="Location map"
-                className="w-full block"
+                className="w-full block min-h-[280px] sm:min-h-[360px] md:min-h-[400px]"
               />
             </div>
           </div>

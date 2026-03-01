@@ -28,9 +28,9 @@ export function AboutSection() {
   const { t, isRTL } = useI18n()
 
   return (
-    <section ref={sectionRef} className="py-20 md:py-28" id="about">
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+    <section ref={sectionRef} className="py-12 sm:py-16 md:py-20 lg:py-28 overflow-x-hidden" id="about">
+      <div className="mx-auto max-w-7xl px-3 sm:px-4 md:px-6 min-w-0">
+        <div className="grid items-center gap-8 sm:gap-10 md:gap-12 lg:grid-cols-2 lg:gap-16">
           {/* Image side */}
           <motion.div
             className="relative"
@@ -38,7 +38,7 @@ export function AboutSection() {
             animate={isVisible ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, ease: easeOutExpo }}
           >
-            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-xl sm:rounded-2xl min-w-0">
               <iframe
                 src="https://www.youtube.com/embed/x8GmQjKHhno"
                 title="Elhamas Group Video"
@@ -72,20 +72,20 @@ export function AboutSection() {
             animate={isVisible ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.1, ease: easeOutExpo }}
           >
-            <span className="mb-2 inline-block text-xs font-semibold uppercase tracking-[0.2em] text-primary">{t("about.badge")}</span>
-            <h2 className="mb-6 font-serif text-3xl font-bold text-foreground md:text-4xl lg:text-5xl">
+            <span className="mb-2 inline-block text-[10px] sm:text-xs font-semibold uppercase tracking-[0.2em] text-primary">{t("about.badge")}</span>
+            <h2 className="mb-4 sm:mb-6 font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground break-words">
               {t("about.companyName")}
             </h2>
-            <p className="mb-4 text-base leading-relaxed text-muted-foreground text-justify">
+            <p className="mb-3 sm:mb-4 text-sm sm:text-base leading-relaxed text-muted-foreground text-justify break-words">
               {t("about.intro1")} {t("about.intro2")} {t("about.intro3")} {t("about.intro4")} {t("about.intro5")}
             </p>
 
             {/* Vision, Mission, Objectives cards */}
-            <div className="mb-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="mb-6 sm:mb-8 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 min-w-0">
               {cardKeys.map(({ key, textKey, icon: Icon }, index) => (
                 <motion.div
                   key={key}
-                  className="rounded-xl border border-border/60 bg-card p-4 shadow-sm"
+                  className="rounded-lg sm:rounded-xl border border-border/60 bg-card p-3 sm:p-4 shadow-sm min-w-0"
                   initial={{ opacity: 0, y: 16 }}
                   animate={isVisible ? { opacity: 1, y: 0 } : {}}
                   transition={{
@@ -96,18 +96,18 @@ export function AboutSection() {
                   whileHover={{ y: -3, boxShadow: "0 10px 25px -5px rgba(0,0,0,0.08)" }}
                 >
                   <div
-                    className="mb-3 flex h-9 w-9 items-center justify-center rounded-lg text-white"
+                    className="mb-2 sm:mb-3 flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg text-white"
                     style={{ backgroundColor: ACCENT }}
                   >
-                    <Icon className="h-4 w-4" />
+                    <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   </div>
                   <h3
-                    className="mb-2 text-sm font-semibold"
+                    className="mb-1.5 sm:mb-2 text-xs sm:text-sm font-semibold break-words"
                     style={{ color: ACCENT }}
                   >
                     {t(key)}
                   </h3>
-                  <p className="text-xs leading-relaxed text-muted-foreground line-clamp-4">
+                  <p className="text-[11px] sm:text-xs leading-relaxed text-muted-foreground line-clamp-4 break-words">
                     {t(textKey)}
                   </p>
                 </motion.div>
@@ -117,7 +117,7 @@ export function AboutSection() {
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <Link
                 href="/"
-                className="inline-flex rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+                className="inline-flex rounded-lg bg-primary px-4 py-2.5 sm:px-6 sm:py-3 text-xs sm:text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
               >
                 {t("about.learnMore")}
               </Link>

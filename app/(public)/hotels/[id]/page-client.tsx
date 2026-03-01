@@ -49,14 +49,14 @@ export function HotelDetailClient({ hotel }: HotelDetailClientProps) {
     locale,
   );
   const rooms = hotel.rooms ?? [];
-  const sectionCard = "rounded-xl border border-border bg-card p-6 md:p-8";
+  const sectionCard = "rounded-xl border border-border bg-card p-4 sm:p-6 md:p-8";
 
   const roomCount = rooms.length;
 
   return (
     <>
       {/* Hero: hotel name + stars only */}
-      <section className="relative min-h-[320px] md:min-h-[380px] flex flex-col justify-center overflow-hidden pt-24">
+      <section className="relative min-h-[260px] sm:min-h-[300px] md:min-h-[360px] lg:min-h-[380px] flex flex-col justify-center overflow-hidden pt-20 sm:pt-24">
         <Image
           src={images[0]}
           alt=""
@@ -76,8 +76,8 @@ export function HotelDetailClient({ hotel }: HotelDetailClientProps) {
           }}
           aria-hidden
         />
-        <div className="relative z-10 container mx-auto px-4 text-center max-w-4xl">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 drop-shadow-lg">
+        <div className="relative z-10 container mx-auto px-4 sm:px-6 text-center max-w-4xl min-w-0">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 drop-shadow-lg break-words">
             {name}
           </h1>
           <div
@@ -100,9 +100,9 @@ export function HotelDetailClient({ hotel }: HotelDetailClientProps) {
       </section>
 
       {/* Info bar on the line between hero and content – full width, in white space */}
-      <div className="relative z-20 -mt-6 px-4 md:px-6">
-        <div className="mx-auto max-w-6xl">
-          <div className="rounded-2xl bg-white border border-border shadow-lg px-6 py-4 flex flex-wrap items-center justify-center md:justify-between gap-6 md:gap-8 text-sm">
+      <div className="relative z-20 -mt-4 sm:-mt-6 px-3 sm:px-4 md:px-6">
+        <div className="mx-auto max-w-6xl min-w-0">
+          <div className="rounded-xl sm:rounded-2xl bg-white border border-border shadow-lg px-4 py-3 sm:px-6 sm:py-4 flex flex-wrap items-center justify-center md:justify-between gap-4 sm:gap-6 md:gap-8 text-xs sm:text-sm">
             {(locale === "ar" ? hotel.city_ar || hotel.city : hotel.city) && (
               <span className="flex items-center gap-2 text-foreground font-medium">
                 <span className="text-lg leading-none" aria-hidden>
@@ -125,8 +125,8 @@ export function HotelDetailClient({ hotel }: HotelDetailClientProps) {
         </div>
       </div>
 
-      <section className="py-12 md:py-16">
-        <div className="container mx-auto px-4 max-w-4xl">
+      <section className="py-8 sm:py-12 md:py-16 overflow-x-hidden">
+        <div className="container mx-auto px-3 sm:px-4 max-w-4xl min-w-0">
           <Link
             href="/hotels"
             className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors"
@@ -143,8 +143,8 @@ export function HotelDetailClient({ hotel }: HotelDetailClientProps) {
           <div className="space-y-8">
             {/* Hero image carousel + hotel info */}
             <div className={cn(sectionCard, "overflow-hidden p-0")}>
-              <div className="relative w-full">
-                <div className="relative w-full aspect-[21/14] min-h-[200px] bg-muted overflow-hidden rounded-3xl">
+              <div className="relative w-full min-w-0">
+                <div className="relative w-full aspect-[21/14] min-h-[180px] sm:min-h-[200px] bg-muted overflow-hidden rounded-2xl sm:rounded-3xl">
                   {images.map((src, i) => (
                     <div
                       key={i}
@@ -171,18 +171,18 @@ export function HotelDetailClient({ hotel }: HotelDetailClientProps) {
                     <button
                       type="button"
                       onClick={() => goToSlide(selectedIndex - 1)}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 z-10 h-11 w-11 rounded-full bg-white/90 text-foreground hover:bg-white flex items-center justify-center shadow-md"
+                      className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 h-9 w-9 sm:h-11 sm:w-11 rounded-full bg-white/90 text-foreground hover:bg-white flex items-center justify-center shadow-md"
                       aria-label="Previous image"
                     >
-                      <ChevronLeft className="h-5 w-5" />
+                      <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
                     </button>
                     <button
                       type="button"
                       onClick={() => goToSlide(selectedIndex + 1)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 z-10 h-11 w-11 rounded-full bg-white/90 text-foreground hover:bg-white flex items-center justify-center shadow-md"
+                      className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 h-9 w-9 sm:h-11 sm:w-11 rounded-full bg-white/90 text-foreground hover:bg-white flex items-center justify-center shadow-md"
                       aria-label="Next image"
                     >
-                      <ChevronLeft className="h-5 w-5 rotate-180" />
+                      <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5 rotate-180" />
                     </button>
                   </>
                 )}
@@ -205,7 +205,7 @@ export function HotelDetailClient({ hotel }: HotelDetailClientProps) {
                 </div>
               </div>
               {images.length > 1 && (
-                <div className="p-4 border-t border-border flex items-center justify-center gap-3 overflow-x-auto">
+                <div className="p-3 sm:p-4 border-t border-border flex items-center justify-center gap-2 sm:gap-3 overflow-x-auto">
                   {images.map((src, i) => (
                     <div
                       key={i}
@@ -214,7 +214,7 @@ export function HotelDetailClient({ hotel }: HotelDetailClientProps) {
                       onClick={() => goToSlide(i)}
                       onKeyDown={(e) => e.key === "Enter" && goToSlide(i)}
                       className={cn(
-                        "relative shrink-0 w-16 h-12 rounded-md overflow-hidden border-2 transition-all cursor-pointer",
+                        "relative shrink-0 w-12 h-9 sm:w-16 sm:h-12 rounded-md overflow-hidden border-2 transition-all cursor-pointer",
                         selectedIndex === i
                           ? "border-primary ring-2 ring-primary/20"
                           : "border-transparent opacity-70 hover:opacity-100",
@@ -327,12 +327,12 @@ export function HotelDetailClient({ hotel }: HotelDetailClientProps) {
             <div
               className={cn(
                 sectionCard,
-                "flex flex-col sm:flex-row items-center justify-between gap-6",
+                "flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6",
                 "bg-primary/5 border-primary/20",
               )}
             >
-              <div className="text-center sm:text-left">
-                <p className="text-xl font-bold text-foreground">{name}</p>
+              <div className="text-center sm:text-left min-w-0">
+                <p className="text-lg sm:text-xl font-bold text-foreground break-words">{name}</p>
                 <p className="text-muted-foreground text-sm mt-1">
                   {hotel.star_rating} {t("hotels.starRating")}
                   {hotel.price_per_night != null && (
@@ -345,7 +345,7 @@ export function HotelDetailClient({ hotel }: HotelDetailClientProps) {
                   )}
                 </p>
               </div>
-              <Button asChild size="lg" className="min-w-[180px] shrink-0">
+              <Button asChild size="lg" className="w-full sm:w-auto min-w-[160px] sm:min-w-[180px] shrink-0">
                 <Link href={`/contact?hotel=${hotel.id}`}>
                   {t("common.bookNow")}
                 </Link>
@@ -411,9 +411,9 @@ function RoomCard({
         : `Fits ${room.max_guests} persons`;
 
   return (
-    <article className="rounded-xl border border-border overflow-hidden bg-card">
-      <div className="px-6 pt-6 pb-2 border-b border-border">
-        <h3 className="text-xl font-semibold text-foreground">{name}</h3>
+    <article className="rounded-xl border border-border overflow-hidden bg-card min-w-0">
+      <div className="px-4 sm:px-6 pt-4 sm:pt-6 pb-2 border-b border-border">
+        <h3 className="text-lg sm:text-xl font-semibold text-foreground break-words">{name}</h3>
         {description ? (
           <p
             className="text-sm text-muted-foreground mt-2 line-clamp-3"
@@ -423,10 +423,10 @@ function RoomCard({
           </p>
         ) : null}
       </div>
-      <div className={cn("flex flex-col md:flex-row")}>
+      <div className={cn("flex flex-col md:flex-row min-w-0")}>
         {/* Left: room image only */}
-        <div className={cn("flex flex-col md:w-[280px] shrink-0")}>
-          <div className="relative w-full aspect-[4/3] md:aspect-auto md:h-[220px] bg-muted">
+        <div className={cn("flex flex-col md:w-[260px] lg:w-[280px] shrink-0")}>
+          <div className="relative w-full aspect-[4/3] md:aspect-auto md:h-[200px] lg:h-[220px] bg-muted">
             {imageUrl ? (
               <Image
                 src={imageUrl}
@@ -499,13 +499,13 @@ function RoomCard({
                 / {t("common.perNight")}
               </span>
             </p>
-            <p className="text-xs text-muted-foreground mt-2 max-w-[240px]">
+            <p className="text-xs text-muted-foreground mt-2 max-w-[240px] break-words">
               {t("hotels.priceDisclaimer")}
             </p>
           </div>
           <Button
             asChild
-            className="w-full sm:w-auto mt-auto bg-primary hover:bg-primary/90"
+            className="w-full sm:w-auto mt-auto bg-primary hover:bg-primary/90 shrink-0"
           >
             <Link href={`/hotels/${hotelId}/rooms/${room.id}`}>
               {t("common.bookNow")} →

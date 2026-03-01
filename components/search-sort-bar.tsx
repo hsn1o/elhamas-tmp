@@ -80,14 +80,14 @@ export function SearchSortBar({
           aria-label={searchPlaceholder}
         />
       </div>
-      <div className={cn('flex items-center gap-2 shrink-0', isRTL && 'flex-row-reverse')}>
+      <div className={cn('flex items-center gap-2 w-full sm:w-auto min-w-0', isRTL && 'flex-row-reverse')}>
         {sortLabel && (
-          <span className="text-sm text-muted-foreground whitespace-nowrap">
+          <span className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap shrink-0">
             {sortLabel}
           </span>
         )}
         <Select value={sortValue} onValueChange={onSortChange}>
-          <SelectTrigger className="w-[180px] h-10">
+          <SelectTrigger className="w-full min-w-0 sm:w-[180px] h-10">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

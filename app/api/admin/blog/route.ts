@@ -25,6 +25,16 @@ function slugify(s: string): string {
   return s.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
 }
 
+async function ensureUniqueSlug(baseSlug: string): Promise<string> {
+  let slug = baseSlug;
+  let n = 1;
+  while (true) {
+    const existing = await prisma.blogPost.findUnique({ where: { slug } });
+    if (!existing) return slug;
+    slug = `${baseSlug}-${++n}`;
+  }
+}
+
 export async function POST(request: NextRequest) {
   const session = await getSession();
   if (!session) {
@@ -41,13 +51,14 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    const finalSlug = slugInput ? slugify(slugInput) : slugify(titleEn);
-    if (!finalSlug) {
+    const baseSlug = slugInput ? slugify(slugInput) : slugify(titleEn);
+    if (!baseSlug) {
       return NextResponse.json(
         { error: "Slug is required" },
         { status: 400 }
       );
     }
+    const finalSlug = await ensureUniqueSlug(baseSlug);
     const placeEn = typeof body.placeEn === "string" && body.placeEn.trim() ? body.placeEn.trim() : null;
     const placeAr = typeof body.placeAr === "string" && body.placeAr.trim() ? body.placeAr.trim() : null;
     const excerptEn = typeof body.excerptEn === "string" && body.excerptEn.trim() ? body.excerptEn.trim() : null;

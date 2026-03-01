@@ -29,15 +29,15 @@ export function BlogPageClient() {
         subtitle={t('blog.subtitle')}
       />
 
-      <section className="py-16 md:py-24">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+      <section className="py-8 sm:py-12 md:py-16 lg:py-24 overflow-x-hidden">
+        <div className="container mx-auto px-3 sm:px-4 min-w-0">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8 max-w-5xl mx-auto">
             {sections.map((section, index) => (
               <Link
                 key={section.href}
                 href={section.href}
                 className={cn(
-                  'group block rounded-2xl overflow-hidden bg-card border border-border',
+                  'group block rounded-xl sm:rounded-2xl overflow-hidden bg-card border border-border min-w-0',
                   'shadow-[0_1px_2px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.06)]',
                   'hover:shadow-[0_4px_24px_rgba(0,0,0,0.08)] transition-all duration-300',
                   'animate-fade-in-up'
@@ -54,9 +54,9 @@ export function BlogPageClient() {
                   />
                   {/* Gradient so the label band always has contrast */}
                   <div className="absolute inset-x-0 bottom-0 top-1/2 bg-gradient-to-t from-black/70 to-transparent z-[1]" aria-hidden />
-                  <div className="absolute inset-x-0 bottom-0 z-10 py-4 px-6 bg-primary">
+                  <div className="absolute inset-x-0 bottom-0 z-10 py-3 sm:py-4 px-4 sm:px-6 bg-primary">
                     <h2
-                      className="text-xl md:text-2xl font-bold text-white drop-shadow-sm"
+                      className="text-lg sm:text-xl md:text-2xl font-bold text-white drop-shadow-sm break-words"
                       dir={locale === 'ar' ? 'rtl' : 'ltr'}
                     >
                       {t(section.titleKey)}

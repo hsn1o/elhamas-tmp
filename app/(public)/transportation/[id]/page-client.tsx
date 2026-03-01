@@ -57,7 +57,7 @@ export function TransportationDetailClient({ item }: TransportationDetailClientP
     ? (item.excludes_ar?.length ? item.excludes_ar : item.excludes)
     : (item.excludes?.length ? item.excludes : item.excludes_ar)
 
-  const sectionCard = 'rounded-xl border border-border bg-card p-6 md:p-8'
+  const sectionCard = 'rounded-xl border border-border bg-card p-4 sm:p-6 md:p-8'
 
   const displayPrice = item.price_per_trip ?? item.price_per_day
   const priceNum = displayPrice != null ? Number(displayPrice) : null
@@ -124,7 +124,7 @@ export function TransportationDetailClient({ item }: TransportationDetailClientP
   return (
     <>
       {/* Hero: vehicle name only (like hotel: name + rating) */}
-      <section className="relative min-h-[320px] md:min-h-[380px] flex flex-col justify-center overflow-hidden pt-24">
+      <section className="relative min-h-[260px] sm:min-h-[300px] md:min-h-[360px] lg:min-h-[380px] flex flex-col justify-center overflow-hidden pt-20 sm:pt-24">
         <Image
           src={images[0]}
           alt=""
@@ -144,40 +144,40 @@ export function TransportationDetailClient({ item }: TransportationDetailClientP
           }}
           aria-hidden
         />
-        <div className="relative z-10 container mx-auto px-4 text-center max-w-4xl">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 drop-shadow-lg">
+        <div className="relative z-10 container mx-auto px-3 sm:px-4 text-center max-w-4xl min-w-0">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 drop-shadow-lg break-words">
             {name}
           </h1>
         </div>
       </section>
 
       {/* Info bar: location, capacity, price (like hotel’s floating card) */}
-      <div className="relative z-20 -mt-6 px-4 md:px-6">
-        <div className="mx-auto max-w-6xl">
+      <div className="relative z-20 -mt-4 sm:-mt-6 px-3 sm:px-4 md:px-6">
+        <div className="mx-auto max-w-6xl min-w-0">
           <div
             className={cn(
-              'rounded-2xl bg-white border border-border shadow-lg px-6 py-4',
-              'flex flex-wrap items-center justify-center md:justify-between gap-6 md:gap-8 text-sm',
+              'rounded-xl sm:rounded-2xl bg-white border border-border shadow-lg px-4 sm:px-6 py-3 sm:py-4',
+              'flex flex-wrap items-center justify-center md:justify-between gap-4 sm:gap-6 md:gap-8 text-xs sm:text-sm',
               locale === 'ar' && 'md:flex-row-reverse',
             )}
           >
             {location && (
-              <span className="flex items-center gap-2 text-foreground font-medium">
-                <MapPin className="w-4 h-4 text-primary shrink-0" />
-                {location}
+              <span className="flex items-center gap-1.5 sm:gap-2 text-foreground font-medium min-w-0">
+                <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
+                <span className="truncate">{location}</span>
               </span>
             )}
-            <span className="flex items-center gap-2 text-foreground font-medium">
-              <Car className="w-4 h-4 text-primary shrink-0" />
+            <span className="flex items-center gap-1.5 sm:gap-2 text-foreground font-medium">
+              <Car className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
               {item.capacity} {t('transport.seats')}
             </span>
             {priceNum != null && (
-              <span className="flex items-center gap-2 text-foreground font-medium">
-                <Banknote className="w-4 h-4 text-primary shrink-0" />
+              <span className="flex items-center gap-1.5 sm:gap-2 text-foreground font-medium min-w-0">
+                <Banknote className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
                 <span className="text-muted-foreground">
                   {t('common.startingFrom')}
                 </span>
-                <span className="font-bold text-primary">
+                <span className="font-bold text-primary truncate">
                   {item.currency} {priceNum.toLocaleString()}
                 </span>
               </span>
@@ -186,12 +186,12 @@ export function TransportationDetailClient({ item }: TransportationDetailClientP
         </div>
       </div>
 
-      <section className="py-12 md:py-16">
-        <div className="container mx-auto px-4 max-w-4xl">
+      <section className="py-8 sm:py-12 md:py-16 overflow-x-hidden">
+        <div className="container mx-auto px-3 sm:px-4 max-w-4xl min-w-0">
           <Link
             href="/transportation"
             className={cn(
-              'inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors',
+              'inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 sm:mb-8 transition-colors',
               locale === 'ar' && 'flex-row-reverse',
             )}
           >
@@ -201,11 +201,11 @@ export function TransportationDetailClient({ item }: TransportationDetailClientP
             {locale === 'ar' ? 'العودة لخدمات النقل' : 'Back to Transportation'}
           </Link>
 
-          <div className="space-y-8">
+          <div className="space-y-6 sm:space-y-8">
             {/* Image gallery */}
             <div className={cn(sectionCard, 'overflow-hidden p-0')}>
               <div className="relative w-full">
-                <div className="relative w-full aspect-[21/14] min-h-[200px] bg-muted overflow-hidden rounded-t-xl">
+                <div className="relative w-full aspect-[21/14] min-h-[180px] sm:min-h-[200px] bg-muted overflow-hidden rounded-t-lg sm:rounded-t-xl">
                   {images.map((src, i) => (
                     <div
                       key={i}
@@ -232,23 +232,23 @@ export function TransportationDetailClient({ item }: TransportationDetailClientP
                     <button
                       type="button"
                       onClick={() => goToSlide(selectedIndex - 1)}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 z-10 h-11 w-11 rounded-lg bg-white/90 text-foreground hover:bg-white flex items-center justify-center shadow-md"
+                      className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 h-9 w-9 sm:h-11 sm:w-11 rounded-lg bg-white/90 text-foreground hover:bg-white flex items-center justify-center shadow-md"
                       aria-label="Previous image"
                     >
-                      <ChevronLeft className="h-5 w-5" />
+                      <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
                     </button>
                     <button
                       type="button"
                       onClick={() => goToSlide(selectedIndex + 1)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 z-10 h-11 w-11 rounded-lg bg-white/90 text-foreground hover:bg-white flex items-center justify-center shadow-md"
+                      className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 h-9 w-9 sm:h-11 sm:w-11 rounded-lg bg-white/90 text-foreground hover:bg-white flex items-center justify-center shadow-md"
                       aria-label="Next image"
                     >
-                      <ChevronRight className="h-5 w-5" />
+                      <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
                     </button>
                   </>
                 )}
                 {images.length > 1 && (
-                  <div className="p-4 border-t border-border flex items-center justify-center gap-3 overflow-x-auto">
+                  <div className="p-3 sm:p-4 border-t border-border flex items-center justify-center gap-2 sm:gap-3 overflow-x-auto">
                     {images.map((src, i) => (
                       <div
                         key={i}
@@ -257,7 +257,7 @@ export function TransportationDetailClient({ item }: TransportationDetailClientP
                         onClick={() => goToSlide(i)}
                         onKeyDown={(e) => e.key === 'Enter' && goToSlide(i)}
                         className={cn(
-                          'relative shrink-0 w-16 h-12 rounded-md overflow-hidden border-2 transition-all cursor-pointer',
+                          'relative shrink-0 w-12 h-9 sm:w-14 sm:h-10 md:w-16 md:h-12 rounded-md overflow-hidden border-2 transition-all cursor-pointer',
                           selectedIndex === i
                             ? 'border-primary ring-2 ring-primary/20'
                             : 'border-transparent opacity-70 hover:opacity-100',
@@ -278,8 +278,8 @@ export function TransportationDetailClient({ item }: TransportationDetailClientP
             </div>
 
             {/* Overview */}
-            <div className={sectionCard}>
-              <h2 className="text-xl font-semibold text-primary mb-4">
+            <div className={cn(sectionCard, 'min-w-0')}>
+              <h2 className="text-lg sm:text-xl font-semibold text-primary mb-3 sm:mb-4">
                 {t('transport.overview')}
               </h2>
               {description && (
@@ -352,9 +352,9 @@ export function TransportationDetailClient({ item }: TransportationDetailClientP
             </div>
 
             {/* Offer includes / Offer excludes */}
-            <div className={cn(sectionCard, 'grid grid-cols-1 md:grid-cols-2 gap-8')}>
+            <div className={cn(sectionCard, 'grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 min-w-0')}>
               <div>
-                <h2 className="text-xl font-semibold text-primary mb-4">
+                <h2 className="text-lg sm:text-xl font-semibold text-primary mb-3 sm:mb-4">
                   {t('transport.offerIncludes')}
                 </h2>
                 {features?.length ? (
@@ -378,7 +378,7 @@ export function TransportationDetailClient({ item }: TransportationDetailClientP
                 )}
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-primary mb-4">
+                <h2 className="text-lg sm:text-xl font-semibold text-primary mb-3 sm:mb-4">
                   {t('transport.offerExcludes')}
                 </h2>
                 {excludes?.length ? (
@@ -404,11 +404,11 @@ export function TransportationDetailClient({ item }: TransportationDetailClientP
             </div>
 
             {/* Inquiry form – same card/label/input/button style as visa & room booking */}
-            <div className="rounded-2xl border border-border/60 bg-background shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)] p-6 sm:p-8">
-              <h2 className="text-xl font-bold text-foreground mb-2">
+            <div className="rounded-xl sm:rounded-2xl border border-border/60 bg-background shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)] p-4 sm:p-6 md:p-8 min-w-0">
+              <h2 className="text-lg sm:text-xl font-bold text-foreground mb-2">
                 {locale === 'ar' ? 'الحجز والاستفسارات' : 'Booking & Inquiries'}
               </h2>
-              <p className="text-sm text-muted-foreground mb-6">
+              <p className="text-sm text-muted-foreground mb-4 sm:mb-6">
                 {locale === 'ar'
                   ? 'أدخل بياناتك لإرسال طلب الحجز أو الاستفسار عن هذه المركبة.'
                   : 'Enter your details to send a booking request or inquiry for this vehicle.'}
@@ -520,7 +520,7 @@ export function TransportationDetailClient({ item }: TransportationDetailClientP
                   <Button
                     type="submit"
                     disabled={loading}
-                    className="min-w-[180px]"
+                    className="w-full sm:w-auto min-w-0 sm:min-w-[180px]"
                   >
                     {loading
                       ? (locale === 'ar' ? 'جاري الإرسال...' : 'Sending...')

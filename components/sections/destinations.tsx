@@ -103,7 +103,7 @@ export function DestinationsSection() {
       <section
         ref={sectionRef}
         id="destinations"
-        className="relative overflow-hidden py-20 md:py-28"
+        className="relative overflow-hidden py-12 sm:py-16 md:py-20 lg:py-28"
       >
         <div className="absolute inset-0 bg-gradient-to-b from-[#2d0f12] via-[#3a1518] to-[#4a1c20]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_0%,hsl(var(--primary)/0.15),transparent)]" />
@@ -130,7 +130,7 @@ export function DestinationsSection() {
           initial={{ opacity: 0, y: 24 }}
           animate={isVisible ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.55, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="relative px-14 md:px-16 lg:px-20"
+          className="relative px-6 sm:px-10 md:px-14 lg:px-20 min-w-0"
         >
           <Carousel
             key={isRTL ? "rtl" : "ltr"}
@@ -143,16 +143,16 @@ export function DestinationsSection() {
             className="w-full"
             dir={isRTL ? "rtl" : "ltr"}
           >
-            <CarouselContent className="-ml-4 md:-ml-6">
+            <CarouselContent className="-ml-3 sm:-ml-4 md:-ml-6">
               {services.map((service, index) => {
                 const Icon = service.icon
                 return (
                   <CarouselItem
                     key={service.key}
-                    className="pl-4 md:pl-6 basis-full md:basis-1/2 lg:basis-1/3"
+                    className="pl-3 sm:pl-4 md:pl-6 basis-full md:basis-1/2 lg:basis-1/3"
                   >
                     <motion.div
-                      className="group relative overflow-hidden rounded-2xl ring-2 ring-white/10"
+                      className="group relative overflow-hidden rounded-xl sm:rounded-2xl ring-2 ring-white/10 min-w-0"
                       initial={{ opacity: 0, y: 20 }}
                       animate={isVisible ? { opacity: 1, y: 0 } : {}}
                       transition={{
@@ -172,14 +172,14 @@ export function DestinationsSection() {
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-[#4a1c20]/95 via-[#4a1c20]/50 to-[#4a1c20]/0" />
                       </div>
-                      <div className="relative flex flex-col justify-end p-6 min-h-[320px]">
-                        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 text-white backdrop-blur-sm transition-transform duration-300 group-hover:scale-105">
-                          <Icon className="h-6 w-6" />
+                      <div className="relative flex flex-col justify-end p-4 sm:p-6 min-h-[260px] sm:min-h-[280px] md:min-h-[320px]">
+                        <div className="mb-3 sm:mb-4 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg sm:rounded-xl bg-white/20 text-white backdrop-blur-sm transition-transform duration-300 group-hover:scale-105">
+                          <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
                         </div>
-                        <h3 className="text-xl font-bold text-white">
+                        <h3 className="text-lg sm:text-xl font-bold text-white break-words">
                           {t(service.key)}
                         </h3>
-                        <p className="mt-2 text-sm leading-relaxed text-white/90 line-clamp-3">
+                        <p className="mt-1.5 sm:mt-2 text-xs sm:text-sm leading-relaxed text-white/90 line-clamp-3 break-words">
                           {t(service.descKey)}
                         </p>
                       </div>

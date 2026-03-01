@@ -169,7 +169,7 @@ export function RoomBookingPageClient({ hotel, room }: RoomBookingPageClientProp
   return (
     <>
       {/* Hero: room name + hotel name */}
-      <section className="relative min-h-[280px] md:min-h-[340px] flex flex-col justify-center overflow-hidden pt-24">
+      <section className="relative min-h-[240px] sm:min-h-[280px] md:min-h-[320px] lg:min-h-[340px] flex flex-col justify-center overflow-hidden pt-20 sm:pt-24">
         <Image
           src={heroImage}
           alt=""
@@ -189,11 +189,11 @@ export function RoomBookingPageClient({ hotel, room }: RoomBookingPageClientProp
           }}
           aria-hidden
         />
-        <div className="relative z-10 container mx-auto px-4 text-center max-w-4xl">
-          <p className="text-white/90 text-sm sm:text-base mb-1 drop-shadow-md">
+        <div className="relative z-10 container mx-auto px-4 sm:px-6 text-center max-w-4xl min-w-0">
+          <p className="text-white/90 text-xs sm:text-sm md:text-base mb-1 drop-shadow-md truncate max-w-full">
             {hotelName}
           </p>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2 drop-shadow-lg">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-2 drop-shadow-lg break-words">
             {roomName}
           </h1>
           <div className="flex items-center justify-center gap-2 text-white/90 text-sm">
@@ -206,11 +206,11 @@ export function RoomBookingPageClient({ hotel, room }: RoomBookingPageClientProp
       </section>
 
       {/* Info bar */}
-      <div className="relative z-20 -mt-6 px-4 md:px-6">
-        <div className="mx-auto max-w-6xl">
+      <div className="relative z-20 -mt-4 sm:-mt-6 px-3 sm:px-4 md:px-6">
+        <div className="mx-auto max-w-6xl min-w-0">
           <div
             className={cn(
-              'rounded-2xl bg-white border border-border shadow-lg px-6 py-4 flex flex-wrap items-center justify-center md:justify-between gap-4 md:gap-6 text-sm',
+              'rounded-xl sm:rounded-2xl bg-white border border-border shadow-lg px-4 py-3 sm:px-6 sm:py-4 flex flex-wrap items-center justify-center md:justify-between gap-3 sm:gap-4 md:gap-6 text-xs sm:text-sm',
               isRTL && 'md:flex-row-reverse',
             )}
           >
@@ -227,11 +227,11 @@ export function RoomBookingPageClient({ hotel, room }: RoomBookingPageClientProp
         </div>
       </div>
 
-      <section className="py-12 md:py-16">
-        <div className="container mx-auto px-4 max-w-6xl">
+      <section className="py-8 sm:py-12 md:py-16 overflow-x-hidden">
+        <div className="container mx-auto px-3 sm:px-4 max-w-6xl min-w-0">
           <div
             className={cn(
-              'mb-6 flex items-center justify-between gap-3 text-sm text-muted-foreground',
+              'mb-4 sm:mb-6 flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm text-muted-foreground',
               isRTL && 'flex-row-reverse text-right',
             )}
           >
@@ -249,10 +249,10 @@ export function RoomBookingPageClient({ hotel, room }: RoomBookingPageClientProp
             </span>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-10">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 sm:gap-8 lg:gap-10">
             {/* Left: room details */}
-            <div className="lg:col-span-2 space-y-6">
-              <div className="rounded-xl border border-border bg-card overflow-hidden">
+            <div className="lg:col-span-2 space-y-4 sm:space-y-6 min-w-0">
+              <div className="rounded-xl border border-border bg-card overflow-hidden min-w-0">
                 <div className="relative w-full aspect-[4/3] bg-muted">
                   {room.image_url ? (
                     <Image
@@ -325,12 +325,12 @@ export function RoomBookingPageClient({ hotel, room }: RoomBookingPageClientProp
             </div>
 
             {/* Right: booking form */}
-            <div className="lg:col-span-3">
-              <div className="rounded-2xl border border-border/60 bg-background shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)] p-6 sm:p-8">
-                <h2 className="text-xl font-bold text-foreground mb-2">
+            <div className="lg:col-span-3 min-w-0">
+              <div className="rounded-xl sm:rounded-2xl border border-border/60 bg-background shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)] p-4 sm:p-6 md:p-8">
+                <h2 className="text-lg sm:text-xl font-bold text-foreground mb-2">
                   {locale === 'ar' ? 'الحجز والاستفسارات' : 'Booking & Inquiries'}
                 </h2>
-                <p className="text-sm text-muted-foreground mb-6">
+                <p className="text-xs sm:text-sm text-muted-foreground mb-4 sm:mb-6">
                   {locale === 'ar'
                     ? 'اختر التواريخ وأدخل بياناتك لإرسال طلب الحجز لهذه الغرفة.'
                     : 'Select your dates and enter your details to request a booking for this room.'}
@@ -482,7 +482,7 @@ export function RoomBookingPageClient({ hotel, room }: RoomBookingPageClientProp
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <p className="text-sm font-medium text-foreground">
                   {t('booking.needVisa')} <span className="text-destructive">*</span>

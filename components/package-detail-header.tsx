@@ -19,7 +19,7 @@ export function PackageDetailHeader({
   return (
     <section
       className={cn(
-        'relative min-h-[320px] md:min-h-[400px] flex items-center justify-center overflow-hidden pt-10',
+        'relative min-h-[260px] sm:min-h-[300px] md:min-h-[360px] lg:min-h-[400px] flex items-center justify-center overflow-hidden pt-10 sm:pt-12',
         className
       )}
     >
@@ -46,12 +46,12 @@ export function PackageDetailHeader({
         aria-hidden
       />
       {/* Centered content */}
-      <div className="relative z-10 container mx-auto px-4 text-center max-w-4xl">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">
+      <div className="relative z-10 container mx-auto px-3 sm:px-4 text-center max-w-4xl min-w-0">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4 drop-shadow-lg break-words">
           {title}
         </h1>
         {subtitle && (
-          <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto drop-shadow">
+          <p className="text-base sm:text-lg md:text-xl text-white/90 max-w-2xl mx-auto drop-shadow break-words">
             {subtitle}
           </p>
         )}

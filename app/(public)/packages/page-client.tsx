@@ -56,12 +56,12 @@ function CategoryCard({
       type="button"
       onClick={onClick}
       className={cn(
-        "group relative flex flex-col justify-end w-full rounded-2xl overflow-hidden",
+        "group relative flex flex-col justify-end w-full max-w-full rounded-xl sm:rounded-2xl overflow-hidden",
         "transition-all duration-300 hover:scale-[1.02] hover:shadow-xl",
         isSelected && "ring-2 ring-primary ring-offset-2",
         size === "large"
-          ? "min-h-[280px] sm:min-h-[320px] lg:min-h-[360px]"
-          : "min-h-[200px] sm:min-h-[240px]",
+          ? "min-h-[220px] sm:min-h-[260px] md:min-h-[300px] lg:min-h-[340px]"
+          : "min-h-[180px] sm:min-h-[200px] md:min-h-[220px]",
       )}
     >
       {/* Background image or gradient (single or cycling) + slow zoom */}
@@ -129,10 +129,10 @@ function CategoryCard({
       >
         <span
           className={cn(
-            "font-bold text-[#ffffff] drop-shadow-lg block",
+            "font-bold text-[#ffffff] drop-shadow-lg block truncate",
             size === "large"
-              ? "text-2xl sm:text-3xl lg:text-4xl"
-              : "text-xl sm:text-2xl",
+              ? "text-lg sm:text-2xl md:text-3xl lg:text-4xl"
+              : "text-base sm:text-xl md:text-2xl",
           )}
         >
           {title}
@@ -257,9 +257,9 @@ export function PackagesPageClient({
 
       {/* Full-page categories view (initial) */}
       {view === "categories" && (
-        <section className="min-h-[calc(100vh-var(--header-height,64px)-180px)] flex flex-col py-8 sm:py-12">
-          <div className="container mx-auto px-4 flex-1 flex flex-col">
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(360px,1fr))] gap-6 flex-1 content-start max-w-6xl mx-auto justify-items-center w-full">
+        <section className="min-h-[calc(100vh-var(--header-height,64px)-180px)] flex flex-col py-6 sm:py-8 md:py-12 overflow-x-hidden">
+          <div className="container mx-auto px-3 sm:px-4 flex-1 flex flex-col min-w-0 w-full max-w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 flex-1 content-start max-w-6xl mx-auto w-full">
               {discoverCard?.is_visible !== false && (
                 <CategoryCard
                   title={
@@ -309,12 +309,12 @@ export function PackagesPageClient({
 
       {/* Full-page locations view (when Locations card clicked) */}
       {view === LOCATIONS_VIEW && (
-        <section className="min-h-[calc(100vh-var(--header-height,64px)-180px)] flex flex-col py-8 sm:py-12 ">
-          <div className="container mx-auto px-4 flex-1 flex flex-col">
+        <section className="min-h-[calc(100vh-var(--header-height,64px)-180px)] flex flex-col py-6 sm:py-8 md:py-12 overflow-x-hidden">
+          <div className="container mx-auto px-3 sm:px-4 flex-1 flex flex-col min-w-0 w-full max-w-full">
             <Button
               variant="ghost"
               className={cn(
-                "self-start mb-6 gap-2",
+                "self-start mb-4 sm:mb-6 gap-2",
                 locale === "ar" ? "flex-row-reverse" : "",
               )}
               onClick={goBack}
@@ -324,17 +324,14 @@ export function PackagesPageClient({
               />
               {t("packages.backToCategories")}
             </Button>
-            {/* <h2 className="text-xl sm:text-2xl font-semibold text-foreground mb-8 text-center">
-              {t('packages.selectLocation')}
-            </h2> */}
             {locations.length === 0 ? (
-              <p className="text-muted-foreground text-center py-12">
+              <p className="text-muted-foreground text-center py-8 sm:py-12 text-sm">
                 {locale === "ar"
                   ? "لا توجد مواقع متاحة"
                   : "No locations available"}
               </p>
             ) : (
-              <div className="grid grid-cols-[repeat(auto-fill,minmax(360px,1fr))] gap-6 flex-1 content-start max-w-6xl mx-auto justify-items-center">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 flex-1 content-start max-w-6xl mx-auto w-full">
                 {locations.map((loc) => (
                   <CategoryCard
                     key={loc.id}
@@ -358,12 +355,12 @@ export function PackagesPageClient({
 
       {/* Packages list (shown when category selected, or when location selected in Locations view) */}
       {showPackages && (
-        <section className="py-12">
-          <div className="container mx-auto px-4">
+        <section className="py-6 sm:py-8 md:py-12 overflow-x-hidden">
+          <div className="container mx-auto px-3 sm:px-4 min-w-0 max-w-full">
             <Button
               variant="ghost"
               className={cn(
-                "mb-4 gap-2",
+                "mb-3 sm:mb-4 gap-2",
                 locale === "ar" ? "flex-row-reverse ms-auto" : "",
               )}
               onClick={goBack}
@@ -407,11 +404,11 @@ export function PackagesPageClient({
                 { value: "nameDesc", label: t("list.sort.nameDesc") },
               ]}
               isRTL={locale === "ar"}
-              className="mb-6"
+              className="mb-4 sm:mb-6 w-full"
             />
 
             {/* Packages Grid - consistent card heights */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
               {displayedPackages.map((pkg, index) => {
                 const p = pkg as unknown as Record<string, unknown>;
                 const name = getLocalizedContent(p, "name", locale);
@@ -470,8 +467,8 @@ export function PackagesPageClient({
                         </div>
 
                         {/* Content - flex to fill, aligned */}
-                        <div className="flex-1 flex flex-col p-6 min-w-0">
-                          <h3 className="text-lg font-semibold text-foreground mb-2 line-clamp-2">
+                        <div className="flex-1 flex flex-col p-4 sm:p-6 min-w-0 overflow-hidden">
+                          <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2 line-clamp-2 break-words">
                             {name}
                           </h3>
                           <p className="text-muted-foreground text-sm line-clamp-2 mb-4 flex-shrink-0">
@@ -498,18 +495,18 @@ export function PackagesPageClient({
                           )}
 
                           {/* Price & CTA - always at bottom */}
-                          <div className="mt-auto pt-4 border-t border-border flex items-center justify-between gap-4">
-                            <div className="min-w-0">
+                          <div className="mt-auto pt-3 sm:pt-4 border-t border-border flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                            <div className="min-w-0 overflow-hidden">
                               <span className="text-xs text-muted-foreground block">
                                 {t("common.startingFrom")}
                               </span>
-                              <span className="text-xl font-bold text-primary">
+                              <span className="text-lg sm:text-xl font-bold text-primary truncate block">
                                 {pkg.currency} {pkg.price?.toLocaleString()}
                               </span>
                             </div>
                             <span
                               className={cn(
-                                "shrink-0 px-4 py-2 rounded-md text-sm font-medium",
+                                "shrink-0 px-4 py-2 rounded-md text-sm font-medium text-center",
                                 "bg-primary text-primary-foreground",
                                 "group-hover:bg-primary/90 transition-colors",
                               )}
@@ -526,7 +523,7 @@ export function PackagesPageClient({
             </div>
 
             {displayedPackages.length === 0 && (
-              <div className="text-center py-16 rounded-2xl border border-dashed border-border">
+              <div className="text-center py-12 sm:py-16 rounded-xl sm:rounded-2xl border border-dashed border-border px-4">
                 <p className="text-muted-foreground">
                   {locale === "ar"
                     ? "لا توجد باقات متاحة"

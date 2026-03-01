@@ -92,8 +92,8 @@ export function EventsPageClient({ events }: EventsPageClientProps) {
         subtitle={t('events.subtitle')}
       />
 
-      <section className="py-12 md:py-16">
-        <div className="container mx-auto px-4">
+      <section className="py-8 sm:py-10 md:py-12 lg:py-16 overflow-x-hidden">
+        <div className="container mx-auto px-3 sm:px-4 min-w-0">
           <div className="max-w-5xl mx-auto">
             <SearchSortBar
               searchValue={searchQuery}
@@ -111,15 +111,15 @@ export function EventsPageClient({ events }: EventsPageClientProps) {
                 { value: 'nameDesc', label: t('list.sort.nameDesc') },
               ]}
               isRTL={locale === 'ar'}
-              className="mb-6"
+              className="mb-4 sm:mb-6 w-full"
             />
 
             {displayedEvents.length === 0 ? (
-              <p className="text-muted-foreground py-12 text-center rounded-lg border border-dashed">
+              <p className="text-muted-foreground py-10 sm:py-12 text-center rounded-xl border border-dashed text-sm px-4">
                 {locale === 'ar' ? 'لا توجد فعاليات تطابق البحث.' : 'No events match your search.'}
               </p>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {displayedEvents.map((evt, index) => {
                   const title = getLocalizedContent(
                     evt as unknown as Record<string, unknown>,
@@ -144,13 +144,13 @@ export function EventsPageClient({ events }: EventsPageClientProps) {
                     <article
                       key={evt.id}
                       className={cn(
-                        'group flex flex-col h-full rounded-2xl bg-card border border-border overflow-hidden',
+                        'group flex flex-col h-full rounded-xl sm:rounded-2xl bg-card border border-border overflow-hidden min-w-0',
                         'hover:border-primary/30 hover:shadow-xl transition-all duration-300',
                         'animate-fade-in-up'
                       )}
                       style={{ animationDelay: `${Math.min(index * 50, 300)}ms` }}
                     >
-                      <Link href={`/blog/events/${evt.slug}`} className="flex flex-col h-full">
+                      <Link href={`/blog/events/${evt.slug}`} className="flex flex-col h-full min-w-0">
                         <div className="relative w-full aspect-[16/10] shrink-0 overflow-hidden bg-muted">
                           <Image
                             src={img}
@@ -159,31 +159,31 @@ export function EventsPageClient({ events }: EventsPageClientProps) {
                             className="object-cover transition-transform duration-500 group-hover:scale-105"
                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           />
-                          <div className="absolute inset-x-0 bottom-0 z-10 bg-primary py-2 px-4">
-                            <p className="text-sm font-semibold text-white text-center" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
+                          <div className="absolute inset-x-0 bottom-0 z-10 bg-primary py-1.5 sm:py-2 px-3 sm:px-4">
+                            <p className="text-xs sm:text-sm font-semibold text-white text-center truncate" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
                               {bannerText}
                             </p>
                           </div>
                         </div>
-                        <div className="flex-1 flex flex-col p-6 min-w-0">
-                          <h3 className="text-lg font-semibold text-foreground mb-2 line-clamp-2" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
+                        <div className="flex-1 flex flex-col p-4 sm:p-6 min-w-0 overflow-hidden">
+                          <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2 line-clamp-2 break-words" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
                             {title}
                           </h3>
                           {location && (
-                            <p className="flex items-center gap-1.5 text-sm text-muted-foreground mb-2">
-                              <MapPin className="w-4 h-4 shrink-0 text-primary" />
-                              <span>{location}</span>
+                            <p className="flex items-center gap-1.5 text-xs sm:text-sm text-muted-foreground mb-2 min-w-0">
+                              <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 text-primary" />
+                              <span className="truncate">{location}</span>
                             </p>
                           )}
                           {priceStr && (
-                            <p className="flex items-center gap-1.5 text-sm font-medium text-primary mb-4">
-                              <Banknote className="w-4 h-4 shrink-0" />
-                              <span>{priceStr}</span>
+                            <p className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-primary mb-3 sm:mb-4 min-w-0">
+                              <Banknote className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                              <span className="truncate">{priceStr}</span>
                             </p>
                           )}
                         </div>
-                        <div className="p-6 pt-0">
-                          <span className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground w-full">
+                        <div className="p-4 sm:p-6 pt-0">
+                          <span className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-xs sm:text-sm font-medium text-primary-foreground w-full">
                             {t('events.bookNow')}
                           </span>
                         </div>

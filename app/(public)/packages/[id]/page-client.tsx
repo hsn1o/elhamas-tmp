@@ -48,7 +48,7 @@ export function PackageDetailClient({ package: pkg }: PackageDetailClientProps) 
   const inclusions = locale === 'ar' ? (pkg.inclusions_ar || pkg.includes) : pkg.includes
   const exclusions = locale === 'ar' ? pkg.exclusions_ar : pkg.exclusions_en
 
-  const sectionCard = 'rounded-xl border border-border bg-card p-6 md:p-8'
+  const sectionCard = 'rounded-xl border border-border bg-card p-4 sm:p-6 md:p-8'
 
   const handleInquirySubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -122,22 +122,22 @@ export function PackageDetailClient({ package: pkg }: PackageDetailClientProps) 
         backgroundImage={images[0]}
       />
 
-      <section className="py-12 md:py-16">
-        <div className="container mx-auto px-4 max-w-4xl">
+      <section className="py-8 sm:py-12 md:py-16 overflow-x-hidden">
+        <div className="container mx-auto px-3 sm:px-4 max-w-4xl min-w-0">
           {/* Breadcrumb */}
           <Link
             href="/packages"
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors"
+            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 sm:mb-8 transition-colors"
           >
             <ChevronLeft className="w-4 h-4 shrink-0" />
             {locale === 'ar' ? 'العودة للباقات' : 'Back to Packages'}
           </Link>
 
-          <div className="space-y-8">
+          <div className="space-y-6 sm:space-y-8">
             {/* Hero + Carousel gallery + Price bar */}
             <div className={cn(sectionCard, "overflow-hidden p-0")}>
-              <div className="relative w-full">
-                <div className="relative w-full aspect-[21/14] min-h-[200px] bg-muted overflow-hidden rounded-3xl">
+              <div className="relative w-full min-w-0">
+                <div className="relative w-full aspect-[21/14] min-h-[180px] sm:min-h-[200px] bg-muted overflow-hidden rounded-xl sm:rounded-2xl md:rounded-3xl">
                   {images.map((src, i) => (
                     <div
                       key={i}
@@ -162,48 +162,48 @@ export function PackageDetailClient({ package: pkg }: PackageDetailClientProps) 
                     <button
                       type="button"
                       onClick={() => goToSlide(selectedIndex - 1)}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 z-10 h-11 w-11 rounded-full bg-white/90 text-foreground hover:bg-white flex items-center justify-center shadow-md"
+                      className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 h-9 w-9 sm:h-11 sm:w-11 rounded-full bg-white/90 text-foreground hover:bg-white flex items-center justify-center shadow-md"
                       aria-label="Previous image"
                     >
-                      <ChevronLeft className="h-5 w-5" />
+                      <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
                     </button>
                     <button
                       type="button"
                       onClick={() => goToSlide(selectedIndex + 1)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 z-10 h-11 w-11 rounded-full bg-white/90 text-foreground hover:bg-white flex items-center justify-center shadow-md"
+                      className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 h-9 w-9 sm:h-11 sm:w-11 rounded-full bg-white/90 text-foreground hover:bg-white flex items-center justify-center shadow-md"
                       aria-label="Next image"
                     >
-                      <ChevronLeft className="h-5 w-5 rotate-180" />
+                      <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5 rotate-180" />
                     </button>
                   </>
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent pointer-events-none" />
-                <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 flex flex-wrap items-center justify-between gap-4 pointer-events-none">
-                  <div className="flex flex-wrap items-center gap-3">
+                <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 md:p-6 flex flex-wrap items-center justify-between gap-3 pointer-events-none">
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                     <Badge
                       className={
                         pkg.package_type === 'hajj'
-                          ? 'bg-primary text-primary-foreground border-0'
-                          : 'bg-secondary text-secondary-foreground border-0'
+                          ? 'bg-primary text-primary-foreground border-0 text-xs sm:text-sm'
+                          : 'bg-secondary text-secondary-foreground border-0 text-xs sm:text-sm'
                       }
                     >
                       {pkg.package_type === 'hajj' ? t('packages.hajj') : t('packages.umrah')}
                     </Badge>
-                    <span className="flex items-center gap-2 text-white/90 text-sm font-medium">
-                      <Calendar className="w-4 h-4" />
+                    <span className="flex items-center gap-1.5 sm:gap-2 text-white/90 text-xs sm:text-sm font-medium">
+                      <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                       {pkg.duration_days} {t('common.days')}
                     </span>
                   </div>
-                  <div className="text-right">
-                    <span className="text-2xl md:text-3xl font-bold text-white">
+                  <div className="text-right min-w-0">
+                    <span className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-white">
                       {pkg.currency} {pkg.price?.toLocaleString()}
                     </span>
-                    <span className="block text-sm text-white/80">{t('common.perPerson')}</span>
+                    <span className="block text-xs sm:text-sm text-white/80">{t('common.perPerson')}</span>
                   </div>
                 </div>
               </div>
               {images.length > 1 && (
-                <div className="p-4 border-t border-border flex items-center justify-center gap-3 overflow-x-auto">
+                <div className="p-3 sm:p-4 border-t border-border flex items-center justify-center gap-2 sm:gap-3 overflow-x-auto">
                   {images.map((src, i) => (
                     <div
                       key={i}
@@ -212,7 +212,7 @@ export function PackageDetailClient({ package: pkg }: PackageDetailClientProps) 
                       onClick={() => goToSlide(i)}
                       onKeyDown={(e) => e.key === 'Enter' && goToSlide(i)}
                       className={cn(
-                        "relative shrink-0 w-16 h-12 rounded-md overflow-hidden border-2 transition-all cursor-pointer",
+                        "relative shrink-0 w-12 h-9 sm:w-14 sm:h-10 md:w-16 md:h-12 rounded-md overflow-hidden border-2 transition-all cursor-pointer",
                         selectedIndex === i
                           ? "border-primary ring-2 ring-primary/20"
                           : "border-transparent opacity-70 hover:opacity-100"
@@ -229,16 +229,16 @@ export function PackageDetailClient({ package: pkg }: PackageDetailClientProps) 
                   ))}
                 </div>
               )}
-              <div className="p-4 md:p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-t border-border">
-                <div className="min-w-0">
-                  <h2 className="text-lg font-semibold text-foreground">{name}</h2>
+              <div className="p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-t border-border">
+                <div className="min-w-0 overflow-hidden">
+                  <h2 className="text-base sm:text-lg font-semibold text-foreground break-words">{name}</h2>
                   {shortDesc && (
-                    <p className="text-sm text-muted-foreground mt-1 line-clamp-2" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
+                    <p className="text-sm text-muted-foreground mt-1 line-clamp-2 break-words" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
                       {shortDesc}
                     </p>
                   )}
                 </div>
-                <Button asChild size="lg" className="min-w-[180px] shrink-0">
+                <Button asChild size="lg" className="w-full sm:w-auto min-w-0 sm:min-w-[180px] shrink-0">
                   <Link href={`/contact?package=${pkg.id}`}>{t('common.bookNow')}</Link>
                 </Button>
               </div>
@@ -246,12 +246,12 @@ export function PackageDetailClient({ package: pkg }: PackageDetailClientProps) 
 
             {/* Main content grid - Description + Sidebar (Inclusions/Exclusions) */}
             <div className={cn(
-              "grid gap-8",
+              "grid gap-6 sm:gap-8 min-w-0",
               fullDesc ? "grid-cols-1 lg:grid-cols-3" : "grid-cols-1"
             )}>
               {/* Description - takes 2 cols on lg when present */}
               {fullDesc && (
-                <div className={cn(sectionCard, "lg:col-span-2")}>
+                <div className={cn(sectionCard, "lg:col-span-2 min-w-0")}>
                   <h2 className="text-xl font-semibold text-foreground mb-4">
                     {t('packages.fullDescription')}
                   </h2>
@@ -310,7 +310,7 @@ export function PackageDetailClient({ package: pkg }: PackageDetailClientProps) 
 
               {/* Sidebar - Inclusions & Exclusions (side-by-side when no description) */}
               <div className={cn(
-                fullDesc ? "space-y-6" : "grid grid-cols-1 sm:grid-cols-2 gap-6"
+                fullDesc ? "space-y-6 min-w-0" : "grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 min-w-0"
               )}>
                 {inclusions?.length > 0 && (
                   <div className={sectionCard}>
@@ -349,12 +349,12 @@ export function PackageDetailClient({ package: pkg }: PackageDetailClientProps) 
 
             {/* Itinerary - full width */}
             {pkg.itinerary?.length > 0 && (
-              <div className={sectionCard}>
-                <h2 className="text-xl font-semibold text-foreground mb-6 flex items-center gap-2">
+              <div className={cn(sectionCard, "min-w-0")}>
+                <h2 className="text-lg sm:text-xl font-semibold text-foreground mb-4 sm:mb-6 flex items-center gap-2">
                   <MapPin className="w-6 h-6 text-primary shrink-0" />
                   {t('packages.itinerary')}
                 </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   {pkg.itinerary
                     .slice()
                     .sort((a, b) => a.day - b.day)
@@ -363,7 +363,7 @@ export function PackageDetailClient({ package: pkg }: PackageDetailClientProps) 
                       return (
                         <div
                           key={item.day}
-                          className="flex gap-4 p-4 rounded-lg border border-border bg-muted/30 hover:bg-muted/50 transition-colors"
+                          className="flex gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg border border-border bg-muted/30 hover:bg-muted/50 transition-colors min-w-0"
                         >
                           <span className="shrink-0 w-10 h-10 rounded-full bg-primary/10 text-primary font-semibold flex items-center justify-center text-sm">
                             {item.day}
@@ -382,11 +382,11 @@ export function PackageDetailClient({ package: pkg }: PackageDetailClientProps) 
             )}
 
             {/* Booking & Inquiries form – unified with other inquiry forms */}
-            <div className="rounded-2xl border border-border/60 bg-background shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)] p-6 sm:p-8">
-              <h2 className="text-xl font-bold text-foreground mb-2">
+            <div className="rounded-xl sm:rounded-2xl border border-border/60 bg-background shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)] p-4 sm:p-6 md:p-8 min-w-0">
+              <h2 className="text-lg sm:text-xl font-bold text-foreground mb-2">
                 {locale === 'ar' ? 'الحجز والاستفسارات' : 'Booking & Inquiries'}
               </h2>
-              <p className="text-sm text-muted-foreground mb-6">
+              <p className="text-sm text-muted-foreground mb-4 sm:mb-6">
                 {locale === 'ar'
                   ? 'أدخل بياناتك لإرسال طلب الحجز أو الاستفسار عن هذه الباقة.'
                   : 'Enter your details to send a booking request or inquiry for this package.'}
@@ -557,7 +557,7 @@ export function PackageDetailClient({ package: pkg }: PackageDetailClientProps) 
                   <Button
                     type="submit"
                     disabled={loading}
-                    className="min-w-[180px]"
+                    className="w-full sm:w-auto min-w-0 sm:min-w-[180px]"
                   >
                     {loading
                       ? (locale === 'ar' ? 'جاري الإرسال...' : 'Sending...')

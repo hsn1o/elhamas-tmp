@@ -84,8 +84,8 @@ export function TransportationPageClient({ items }: TransportationPageClientProp
         subtitle={t('transport.subtitle')}
       />
 
-      <section className="py-12">
-        <div className="container mx-auto px-4">
+      <section className="py-8 sm:py-10 md:py-12 overflow-x-hidden">
+        <div className="container mx-auto px-3 sm:px-4 min-w-0">
           <SearchSortBar
             searchValue={searchQuery}
             onSearchChange={setSearchQuery}
@@ -102,10 +102,10 @@ export function TransportationPageClient({ items }: TransportationPageClientProp
               { value: 'capacityDesc', label: t('list.sort.capacityDesc') },
             ]}
             isRTL={locale === 'ar'}
-            className="mb-6"
+            className="mb-4 sm:mb-6 w-full"
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {displayedItems.map((item, index) => {
               const name = getLocalizedContent(
                 item as unknown as Record<string, unknown>,
@@ -119,13 +119,13 @@ export function TransportationPageClient({ items }: TransportationPageClientProp
                 <article
                   key={item.id}
                   className={cn(
-                    'group flex flex-col h-full rounded-2xl bg-card border border-border overflow-hidden',
+                    'group flex flex-col h-full rounded-xl sm:rounded-2xl bg-card border border-border overflow-hidden min-w-0',
                     'hover:border-primary/30 hover:shadow-xl transition-all duration-300',
                     'animate-fade-in-up',
                   )}
                   style={{ animationDelay: `${Math.min(index * 50, 300)}ms` }}
                 >
-                  <Link href={`/transportation/${item.id}`} className="flex flex-col h-full">
+                  <Link href={`/transportation/${item.id}`} className="flex flex-col h-full min-w-0">
                     <div className="relative w-full aspect-[16/10] shrink-0 overflow-hidden bg-muted">
                       <div
                         className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
@@ -137,29 +137,29 @@ export function TransportationPageClient({ items }: TransportationPageClientProp
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                     </div>
-                    <div className="flex-1 flex flex-col p-6 min-w-0">
-                      <h3 className="text-lg font-semibold text-foreground mb-3 line-clamp-2">
+                    <div className="flex-1 flex flex-col p-4 sm:p-6 min-w-0 overflow-hidden">
+                      <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2 sm:mb-3 line-clamp-2 break-words">
                         {name}
                       </h3>
                       {loc && (
-                        <p className="flex items-center gap-1.5 text-sm text-muted-foreground mb-2">
-                          <MapPin className="w-4 h-4 shrink-0 text-primary" />
-                          <span>{loc}</span>
+                        <p className="flex items-center gap-1.5 text-xs sm:text-sm text-muted-foreground mb-2 min-w-0">
+                          <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 text-primary" />
+                          <span className="truncate">{loc}</span>
                         </p>
                       )}
-                      <p className="flex items-center gap-1.5 text-sm text-muted-foreground mb-4">
-                        <Car className="w-4 h-4 shrink-0 text-primary" />
+                      <p className="flex items-center gap-1.5 text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">
+                        <Car className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 text-primary" />
                         <span>
                           {item.capacity} {t('transport.seats')}
                         </span>
                       </p>
-                      <div className="mt-auto pt-4 border-t border-border flex items-center justify-between gap-4">
+                      <div className="mt-auto pt-3 sm:pt-4 border-t border-border flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
                         {priceStr && (
-                          <div className="min-w-0">
-                            <span className="text-xl font-bold text-primary">
+                          <div className="min-w-0 overflow-hidden">
+                            <span className="text-lg sm:text-xl font-bold text-primary truncate block">
                               {priceStr}
                             </span>
-                            <span className="text-sm text-muted-foreground block">
+                            <span className="text-xs sm:text-sm text-muted-foreground block">
                               {item.price_per_trip != null
                                 ? t('transport.perTrip')
                                 : t('transport.perDay')}
@@ -168,7 +168,7 @@ export function TransportationPageClient({ items }: TransportationPageClientProp
                         )}
                         <span
                           className={cn(
-                            'shrink-0 px-4 py-2 rounded-md text-sm font-medium',
+                            'shrink-0 px-4 py-2 rounded-md text-sm font-medium text-center',
                             'bg-primary text-primary-foreground',
                             'group-hover:bg-primary/90 transition-colors',
                           )}
@@ -184,8 +184,8 @@ export function TransportationPageClient({ items }: TransportationPageClientProp
           </div>
 
           {displayedItems.length === 0 && (
-            <div className="text-center py-16 rounded-2xl border border-dashed border-border">
-              <p className="text-muted-foreground">
+            <div className="text-center py-12 sm:py-16 rounded-xl sm:rounded-2xl border border-dashed border-border px-4">
+              <p className="text-muted-foreground text-sm">
                 {locale === 'ar' ? 'لا توجد خدمات نقل تطابق البحث' : 'No transportation services match your search.'}
               </p>
             </div>

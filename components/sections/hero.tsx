@@ -17,7 +17,7 @@ export function HeroSection() {
   const { t } = useI18n()
 
   return (
-    <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden pt-20 pb-0 md:pt-24">
+    <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden pt-16 sm:pt-20 pb-0 md:pt-24 min-w-0">
       {/* Background Image — slow zoom in/out (Ken Burns) */}
       <motion.div
         className="absolute inset-0"
@@ -42,16 +42,16 @@ export function HeroSection() {
       </motion.div>
 
       {/* Centered content with backdrop panel for clarity */}
-      <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center px-6 text-center">
+      <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center px-3 sm:px-4 md:px-6 text-center min-w-0 w-full">
         <motion.div
-          className="w-full max-w-2xl rounded-2xl border border-white/10 bg-[#4a1c20]/70 px-8 py-10 shadow-2xl backdrop-blur-md sm:px-12 sm:py-14 md:px-14"
+          className="w-full max-w-2xl rounded-xl sm:rounded-2xl border border-white/10 bg-[#4a1c20]/70 px-4 py-6 sm:px-8 sm:py-10 md:px-12 md:py-14 shadow-2xl backdrop-blur-md"
           style={{ boxShadow: "0 25px 50px -12px rgba(74,28,32,0.6), 0 0 0 1px rgba(255,255,255,0.08) inset" }}
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: easeOutExpo }}
         >
           <motion.h1
-            className="mb-5 text-4xl leading-[1.1] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-[2.7rem]"
+            className="mb-4 sm:mb-5 text-2xl sm:text-4xl md:text-5xl lg:text-6xl leading-[1.1] tracking-tight text-white break-words"
             style={{
               fontFamily: "var(--font-playfair), Georgia, serif",
               textShadow: "0 2px 12px rgba(74,28,32,0.8), 0 0 1px rgba(0,0,0,0.2)",
@@ -64,7 +64,7 @@ export function HeroSection() {
           </motion.h1>
 
           <motion.p
-            className="mx-auto max-w-lg text-base leading-relaxed text-white/95 md:text-lg"
+            className="mx-auto max-w-lg text-sm sm:text-base leading-relaxed text-white/95 md:text-lg break-words"
             style={{ textShadow: "0 1px 6px rgba(74,28,32,0.6)" }}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -74,14 +74,14 @@ export function HeroSection() {
           </motion.p>
 
           <motion.div
-            className="mt-8 flex flex-wrap items-center justify-center gap-4"
+            className="mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4"
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.45, ease: easeOutExpo }}
           >
             <motion.a
               href="/"
-              className="rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-lg md:px-8 md:py-3.5 md:text-base"
+              className="rounded-lg bg-primary px-4 py-2.5 sm:px-6 sm:py-3 text-xs sm:text-sm font-semibold text-primary-foreground shadow-lg md:px-8 md:py-3.5 md:text-base"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               transition={{ duration: 0.2 }}
@@ -90,7 +90,7 @@ export function HeroSection() {
             </motion.a>
             <motion.a
               href="/"
-              className="rounded-lg border-2 border-white/90 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm md:px-8 md:py-3.5 md:text-base"
+              className="rounded-lg border-2 border-white/90 bg-white/10 px-4 py-2.5 sm:px-6 sm:py-3 text-xs sm:text-sm font-semibold text-white backdrop-blur-sm md:px-8 md:py-3.5 md:text-base"
               whileHover={{ scale: 1.02, backgroundColor: "rgba(255,255,255,0.2)" }}
               whileTap={{ scale: 0.98 }}
               transition={{ duration: 0.2 }}
@@ -103,7 +103,7 @@ export function HeroSection() {
 
       {/* Bottom service icons row */}
       <motion.div
-        className="relative z-10 mt-14 flex w-full max-w-3xl items-start justify-center gap-10 rounded-t-2xl border-t border-white/10 bg-[#4a1c20]/80 px-8 py-6 backdrop-blur-sm md:mt-16 md:gap-16 md:py-8"
+        className="relative z-10 mt-10 sm:mt-14 flex w-full max-w-3xl items-start justify-center gap-4 sm:gap-6 md:gap-10 lg:gap-16 rounded-t-xl sm:rounded-t-2xl border-t border-white/10 bg-[#4a1c20]/80 px-4 py-4 sm:px-6 sm:py-6 md:px-8 md:py-8 backdrop-blur-sm min-w-0"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.6, ease: easeOutExpo }}
@@ -118,8 +118,8 @@ export function HeroSection() {
             whileHover={{ y: -4, transition: { duration: 0, delay: 0 } }}
             whileTap={{ scale: 0.97, transition: { duration: 0, delay: 0 } }}
           >
-            <Icon className="h-8 w-8 text-white/85 transition-colors duration-300 group-hover:text-white md:h-10 md:w-10" />
-            <span className="text-[11px] font-medium tracking-wide text-white/80 transition-colors duration-300 group-hover:text-white md:text-xs">
+            <Icon className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-white/85 transition-colors duration-300 group-hover:text-white" />
+            <span className="text-[10px] sm:text-[11px] font-medium tracking-wide text-white/80 transition-colors duration-300 group-hover:text-white md:text-xs">
               {t(labelKey)}
             </span>
           </motion.button>

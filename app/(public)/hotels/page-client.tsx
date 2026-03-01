@@ -45,8 +45,8 @@ function LocationCard({
       type="button"
       onClick={onClick}
       className={cn(
-        'group relative flex flex-col justify-end w-full rounded-2xl overflow-hidden',
-        'min-h-[200px] sm:min-h-[240px] lg:min-h-[280px]',
+        'group relative flex flex-col justify-end w-full max-w-full rounded-2xl overflow-hidden',
+        'min-h-[180px] sm:min-h-[200px] md:min-h-[220px] lg:min-h-[260px]',
         'transition-all duration-300 hover:scale-[1.02] hover:shadow-xl',
         isSelected && 'ring-2 ring-primary ring-offset-2'
       )}
@@ -97,7 +97,7 @@ function LocationCard({
         )}
         dir={locale === 'ar' ? 'rtl' : 'ltr'}
       >
-        <span className="font-bold text-white drop-shadow-lg block text-xl sm:text-2xl">
+        <span className="font-bold text-white drop-shadow-lg block text-lg sm:text-xl md:text-2xl truncate">
           {title}
         </span>
       </div>
@@ -182,9 +182,9 @@ export function HotelsPageClient({ locations, hotels }: HotelsPageClientProps) {
       />
 
       {!showHotels && (
-        <section className="min-h-[calc(100vh-var(--header-height,64px)-180px)] flex flex-col py-8 sm:py-12">
-          <div className="container mx-auto px-4 flex-1 flex flex-col">
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(360px,1fr))] gap-6 flex-1 content-start max-w-6xl mx-auto justify-items-center w-full">
+        <section className="min-h-[calc(100vh-var(--header-height,64px)-180px)] flex flex-col py-6 sm:py-8 md:py-12 overflow-x-hidden">
+          <div className="container mx-auto px-3 sm:px-4 flex-1 flex flex-col min-w-0 w-full max-w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 flex-1 content-start max-w-6xl mx-auto w-full">
               {locations.map((loc) => (
                 <LocationCard
                   key={loc.id}
@@ -202,8 +202,8 @@ export function HotelsPageClient({ locations, hotels }: HotelsPageClientProps) {
       )}
 
       {showHotels && (
-        <section className="py-12">
-          <div className="container mx-auto px-4">
+        <section className="py-6 sm:py-8 md:py-12 overflow-x-hidden">
+          <div className="container mx-auto px-3 sm:px-4 min-w-0 max-w-full">
             <Button
               variant="ghost"
               className={cn('mb-4 gap-2', locale === 'ar' ? 'flex-row-reverse ms-auto' : '')}
@@ -234,10 +234,10 @@ export function HotelsPageClient({ locations, hotels }: HotelsPageClientProps) {
                 { value: 'starAsc', label: t('list.sort.starAsc') },
               ]}
               isRTL={locale === 'ar'}
-              className="mb-6"
+              className="mb-4 sm:mb-6 w-full"
             />
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
               {displayedHotels.map((hotel, index) => {
                 const name = getLocalizedContent(hotel as unknown as Record<string, unknown>, 'name', locale)
                 const description =
@@ -248,15 +248,15 @@ export function HotelsPageClient({ locations, hotels }: HotelsPageClientProps) {
                   <article
                     key={hotel.id}
                     className={cn(
-                      'group flex flex-col h-full rounded-2xl bg-card border border-border overflow-hidden',
+                      'group flex flex-col h-full rounded-xl sm:rounded-2xl bg-card border border-border overflow-hidden min-w-0',
                       'hover:border-primary/30 hover:shadow-xl transition-all duration-300',
                       'animate-fade-in-up'
                     )}
                     style={{ animationDelay: `${Math.min(index * 50, 300)}ms` }}
                   >
-                    <Link href={`/hotels/${hotel.id}`} className="flex flex-col h-full">
-                      <div className="flex flex-col md:flex-row md:min-h-[280px]">
-                        <div className="relative w-full md:w-64 h-48 md:h-auto md:min-h-[280px] shrink-0 overflow-hidden">
+                    <Link href={`/hotels/${hotel.id}`} className="flex flex-col h-full min-w-0">
+                      <div className="flex flex-col md:flex-row md:min-h-[260px]">
+                        <div className="relative w-full md:w-56 lg:w-64 h-44 sm:h-48 md:h-auto md:min-h-[260px] shrink-0 overflow-hidden">
                           <div
                             className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
                             style={{
@@ -276,8 +276,8 @@ export function HotelsPageClient({ locations, hotels }: HotelsPageClientProps) {
                             </div>
                           )}
                         </div>
-                        <div className="flex-1 flex flex-col p-6 min-w-0">
-                          <h3 className="text-lg font-semibold text-foreground mb-2 line-clamp-2">
+                        <div className="flex-1 flex flex-col p-4 sm:p-6 min-w-0 overflow-hidden">
+                          <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2 line-clamp-2 break-words">
                             {name}
                           </h3>
                           {(locale === 'ar' ? hotel.city_ar || hotel.city : hotel.city) && (
@@ -299,21 +299,21 @@ export function HotelsPageClient({ locations, hotels }: HotelsPageClientProps) {
                               </p>
                             ) : null
                           })()}
-                          <div className="mt-auto pt-4 border-t border-border flex items-center justify-between gap-4">
-                            <div className="min-w-0">
+                          <div className="mt-auto pt-3 sm:pt-4 border-t border-border flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                            <div className="min-w-0 overflow-hidden">
                               <span className="text-xs text-muted-foreground block">
                                 {locale === 'ar' ? 'ابتداءً من' : 'From'}
                               </span>
-                              <span className="text-xl font-bold text-primary">
+                              <span className="text-lg sm:text-xl font-bold text-primary truncate block">
                                 {hotel.currency} {hotel.price_per_night?.toLocaleString()}{' '}
-                                <span className="text-sm font-normal text-muted-foreground">
+                                <span className="text-xs sm:text-sm font-normal text-muted-foreground">
                                   / {locale === 'ar' ? 'ليلة' : 'night'}
                                 </span>
                               </span>
                             </div>
                             <span
                               className={cn(
-                                'shrink-0 px-4 py-2 rounded-md text-sm font-medium',
+                                'shrink-0 px-4 py-2 rounded-md text-sm font-medium text-center',
                                 'bg-primary text-primary-foreground',
                                 'group-hover:bg-primary/90 transition-colors'
                               )}

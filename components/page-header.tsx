@@ -11,7 +11,7 @@ interface PageHeaderProps {
 export function PageHeader({ title, subtitle, className }: PageHeaderProps) {
   return (
     <section className={cn(
-      "relative pt-32 pb-20 overflow-hidden",
+      "relative pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-16 md:pb-20 overflow-hidden",
       className
     )}>
       {/* Background */}
@@ -25,13 +25,13 @@ export function PageHeader({ title, subtitle, className }: PageHeaderProps) {
         }}
       />
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-3 sm:px-4 relative z-10 min-w-0">
         <div className="max-w-3xl">
-          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4 animate-fade-in-up text-balance">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4 animate-fade-in-up text-balance break-words">
             {title}
           </h1>
           {subtitle && (
-            <p className="text-lg text-white/80 animate-fade-in-up animation-delay-100 text-pretty">
+            <p className="text-base sm:text-lg text-white/80 animate-fade-in-up animation-delay-100 text-pretty break-words">
               {subtitle}
             </p>
           )}
