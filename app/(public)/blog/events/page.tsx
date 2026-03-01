@@ -1,6 +1,8 @@
 import { getEvents } from '@/lib/db'
 import { EventsPageClient } from './page-client'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata = {
   title: 'Events',
   description: 'Upcoming events and activities.',

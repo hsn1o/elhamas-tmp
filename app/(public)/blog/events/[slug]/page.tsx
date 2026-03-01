@@ -2,6 +2,8 @@ import { notFound } from 'next/navigation'
 import { getEventBySlug } from '@/lib/db'
 import { EventDetailClient } from './page-client'
 
+export const dynamic = 'force-dynamic'
+
 export async function generateMetadata({
   params,
 }: {

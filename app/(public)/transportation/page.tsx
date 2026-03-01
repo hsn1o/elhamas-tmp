@@ -1,6 +1,8 @@
 import { getTransportation } from '@/lib/db'
 import { TransportationPageClient } from './page-client'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata = {
   title: 'Transportation Services',
   description: 'Comfortable travel between holy sites. Browse vehicles and book your transfer.',

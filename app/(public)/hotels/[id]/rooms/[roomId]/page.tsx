@@ -2,6 +2,8 @@ import { notFound } from 'next/navigation'
 import { getHotelById } from '@/lib/db'
 import { RoomBookingPageClient } from './page-client'
 
+export const dynamic = 'force-dynamic'
+
 export async function generateMetadata({
   params,
 }: {

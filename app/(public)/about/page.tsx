@@ -1,6 +1,8 @@
 import { getTestimonials } from '@/lib/db'
 import { AboutPageClient } from './page-client'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata = {
   title: 'About Us',
   description: 'Your trusted partner for sacred journeys.',

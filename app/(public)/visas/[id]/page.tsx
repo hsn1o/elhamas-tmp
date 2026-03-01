@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { getVisaById } from "@/lib/db";
 import { VisaDetailClient } from "./page-client";
 
+export const dynamic = 'force-dynamic'
+
 export async function generateMetadata({
   params,
 }: {

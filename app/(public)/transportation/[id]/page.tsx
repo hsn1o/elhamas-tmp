@@ -2,6 +2,8 @@ import { notFound } from 'next/navigation'
 import { getTransportationById } from '@/lib/db'
 import { TransportationDetailClient } from './page-client'
 
+export const dynamic = 'force-dynamic'
+
 export async function generateMetadata({
   params,
 }: {

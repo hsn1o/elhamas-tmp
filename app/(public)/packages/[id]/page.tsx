@@ -2,6 +2,8 @@ import { notFound } from 'next/navigation'
 import { getTourPackageById } from '@/lib/db'
 import { PackageDetailClient } from './page-client'
 
+export const dynamic = 'force-dynamic'
+
 export async function generateMetadata({
   params,
 }: {

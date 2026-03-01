@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { getBlogPostBySlug } from "@/lib/db";
 import { ArticleDetailClient } from "./page-client";
 
+export const dynamic = 'force-dynamic'
+
 export async function generateMetadata({
   params,
 }: {
