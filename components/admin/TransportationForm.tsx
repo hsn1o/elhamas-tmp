@@ -231,7 +231,6 @@ export function TransportationForm({
         setError(data.error || 'Request failed')
         return
       }
-      router.refresh()
       onSuccess()
     } catch {
       setError('Something went wrong')

@@ -57,8 +57,8 @@ export function TourPackageFormPage({
   }, [mode, packageId]);
 
   function handleSuccess() {
-    router.push("/admin/packages");
-    router.refresh();
+    const status = mode === "edit" ? "updated" : "created";
+    router.push(`/admin/packages?status=${status}`);
   }
 
   function handleCancel() {

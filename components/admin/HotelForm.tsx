@@ -494,13 +494,13 @@ export function HotelForm({
                               : 'border-border bg-background',
                           )}
                         >
-                          <PlaceImageInline
-                            value={l.imageUrl ?? ''}
-                            onChange={(url) =>
-                              handleUpdateLocation(l.id, l.nameEn, l.nameAr, url)
-                            }
-                            disabled={locationSavingId === l.id}
-                          />
+                      <PlaceImageInline
+                        value={l.imageUrl ?? ''}
+                        onChange={(url) =>
+                          handleUpdateLocation(l.id, l.nameEn, l.nameAr, url)
+                        }
+                        disabled={locationSavingId === l.id}
+                      />
                           <Input
                           placeholder="Name (EN)"
                           value={l.nameEn}
@@ -538,6 +538,27 @@ export function HotelForm({
                           className="flex-1 min-w-0 h-8 text-sm"
                           dir="rtl"
                         />
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="sm"
+                          className="h-8 shrink-0"
+                          disabled={
+                            locationSavingId === l.id ||
+                            !l.nameEn.trim() ||
+                            !l.nameAr.trim()
+                          }
+                          onClick={() =>
+                            handleUpdateLocation(
+                              l.id,
+                              l.nameEn,
+                              l.nameAr,
+                              l.imageUrl ?? undefined,
+                            )
+                          }
+                        >
+                          {locationSavingId === l.id ? 'Saving…' : 'Save'}
+                        </Button>
                         <Button
                           type="button"
                           variant="outline"

@@ -62,8 +62,8 @@ export function VisaFormPage({
   }, [mode, visaId])
 
   function handleSuccess() {
-    router.push('/admin/visas')
-    router.refresh()
+    const status = mode === 'edit' ? 'updated' : 'created'
+    router.push(`/admin/visas?status=${status}`)
   }
 
   function handleCancel() {

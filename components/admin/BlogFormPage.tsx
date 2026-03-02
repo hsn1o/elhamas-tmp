@@ -50,8 +50,8 @@ export function BlogFormPage({
   }, [mode, postId])
 
   function handleSuccess() {
-    router.push('/admin/blog')
-    router.refresh()
+    const status = mode === 'edit' ? 'updated' : 'created'
+    router.push(`/admin/blog?status=${status}`)
   }
 
   function handleCancel() {

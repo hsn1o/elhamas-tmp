@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -38,10 +38,12 @@ type TestimonialRow = {
 
 export function AdminTestimonialsClient() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [items, setItems] = useState<TestimonialRow[]>([])
   const [loading, setLoading] = useState(true)
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [deleteLoading, setDeleteLoading] = useState(false)
+  const [statusMessage, setStatusMessage] = useState<string | null>(null)
 
   async function fetchItems() {
     setLoading(true)
@@ -62,6 +64,17 @@ export function AdminTestimonialsClient() {
     fetchItems()
   }, [])
 
+  useEffect(() => {
+    const status = searchParams.get('status')
+    if (status === 'created') {
+      setStatusMessage('Testimonial created successfully.')
+    } else if (status === 'updated') {
+      setStatusMessage('Testimonial updated successfully.')
+    } else {
+      setStatusMessage(null)
+    }
+  }, [searchParams])
+
   async function handleDelete(id: string) {
     setDeleteLoading(true)
     try {
@@ -78,6 +91,11 @@ export function AdminTestimonialsClient() {
 
   return (
     <div className="space-y-6">
+      {statusMessage && (
+        <div className="rounded-md border border-emerald-500/40 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
+          {statusMessage}
+        </div>
+      )}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold">Client Testimonials</h1>

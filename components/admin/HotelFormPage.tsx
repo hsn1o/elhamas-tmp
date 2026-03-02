@@ -61,8 +61,8 @@ export function HotelFormPage({
   }, [mode, hotelId, loading, hotel])
 
   function handleSuccess() {
-    router.push('/admin/hotels')
-    router.refresh()
+    const status = mode === 'edit' ? 'updated' : 'created'
+    router.push(`/admin/hotels?status=${status}`)
   }
 
   function handleCancel() {

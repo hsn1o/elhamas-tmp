@@ -102,7 +102,8 @@ const translations: Record<Locale, Record<string, string>> = {
     "hotels.amenities": "Amenities",
     "hotels.backToPlaces": "Back to places",
     "hotels.hotelsIn": "Hotels in",
-    "hotels.searchPlaceholder": "Search by name, description, city, location, rating or price...",
+    "hotels.searchPlaceholder":
+      "Search by name, description, city, location, rating or price...",
     "hotels.rooms": "Rooms",
     "hotels.pricePerNight": "Price per night",
     "hotels.maxGuests": "Max guests",
@@ -125,7 +126,8 @@ const translations: Record<Locale, Record<string, string>> = {
     "packages.itinerary": "Itinerary",
     "packages.fullDescription": "Full Description",
     "packages.day": "Day",
-    "packages.searchPlaceholder": "Search by name, description, location, type, or duration...",
+    "packages.searchPlaceholder":
+      "Search by name, description, location, type, or duration...",
     "packages.filterAll": "All",
     "packages.hajj": "Hajj",
     "packages.umrah": "Umrah",
@@ -187,7 +189,8 @@ const translations: Record<Locale, Record<string, string>> = {
     "events.audience": "Audience",
     "events.all": "All",
     "events.backToEvents": "Back to Events",
-    "events.searchPlaceholder": "Search by title, description, location, frequency or price...",
+    "events.searchPlaceholder":
+      "Search by title, description, location, frequency or price...",
 
     // Transportation
     "transport.title": "Transportation Services",
@@ -200,7 +203,8 @@ const translations: Record<Locale, Record<string, string>> = {
     "transport.overview": "Overview",
     "transport.offerIncludes": "Offer includes",
     "transport.offerExcludes": "Offer excludes",
-    "transport.searchPlaceholder": "Search by name, description, vehicle type, location, capacity or price...",
+    "transport.searchPlaceholder":
+      "Search by name, description, vehicle type, location, capacity or price...",
 
     // Visas
     "visa.title": "Issuing Visas",
@@ -216,7 +220,8 @@ const translations: Record<Locale, Record<string, string>> = {
     "visa.notes": "Notes & conditions",
     "visa.overview": "Overview",
     "visa.backToVisas": "Back to Visas",
-    "visa.searchPlaceholder": "Search by name, description, visa type, processing time, validity or price...",
+    "visa.searchPlaceholder":
+      "Search by name, description, visa type, processing time, validity or price...",
 
     // Blog
     "blog.title": "Our Blog",
@@ -257,7 +262,8 @@ const translations: Record<Locale, Record<string, string>> = {
     "about.message.text":
       "We are committed to providing an integrated Umrah experience that respects the sanctity of the journey, through professional service, continuous follow-up, and well-considered details that enhance peace of mind and ease.",
     "about.reems.title": "Reems & Dreems",
-    "about.reems.subtitle": "A Dedicated Hotel Management Company with a Spiritual Mission",
+    "about.reems.subtitle":
+      "A Dedicated Hotel Management Company with a Spiritual Mission",
     "about.reems.description":
       "Elham owns a specialized hotel management company that ensures high standards of quality and hospitality for the Guests of Allah in Makkah and Madinah. Combining professional hotel operations with our expertise in Umrah services, we provide a comfortable, well-organized stay that supports pilgrims in experiencing their journey with tranquility and peace.",
     "about.learnMore": "Learn More About Us",
@@ -321,7 +327,7 @@ const translations: Record<Locale, Record<string, string>> = {
       "Yes. We handle visa application support and required documentation as part of our packages or as a standalone service. Contact us for your travel dates and we will outline the steps.",
 
     // Footer
-    "footer.description": "Your trusted partner for Hajj and Umrah services.",
+    "footer.description": "Your trusted partner for Umrah services.",
     "footer.quickLinks": "Quick Links",
     "footer.services": "Our Services",
     "footer.contact": "Contact Info",
@@ -424,7 +430,8 @@ const translations: Record<Locale, Record<string, string>> = {
     "hotels.amenities": "المرافق",
     "hotels.backToPlaces": "العودة للأماكن",
     "hotels.hotelsIn": "الفنادق في",
-    "hotels.searchPlaceholder": "البحث بالاسم أو الوصف أو المدينة أو الموقع أو التصنيف أو السعر...",
+    "hotels.searchPlaceholder":
+      "البحث بالاسم أو الوصف أو المدينة أو الموقع أو التصنيف أو السعر...",
     "hotels.rooms": "الغرف",
     "hotels.pricePerNight": "السعر لليلة",
     "hotels.maxGuests": "عدد الضيوف",
@@ -447,7 +454,8 @@ const translations: Record<Locale, Record<string, string>> = {
     "packages.itinerary": "البرنامج",
     "packages.fullDescription": "الوصف الكامل",
     "packages.day": "اليوم",
-    "packages.searchPlaceholder": "البحث بالاسم أو الوصف أو الموقع أو النوع أو المدة  ...",
+    "packages.searchPlaceholder":
+      "البحث بالاسم أو الوصف أو الموقع أو النوع أو المدة  ...",
     "packages.filterAll": "الكل",
     "packages.hajj": "حج",
     "packages.umrah": "عمرة",
@@ -511,7 +519,8 @@ const translations: Record<Locale, Record<string, string>> = {
     "events.audience": "الجمهور",
     "events.all": "الكل",
     "events.backToEvents": "العودة للفعاليات",
-    "events.searchPlaceholder": "البحث بالعنوان أو الوصف أو الموقع أو التكرار أو السعر...",
+    "events.searchPlaceholder":
+      "البحث بالعنوان أو الوصف أو الموقع أو التكرار أو السعر...",
 
     // Transportation
     "transport.title": "خدمات النقل",
@@ -524,7 +533,8 @@ const translations: Record<Locale, Record<string, string>> = {
     "transport.overview": "نظرة عامة",
     "transport.offerIncludes": "يشمل العرض",
     "transport.offerExcludes": "لا يشمل العرض",
-    "transport.searchPlaceholder": "البحث بالاسم أو الوصف أو نوع المركبة أو الموقع أو السعة أو السعر...",
+    "transport.searchPlaceholder":
+      "البحث بالاسم أو الوصف أو نوع المركبة أو الموقع أو السعة أو السعر...",
 
     // Visas
     "visa.title": "إصدار التأشيرات",
@@ -540,7 +550,8 @@ const translations: Record<Locale, Record<string, string>> = {
     "visa.notes": "ملاحظات وشروط",
     "visa.overview": "نظرة عامة",
     "visa.backToVisas": "العودة للتأشيرات",
-    "visa.searchPlaceholder": "البحث بالاسم أو الوصف أو نوع التأشيرة أو مدة المعالجة أو الصلاحية أو السعر...",
+    "visa.searchPlaceholder":
+      "البحث بالاسم أو الوصف أو نوع التأشيرة أو مدة المعالجة أو الصلاحية أو السعر...",
 
     // Blog
     "blog.title": "المدونة",
@@ -645,7 +656,7 @@ const translations: Record<Locale, Record<string, string>> = {
       "نعم. نتابع طلب التأشيرة والمستندات المطلوبة ضمن الباقات أو كخدمة مستقلة. تواصل معنا لمواعيد سفرك ونوضح لك الخطوات.",
 
     // Footer
-    "footer.description": "شريكك الموثوق لخدمات الحج والعمرة.",
+    "footer.description": "شريكك الموثوق لخدمات العمرة.",
     "footer.quickLinks": "روابط سريعة",
     "footer.services": "خدماتنا",
     "footer.contact": "معلومات الاتصال",

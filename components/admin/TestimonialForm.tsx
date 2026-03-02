@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -42,7 +41,6 @@ export function TestimonialForm({
   onSuccess?: () => void
   onCancel?: () => void
 }) {
-  const router = useRouter()
   const [form, setForm] = useState(defaultValues)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -96,8 +94,6 @@ export function TestimonialForm({
       const data = await res.json().catch(() => ({}))
       if (res.ok) {
         onSuccess?.()
-        router.push('/admin/testimonials')
-        router.refresh()
       } else {
         setError(data.error || `Request failed (${res.status})`)
       }

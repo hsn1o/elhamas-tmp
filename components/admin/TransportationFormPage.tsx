@@ -56,8 +56,8 @@ export function TransportationFormPage({
   }, [mode, transportationId])
 
   function handleSuccess() {
-    router.push('/admin/transportation')
-    router.refresh()
+    const status = mode === 'edit' ? 'updated' : 'created'
+    router.push(`/admin/transportation?status=${status}`)
   }
 
   function handleCancel() {

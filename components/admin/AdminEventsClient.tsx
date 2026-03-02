@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -55,10 +55,12 @@ function formatDate(s: string | null): string {
 
 export function AdminEventsClient() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [items, setItems] = useState<EventRow[]>([])
   const [loading, setLoading] = useState(true)
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [deleteLoading, setDeleteLoading] = useState(false)
+  const [statusMessage, setStatusMessage] = useState<string | null>(null)
 
   async function fetchItems() {
     setLoading(true)
@@ -78,6 +80,17 @@ export function AdminEventsClient() {
   useEffect(() => {
     fetchItems()
   }, [])
+
+  useEffect(() => {
+    const status = searchParams.get('status')
+    if (status === 'created') {
+      setStatusMessage('Event created successfully.')
+    } else if (status === 'updated') {
+      setStatusMessage('Event updated successfully.')
+    } else {
+      setStatusMessage(null)
+    }
+  }, [searchParams])
 
   async function handleDelete(id: string) {
     setDeleteLoading(true)
@@ -100,6 +113,11 @@ export function AdminEventsClient() {
 
   return (
     <div className="space-y-6">
+      {statusMessage && (
+        <div className="rounded-md border border-emerald-500/40 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
+          {statusMessage}
+        </div>
+      )}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold">Events</h1>

@@ -43,6 +43,11 @@ export function TestimonialFormPage({
     }
   }, [mode, testimonialId])
 
+  function handleSuccess() {
+    const status = mode === 'edit' ? 'updated' : 'created'
+    router.push(`/admin/testimonials?status=${status}`)
+  }
+
   function handleCancel() {
     router.back()
   }
@@ -75,6 +80,7 @@ export function TestimonialFormPage({
       </div>
       <TestimonialForm
         testimonial={mode === 'edit' ? (item ?? null) : null}
+        onSuccess={handleSuccess}
         onCancel={handleCancel}
       />
     </div>

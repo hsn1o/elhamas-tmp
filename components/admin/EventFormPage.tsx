@@ -49,8 +49,8 @@ export function EventFormPage({ mode, eventId }: { mode: 'create' | 'edit'; even
   }, [mode, eventId])
 
   function handleSuccess() {
-    router.push('/admin/events')
-    router.refresh()
+    const status = mode === 'edit' ? 'updated' : 'created'
+    router.push(`/admin/events?status=${status}`)
   }
 
   function handleCancel() {
