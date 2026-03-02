@@ -46,14 +46,50 @@ export function ContactFormSection() {
   const [sectionRef, isVisible] = useScrollAnimation<HTMLElement>(0.08);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (loading) return;
     setLoading(true);
-    // Placeholder: replace with your API or form action
-    await new Promise((r) => setTimeout(r, 800));
-    setLoading(false);
-    setSubmitted(true);
+    setError(null);
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const countryCode = (formData.get("countryCode")?.toString() ?? "").trim() || "+966";
+    const phone = (formData.get("phone")?.toString() ?? "").trim();
+    const fullPhone = countryCode && phone ? `${countryCode} ${phone}` : countryCode || phone || undefined;
+    const payload = {
+      type: "contact",
+      referenceId: "contact",
+      referenceName: (formData.get("subject")?.toString() ?? "").trim() || "Contact Form",
+      name: (formData.get("name")?.toString() ?? "").trim(),
+      email: (formData.get("email")?.toString() ?? "").trim(),
+      nationality: (formData.get("nationality")?.toString() ?? "").trim() || undefined,
+      phone: fullPhone,
+      message: (formData.get("message")?.toString() ?? "").trim(),
+      locale,
+    };
+    try {
+      const res = await fetch("/api/inquiries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error("Request failed");
+      setSubmitted(true);
+      form.reset();
+      const countryInput = form.querySelector<HTMLInputElement>('[name="countryCode"]');
+      if (countryInput) countryInput.value = "+966";
+    } catch (err) {
+      console.error(err);
+      setError(
+        locale === "ar"
+          ? "حدث خطأ أثناء الإرسال. حاول مرة أخرى."
+          : "Something went wrong. Please try again.",
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -126,25 +162,54 @@ export function ContactFormSection() {
                     />
                   </div>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
-                  <div className="space-y-2">
+                <div className="space-y-2 mb-3 sm:mb-4">
                     <Label htmlFor="contact-phone" className="text-foreground">
                       {t("contact.form.phone")}
                     </Label>
+                    <div
+                      className={cn(
+                        "flex gap-0 rounded-lg border border-input bg-background overflow-hidden transition-[box-shadow] duration-200 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
+                        isRTL && "flex-row-reverse",
+                      )}
+                    >
+                      <Input
+                        id="contact-countryCode"
+                        name="countryCode"
+                        type="tel"
+                        defaultValue="+966"
+                        className={cn(
+                          "w-20 sm:w-24 shrink-0 rounded-none border-0 bg-muted/50 focus-visible:ring-0 focus-visible:ring-offset-0",
+                          isRTL ? "border-l border-input" : "border-r border-input",
+                        )}
+                        dir="ltr"
+                        aria-label={t("inquiry.form.countryCode")}
+                      />
+                      <Input
+                        id="contact-phone"
+                        name="phone"
+                        type="tel"
+                        placeholder={t("contact.form.phone")}
+                        className="flex-1 min-w-0 rounded-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                        dir="ltr"
+                        aria-label={t("contact.form.phone")}
+                      />
+                    </div>
+                  </div>
+                <div className="space-y-2 mb-3 sm:mb-4">
+                    <Label htmlFor="contact-nationality" className="text-foreground">
+                      {t("inquiry.form.nationality")}
+                    </Label>
                     <Input
-                      id="contact-phone"
-                      name="phone"
-                      type="tel"
-                      placeholder={t("contact.form.phone")}
+                      id="contact-nationality"
+                      name="nationality"
+                      type="text"
+                      placeholder={t("inquiry.form.nationality")}
                       className="bg-background transition-[box-shadow] duration-200"
                       dir={isRTL ? "rtl" : "ltr"}
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="contact-subject"
-                      className="text-foreground"
-                    >
+                <div className="space-y-2 mb-3 sm:mb-4">
+                    <Label htmlFor="contact-subject" className="text-foreground">
                       {t("contact.form.subject")}
                     </Label>
                     <Input
@@ -157,7 +222,6 @@ export function ContactFormSection() {
                       dir={isRTL ? "rtl" : "ltr"}
                     />
                   </div>
-                </div>
                 <div className="space-y-2 mb-4 sm:mb-6">
                   <Label htmlFor="contact-message" className="text-foreground">
                     {t("contact.form.message")}
@@ -172,7 +236,12 @@ export function ContactFormSection() {
                     dir={isRTL ? "rtl" : "ltr"}
                   />
                 </div>
-                {submitted && (
+                {error && (
+                  <p className="text-sm text-red-600 dark:text-red-400 mb-4" style={isRTL ? { textAlign: "right" } : undefined}>
+                    {error}
+                  </p>
+                )}
+                {submitted && !error && (
                   <motion.p
                     className="text-sm font-medium mb-4 rounded-lg py-2 px-3 bg-green-500/10 text-green-700 dark:text-green-400"
                     style={isRTL ? { textAlign: "right" } : undefined}
@@ -210,7 +279,10 @@ export function ContactFormSection() {
               animate={isVisible ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.12, ease: easeOutExpo }}
             >
-              <h3 className="text-base sm:text-lg font-semibold break-words" style={{ color: ACCENT }}>
+              <h3
+                className="text-base sm:text-lg font-semibold break-words"
+                style={{ color: ACCENT }}
+              >
                 {t("footer.contact")}
               </h3>
               <ul className="space-y-3 sm:space-y-4">

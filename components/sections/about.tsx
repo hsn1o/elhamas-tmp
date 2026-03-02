@@ -116,7 +116,7 @@ export function AboutSection() {
 
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <Link
-                href="/"
+                href="/about"
                 className="inline-flex rounded-lg bg-primary px-4 py-2.5 sm:px-6 sm:py-3 text-xs sm:text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
               >
                 {t("about.learnMore")}

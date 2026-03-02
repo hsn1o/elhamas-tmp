@@ -234,7 +234,7 @@ export function PackagesPageClient({
   }, [filteredPackages, searchQuery, sortBy, locale]);
 
   const getCategoryName = (c: PackageCategory) =>
-    locale === "ar" ? `باقات ${c.name_ar}` : `Packages of ${c.name_en}`;
+    locale === "ar" ? (c.name_ar ?? c.name_en) : (c.name_en ?? c.name_ar);
   const getLocationName = (l: Location) =>
     locale === "ar" ? l.name_ar : l.name_en;
 
@@ -259,7 +259,7 @@ export function PackagesPageClient({
       {view === "categories" && (
         <section className="min-h-[calc(100vh-var(--header-height,64px)-180px)] flex flex-col py-6 sm:py-8 md:py-12 overflow-x-hidden">
           <div className="container mx-auto px-3 sm:px-4 flex-1 flex flex-col min-w-0 w-full max-w-full">
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 flex-1 content-start max-w-6xl mx-auto w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 flex-1 content-start max-w-7xl mx-auto w-full">
               {discoverCard?.is_visible !== false && (
                 <CategoryCard
                   title={
@@ -331,7 +331,7 @@ export function PackagesPageClient({
                   : "No locations available"}
               </p>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 flex-1 content-start max-w-6xl mx-auto w-full">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 flex-1 content-start max-w-7xl mx-auto w-full">
                 {locations.map((loc) => (
                   <CategoryCard
                     key={loc.id}

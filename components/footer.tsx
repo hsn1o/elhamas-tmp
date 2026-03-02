@@ -8,15 +8,16 @@ import { useI18n } from "@/lib/i18n"
 const quickLinkKeys: { href: string; key: string }[] = [
   { href: "/", key: "nav.home" },
   { href: "/packages", key: "nav.packages" },
+  { href: "/blog", key: "nav.blog" },
   { href: "/about", key: "nav.about" },
   { href: "/contact", key: "nav.contact" },
 ]
 
 const serviceLinkKeys: { href: string; key: string }[] = [
-  { href: "/packages", key: "footer.hajjPackages" },
-  { href: "/packages", key: "footer.umrahPackages" },
-  { href: "/packages", key: "nav.hotels" },
-  { href: "/packages", key: "nav.transportation" },
+  { href: "/visas", key: "nav.visas" },
+  { href: "/hotels", key: "nav.hotels" },
+  { href: "/transportation", key: "nav.transportation" },
+  { href: "/blog/events", key: "nav.events" },
 ]
 
 export function Footer() {
@@ -40,9 +41,9 @@ export function Footer() {
               {t("footer.description")}
             </p>
             <div className="space-y-2 text-sm text-primary-foreground/60">
-              <p className="flex items-center gap-2"><Phone className="h-4 w-4" /> <span dir="ltr">+966566610996</span></p>
-              <p className="flex items-center gap-2"><Mail className="h-4 w-4" /> support@elhamas.com</p>
-              <p className="flex items-center gap-2"><MapPin className="h-4 w-4" /> Makkah, Saudi Arabia</p>
+              <p className="flex items-center gap-2"><Phone className="h-4 w-4 shrink-0" /> <span dir="ltr">+966 56 661 0996</span></p>
+              <p className="flex items-center gap-2"><Mail className="h-4 w-4 shrink-0" /> support@elhamas.com</p>
+              <p className="flex items-center gap-2"><MapPin className="h-4 w-4 shrink-0" /> Mekkah, Saudi Arabia</p>
             </div>
             {/* Social Media */}
             <div className="mt-6">
@@ -127,14 +128,10 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="flex flex-col items-center justify-between gap-4 border-t border-primary-foreground/10 py-6 sm:flex-row">
+        <div className="border-t border-primary-foreground/10 py-6 text-center">
           <p className="text-xs text-primary-foreground/40">
             &copy; {new Date().getFullYear()} {t("footer.companyName")}. {t("footer.rights")}
           </p>
-          <div className="flex gap-6">
-            <Link href="#" className="text-xs text-primary-foreground/40 transition-colors hover:text-primary-foreground/60">{t("footer.privacyPolicy")}</Link>
-            <Link href="#" className="text-xs text-primary-foreground/40 transition-colors hover:text-primary-foreground/60">{t("footer.termsOfService")}</Link>
-          </div>
         </div>
       </div>
     </footer>

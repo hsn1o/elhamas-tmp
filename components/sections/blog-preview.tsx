@@ -119,7 +119,7 @@ export function BlogPreviewSection({ posts }: BlogPreviewSectionProps) {
             </p>
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <Link
-                href="/"
+                href="/blog/articles"
                 className={cn(
                   'inline-flex items-center gap-2 rounded-l-full text-white text-sm font-medium px-5 py-2.5 hover:opacity-90 transition-opacity shrink-0',
                   isRTL && 'rounded-l-none rounded-r-full flex-row-reverse'
@@ -183,7 +183,7 @@ export function BlogPreviewSection({ posts }: BlogPreviewSectionProps) {
               }}
               whileHover={{ y: -4 }}
             >
-              <Link href="/" className="relative block aspect-[4/3] overflow-hidden">
+              <Link href={`/blog/${post.slug}`} className="relative block aspect-[4/3] overflow-hidden">
                 <Image
                   src={post.image}
                   alt=""
@@ -205,13 +205,13 @@ export function BlogPreviewSection({ posts }: BlogPreviewSectionProps) {
                 style={{ backgroundColor: BLOG_ACCENT }}
               >
                 <h3 className="text-lg font-bold mb-2 line-clamp-2 group-hover:underline">
-                  <Link href="/">{post.title}</Link>
+                  <Link href={`/blog/${post.slug}`}>{post.title}</Link>
                 </h3>
                 <p className="text-sm text-white/90 line-clamp-4 mb-4 flex-1">
                   {post.excerpt}
                 </p>
                 <Link
-                  href="/"
+                  href={`/blog/${post.slug}`}
                   className="text-sm font-medium text-white/95 hover:text-white inline-flex items-center gap-1 mb-3 transition-colors"
                 >
                   {t('common.readMore')}

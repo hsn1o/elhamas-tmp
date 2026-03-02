@@ -12,19 +12,19 @@ const sections = [
     key: 'vision' as const,
     titleKey: 'about.vision' as const,
     textKey: 'about.vision.text' as const,
-    image: '/images/img1.jpg',
+    image: '/images/vision.svg',
   },
   {
     key: 'objective' as const,
     titleKey: 'about.objective' as const,
     textKey: 'about.objective.text' as const,
-    image: '/images/img2.jpg',
+    image: '/images/Objective.svg',
   },
   {
     key: 'message' as const,
     titleKey: 'about.message' as const,
     textKey: 'about.message.text' as const,
-    image: '/images/img3.jpg',
+    image: '/images/Message.svg',
   },
 ]
 

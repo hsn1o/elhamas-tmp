@@ -1,14 +1,15 @@
 "use client"
 
 import Image from "next/image"
+import Link from "next/link"
 import { motion } from "framer-motion"
 import { useI18n } from "@/lib/i18n"
 
 const serviceIcons = [
-  { labelKey: "nav.events", icon: EventsIcon },
-  { labelKey: "nav.hotels", icon: HotelsIcon },
-  { labelKey: "nav.transportation", icon: TransportIcon },
-  { labelKey: "hero.umrahPackage", icon: UmrahIcon },
+  { labelKey: "nav.events", icon: EventsIcon, href: "/blog/events" },
+  { labelKey: "nav.hotels", icon: HotelsIcon, href: "/hotels" },
+  { labelKey: "nav.transportation", icon: TransportIcon, href: "/transportation" },
+  { labelKey: "hero.umrahPackage", icon: UmrahIcon, href: "/packages" },
 ]
 
 const easeOutExpo = [0.16, 1, 0.3, 1] as const
@@ -80,7 +81,7 @@ export function HeroSection() {
             transition={{ duration: 0.6, delay: 0.45, ease: easeOutExpo }}
           >
             <motion.a
-              href="/"
+              href="/packages"
               className="rounded-lg bg-primary px-4 py-2.5 sm:px-6 sm:py-3 text-xs sm:text-sm font-semibold text-primary-foreground shadow-lg md:px-8 md:py-3.5 md:text-base"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -89,7 +90,7 @@ export function HeroSection() {
               {t("hero.cta")}
             </motion.a>
             <motion.a
-              href="/"
+              href="/contact"
               className="rounded-lg border-2 border-white/90 bg-white/10 px-4 py-2.5 sm:px-6 sm:py-3 text-xs sm:text-sm font-semibold text-white backdrop-blur-sm md:px-8 md:py-3.5 md:text-base"
               whileHover={{ scale: 1.02, backgroundColor: "rgba(255,255,255,0.2)" }}
               whileTap={{ scale: 0.98 }}
@@ -108,21 +109,21 @@ export function HeroSection() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.6, ease: easeOutExpo }}
       >
-        {serviceIcons.map(({ labelKey, icon: Icon }, i) => (
-          <motion.button
-            key={labelKey}
-            className="group flex flex-col items-center gap-2.5"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            // transition={{ duration: 0.4, delay: 0.75 + i * 0.06, ease: easeOutExpo }}
-            whileHover={{ y: -4, transition: { duration: 0, delay: 0 } }}
-            whileTap={{ scale: 0.97, transition: { duration: 0, delay: 0 } }}
-          >
-            <Icon className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-white/85 transition-colors duration-300 group-hover:text-white" />
-            <span className="text-[10px] sm:text-[11px] font-medium tracking-wide text-white/80 transition-colors duration-300 group-hover:text-white md:text-xs">
-              {t(labelKey)}
-            </span>
-          </motion.button>
+        {serviceIcons.map(({ labelKey, icon: Icon, href }, i) => (
+          <Link key={labelKey} href={href}>
+            <motion.span
+              className="group flex flex-col items-center gap-2.5 cursor-pointer"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              whileHover={{ y: -4, transition: { duration: 0, delay: 0 } }}
+              whileTap={{ scale: 0.97, transition: { duration: 0, delay: 0 } }}
+            >
+              <Icon className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-white/85 transition-colors duration-300 group-hover:text-white" />
+              <span className="text-[10px] sm:text-[11px] font-medium tracking-wide text-white/80 transition-colors duration-300 group-hover:text-white md:text-xs">
+                {t(labelKey)}
+              </span>
+            </motion.span>
+          </Link>
         ))}
       </motion.div>
     </section>
