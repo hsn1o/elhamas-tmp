@@ -26,7 +26,7 @@ const navLinks = [
   { href: "/packages", key: "nav.packages" },
   { href: "/hotels", key: "nav.hotels" },
   { href: "/transportation", key: "nav.transportation" },
-  { href: "/visas", key: "nav.visas" },
+  // { href: "/visas", key: "nav.visas" },
   { href: "/blog", key: "nav.blog" },
   { href: "/about", key: "nav.about" },
   { href: "/contact", key: "nav.contact" },

@@ -17,7 +17,7 @@ const easeOutExpo = [0.16, 1, 0.3, 1] as const;
 const contactInfo = [
   {
     key: "contact.info.address" as const,
-    valueEn: "Mekkah, Saudi Arabia",
+    valueEn: "Makkah, Saudi Arabia",
     valueAr: "مكه، المملكة العربية السعودية",
     icon: MapPin,
   },

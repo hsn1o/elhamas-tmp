@@ -13,7 +13,8 @@ const services = [
     titleKey: 'services.visas.title' as const,
     descKey: 'services.visas.desc' as const,
     explanationKey: 'services.visas.explanation' as const,
-    href: '/visas',
+    href: '/services',
+    showLearnMore: false,
   },
   {
     image: '/images/hotel.jpeg',
@@ -21,13 +22,15 @@ const services = [
     descKey: 'services.hotels.desc' as const,
     explanationKey: 'services.hotels.explanation' as const,
     href: '/hotels',
+    showLearnMore: true,
   },
   {
-    image: '/images/transportation.jpg',
+    image: '/images/transportation1.jpeg',
     titleKey: 'services.transportation.title' as const,
     descKey: 'services.transportation.desc' as const,
     explanationKey: 'services.transportation.explanation' as const,
     href: '/transportation',
+    showLearnMore: true,
   },
 ]
 
@@ -104,14 +107,16 @@ export function ServicesPageClient() {
                     >
                       {t(service.explanationKey)}
                     </p>
-                    <Button asChild className="w-fit">
-                      <Link href={service.href} className="gap-2">
-                        {t('common.learnMore')}
-                        <span className={cn('inline-block', isRTL && 'rotate-180')}>
-                          →
-                        </span>
-                      </Link>
-                    </Button>
+                    {service.showLearnMore && (
+                      <Button asChild className="w-fit">
+                        <Link href={service.href} className="gap-2">
+                          {t('common.learnMore')}
+                          <span className={cn('inline-block', isRTL && 'rotate-180')}>
+                            →
+                          </span>
+                        </Link>
+                      </Button>
+                    )}
                   </div>
                 </div>
               </article>
